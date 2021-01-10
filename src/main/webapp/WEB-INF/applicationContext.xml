@@ -37,12 +37,14 @@
         <property name="templateEngine" ref="templateEngine"/>
         <property name="order" value="1"/>
         <property name="viewNames" value="*"/>
+        <property name="characterEncoding" value="UTF-8"/>
     </bean>
 
     <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
           destroy-method="close">
         <property name="driverClass" value="org.postgresql.Driver"/>
-        <property name="jdbcUrl" value="jdbc:postgresql://localhost:5432/springCourseMvcHibernate"/>
+        <property name="jdbcUrl"
+                  value="jdbc:postgresql://localhost:5432/EazyLearn?autoReconnect=true&amp;useUnicode=true&amp;createDatabaseIfNotExist=true&amp;characterEncoding=utf-8"/>
         <property name="user" value="postgres"/>
         <property name="password" value="181818"/>
     </bean>
@@ -57,6 +59,8 @@
                 <prop key="hibernate.show_sql">true</prop>
                 <prop key="format_sql">true</prop>
                 <prop key="use_sql_comments">true</prop>
+                <prop key="hibernate.connection.characterEncoding">UTF-8</prop>
+                <prop key="hibernate.connection.useUnicode">true</prop>
             </props>
         </property>
     </bean>
@@ -67,7 +71,5 @@
     </bean>
 
     <tx:annotation-driven transaction-manager="transactionManager"/>
-
-    <!-- TODO: Add patch request processing  -->
 
 </beans>
