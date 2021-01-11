@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface CardService {
     List<CardEntity> getAllCards(String tab, Long categoryId);
+
+    void createCard(CardEntity card);
 }

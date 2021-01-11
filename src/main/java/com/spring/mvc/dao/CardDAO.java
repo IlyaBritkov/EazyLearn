@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface CardDAO {
     List<CardEntity> getAllCards(Long userId, Long categoryId);
+
+    void createCard(Long userId, CardEntity card);
 }

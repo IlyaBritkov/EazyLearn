@@ -14,7 +14,7 @@ import java.util.List;
 public class CardServiceImpl implements CardService {
     private final CardDAO cardDAO;
 
-    // TODO: replace it by Spring Security Service
+    // TODO: replace it by Spring Securi2ty Service
     private final Long userId = null;
 
     @Autowired
@@ -41,5 +41,11 @@ public class CardServiceImpl implements CardService {
             default:
                 return null;
         }
+    }
+
+    @Override
+    @Transactional
+    public void createCard(CardEntity card) {
+        cardDAO.createCard(userId, card);
     }
 }

@@ -1,13 +1,12 @@
 package com.spring.mvc.controller;
 
+import com.spring.mvc.entity.CardEntity;
 import com.spring.mvc.service.CardService;
 import com.spring.mvc.tabs.TabsEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 
@@ -23,9 +22,16 @@ public class CardController {
 
 
     @GetMapping()
-    public String findAllByFilter(@RequestParam("tab") String tab, @RequestParam(value = "categoryId", required = false) Long categoryId, Model model) {
+    public String findAllByFilter(@RequestParam(value = "tab", required = false) String tab,
+                                  @RequestParam(value = "categoryId", required = false) Long categoryId,
+                                  Model model, @ModelAttribute("card") CardEntity card) {
+
         // if not existing tab param
-        if (Arrays.stream(TabsEnum.values()).noneMatch(tabsEnum -> tabsEnum.toString().equalsIgnoreCase(tab))) {
+        if (tab == null) {
+            tab = "home";
+        }
+        String finalTab = tab;
+        if (Arrays.stream(TabsEnum.values()).noneMatch(tabsEnum -> tabsEnum.toString().equalsIgnoreCase(finalTab)) && !tab.equalsIgnoreCase(TabsEnum.HOME.toString())) {
             // TODO: add redirect to login page
             return "redirect:/login";
         }
@@ -44,6 +50,12 @@ public class CardController {
                 // TODO: add redirect/cards with param ?tab=home
                 return null;
         }
+    }
+
+    @PostMapping()
+    public String createCard(@ModelAttribute("card") CardEntity card) {
+        cardService.createCard(card);
+        return "redirect:/cards";
     }
 
 }

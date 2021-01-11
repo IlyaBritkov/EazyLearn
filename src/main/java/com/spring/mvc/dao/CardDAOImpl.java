@@ -32,6 +32,13 @@ public class CardDAOImpl implements CardDAO {
             return session.createQuery("FROM CardEntity WHERE userId = userId AND categoryId = categoryId").getResultList();
         }
     }
+
+    @Override
+    public void createCard(Long userId, CardEntity card) {
+        Session session = sessionFactory.getCurrentSession();
+
+        session.save(card);
+    }
 }
 
 
