@@ -17,6 +17,20 @@
 		<tr>
 			<td th:text="${card.translateWord}">translate</td>
 		</tr>
+		<tr>
+			<td>
+				<a th:href="@{/cards/{id}/edit(id=${card.getId()})}">Edit</a>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<form th:method="DELETE" th:action="@{/cards/{id}(id=${card.getId()})}">
+					<input type="submit" value="Delete!"/>
+				</form>
+			</td>
+		</tr>
+	
+	
 	</table>
 	<br>
 </div>

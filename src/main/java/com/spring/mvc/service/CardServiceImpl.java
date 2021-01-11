@@ -48,4 +48,23 @@ public class CardServiceImpl implements CardService {
     public void createCard(CardEntity card) {
         cardDAO.createCard(userId, card);
     }
+
+    @Override
+    @Transactional
+    public CardEntity findCardById(Long cardId) {
+        return cardDAO.findCardById(userId, cardId);
+    }
+
+    @Override
+    @Transactional
+    public void updateCard(CardEntity card) {
+        cardDAO.updateCard(userId, card);
+    }
+
+    @Override
+    @Transactional
+    public void deleteCardById(Long cardId) {
+        cardDAO.deleteCardById(userId, cardId);
+    }
+
 }

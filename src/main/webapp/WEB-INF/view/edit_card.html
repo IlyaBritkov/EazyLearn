@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>Edit card</title>
+</head>
+<body>
+<!--TODO replace this page by popup form on main page -->
+<h1>Edit card page</h1>
+<br><br>
+
+<form th:method="PATCH" th:action="@{/cards/{id}(id=${card.getId()})}" th:object="${card}">
+	<input type="text" id="foreign" th:field="*{foreignWord}">
+	
+	<br>
+	
+	<input type="text" id="translate" required placeholder="Translate" th:field="*{translateWord}">
+	
+	<br>
+	
+	<input type="text" id="proficiency" placeholder="Proficiency" th:field="*{proficiencyLevel}">
+	
+	<br><br>
+	<input type="submit" value="Update!">
+</form>
+
+</body>
+</html>

@@ -12,6 +12,8 @@ import javax.persistence.*;
 @Setter
 @ToString
 public class CardEntity {
+    // TODO add validation
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

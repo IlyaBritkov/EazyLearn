@@ -47,8 +47,7 @@ public class CardController {
             case RECENT:
                 return "recent";
             default:
-                // TODO: add redirect/cards with param ?tab=home
-                return null;
+                return "redirect:/cards";
         }
     }
 
@@ -57,5 +56,26 @@ public class CardController {
         cardService.createCard(card);
         return "redirect:/cards";
     }
+
+    // TODO replace by popup form
+    @GetMapping("/{id}/edit")
+    public String editCard(Model model, @PathVariable("id") Long cardId) {
+        model.addAttribute("card", cardService.findCardById(cardId));
+        return "edit_card";
+    }
+
+    @PatchMapping("/{id}")
+    public String updateCard(@ModelAttribute("card") CardEntity card) {
+        cardService.updateCard(card);
+
+        return "redirect:/cards";
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteCardById(@PathVariable("id") Long cardId) {
+        cardService.deleteCardById(cardId);
+        return "redirect:/cards";
+    }
+
 
 }
