@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>EazyLearn</title>
+</head>
+<body>
+<h1>Home page</h1>
+<!--TODO add header-menu-->
+
+<!--TODO replace by carousel->
+<div th:each="card : ${allCards}">
+	<table>
+		<tr>
+			<td th:text="${card.foreignWord}">foreign</td>
+		</tr>
+		<tr>
+			<td th:text="${card.translateWord}">translate</td>
+		</tr>
+	</table>
+</div>
+
+</body>
+</html>
