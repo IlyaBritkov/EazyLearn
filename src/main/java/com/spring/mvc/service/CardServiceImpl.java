@@ -14,7 +14,7 @@ import java.util.List;
 public class CardServiceImpl implements CardService {
     private final CardDAO cardDAO;
 
-    // TODO: replace it by Spring Securi2ty Service
+    // TODO: replace it by Spring Security Service
     private final Long userId = null;
 
     @Autowired
@@ -36,7 +36,15 @@ public class CardServiceImpl implements CardService {
                 return cardDAO.getAllCards(userId, categoryId);
             case RECENT:
                 allCardsList = cardDAO.getAllCards(userId, null);
-                // TODO: add sorting by data adding
+                allCardsList.sort((o1, o2) -> {
+                    if (o1.getTimeAddition() < o2.getTimeAddition()) {
+                        return 1;
+                    } else if (o1.getTimeAddition() > o2.getTimeAddition()) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                });
                 return allCardsList;
             default:
                 return null;

@@ -8,5 +8,7 @@ create table cards
     proficiency_level double precision,
     category_id       bigint,
     user_id           bigint
+
+-- TODO add all fields from CardEntity
 );
 

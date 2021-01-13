@@ -52,9 +52,11 @@ public class CardController {
     }
 
     @PostMapping()
-    public String createCard(@ModelAttribute("card") CardEntity card) {
+    public String createCard(@RequestParam(value = "tab", required = false) String tab,
+                             @ModelAttribute("card") CardEntity card) {
         cardService.createCard(card);
-        return "redirect:/cards";
+
+        return redirectPageByTab(tab);
     }
 
     // TODO replace by popup form
@@ -65,17 +67,36 @@ public class CardController {
     }
 
     @PatchMapping("/{id}")
-    public String updateCard(@ModelAttribute("card") CardEntity card) {
+    public String updateCard(@RequestParam(value = "tab", required = false) String tab,
+                             @ModelAttribute("card") CardEntity card) {
         cardService.updateCard(card);
 
-        return "redirect:/cards";
+        return redirectPageByTab(tab);
     }
 
     @DeleteMapping("/{id}")
-    public String deleteCardById(@PathVariable("id") Long cardId) {
+    public String deleteCardById(@RequestParam(value = "tab", required = false) String tab,
+                                 @PathVariable("id") Long cardId) {
         cardService.deleteCardById(cardId);
-        return "redirect:/cards";
+
+        return redirectPageByTab(tab);
+//        return "redirect:/cards";
     }
 
+    private String redirectPageByTab(String tab) {
+        if (tab == null) {
+            tab = "home";
+        }
 
+        TabsEnum tabType = TabsEnum.valueOf(tab.toUpperCase());
+        switch (tabType) {
+            case CATEGORY:
+                // TODO fix it
+                return "redirect:/cards?tab=category&categoryId=??????????";
+            case RECENT:
+                return "redirect:/cards?tab=recent";
+            default:
+                return "redirect:/cards";
+        }
+    }
 }

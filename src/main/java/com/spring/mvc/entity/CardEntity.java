@@ -3,6 +3,7 @@ package com.spring.mvc.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Calendar;
 
 @Entity
 @Table(name = "cards")
@@ -31,7 +32,10 @@ public class CardEntity {
     @NonNull
     private double proficiencyLevel;
 
-    // TODO: add date addition field
+    @Column(name = "time_addition")
+//    private final LocalDate dateAddition = LocalDate.now();s
+//    private final Calendar dateAddition = Calendar.getInstance();
+    private final Long timeAddition = Calendar.getInstance().getTimeInMillis();
 
     // TODO: add relation manyToOne, @ToString.Exclude
     @Column(name = "user_id")
