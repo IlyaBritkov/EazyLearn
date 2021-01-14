@@ -8,3 +8,4 @@
 /httpRequests/
 /target
 *.iml
+src/main/webapp/node_modules
