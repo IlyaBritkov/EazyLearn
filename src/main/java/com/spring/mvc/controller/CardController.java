@@ -36,6 +36,8 @@ public class CardController {
             return "redirect:/login";
         }
 
+        // TODO get Category for display its name in view
+//        model.addAttribute("categoryId", categoryService.getCategoryById(categoryId));
         model.addAttribute("allCards", cardService.getAllCards(tab, categoryId));
 
         TabsEnum tabType = TabsEnum.valueOf(tab.toUpperCase());
@@ -43,7 +45,12 @@ public class CardController {
             case HOME:
                 return "home";
             case CATEGORY:
-                return "category";
+                if (categoryId == null) {
+                    // TODO add redirect to categories page
+                    return "redirect:/category";
+                } else {
+                    return "category_page";
+                }
             case RECENT:
                 return "recent";
             default:
@@ -80,7 +87,6 @@ public class CardController {
         cardService.deleteCardById(cardId);
 
         return redirectPageByTab(tab);
-//        return "redirect:/cards";
     }
 
     private String redirectPageByTab(String tab) {

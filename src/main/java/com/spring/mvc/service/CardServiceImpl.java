@@ -15,7 +15,7 @@ public class CardServiceImpl implements CardService {
     private final CardDAO cardDAO;
 
     // TODO: replace it by Spring Security Service
-    private final Long userId = null;
+    private final Long userId = 1L;
 
     @Autowired
     public CardServiceImpl(CardDAO cardDAO) {
@@ -36,15 +36,7 @@ public class CardServiceImpl implements CardService {
                 return cardDAO.getAllCards(userId, categoryId);
             case RECENT:
                 allCardsList = cardDAO.getAllCards(userId, null);
-                allCardsList.sort((o1, o2) -> {
-                    if (o1.getTimeAddition() < o2.getTimeAddition()) {
-                        return 1;
-                    } else if (o1.getTimeAddition() > o2.getTimeAddition()) {
-                        return -1;
-                    } else {
-                        return 0;
-                    }
-                });
+                allCardsList.sort((o1, o2) -> o2.getTimeAddition().compareTo(o1.getTimeAddition()));
                 return allCardsList;
             default:
                 return null;
@@ -54,6 +46,7 @@ public class CardServiceImpl implements CardService {
     @Override
     @Transactional
     public void createCard(CardEntity card) {
+        card.setUserId(userId);
         cardDAO.createCard(userId, card);
     }
 

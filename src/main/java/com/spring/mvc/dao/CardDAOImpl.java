@@ -26,18 +26,22 @@ public class CardDAOImpl implements CardDAO {
     public List<CardEntity> getAllCards(Long userId, Long categoryId) {
         Session session = sessionFactory.getCurrentSession();
 
-
+        // TODO: replace userId=null by real userId
         if (categoryId == null) {
-            return session.createQuery("FROM CardEntity WHERE userId=null", CardEntity.class).getResultList();
+            Query<CardEntity> query = session.createQuery("FROM CardEntity WHERE userId=:userId", CardEntity.class);
+            query.setParameter("userId", userId);
+            return query.list();
         } else {
-            return session.createQuery("FROM CardEntity WHERE userId = userId AND categoryId = categoryId").getResultList();
+            Query<CardEntity> query = session.createQuery("FROM CardEntity WHERE userId= :userId AND categoryId = :categoryId");
+            query.setParameter("userId", userId);
+            query.setParameter("categoryId", categoryId);
+            return query.getResultList();
         }
     }
 
     @Override
     public void createCard(Long userId, CardEntity card) {
         Session session = sessionFactory.getCurrentSession();
-
         session.save(card);
     }
 

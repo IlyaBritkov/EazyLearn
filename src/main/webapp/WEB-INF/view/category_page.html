@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>EazyLearn</title>
+</head>
+<body>
+<!--TODO add header-menu-->
+
+<h1>Category: category name</h1>
+
+<!--TODO replace by carousel-->
+<div th:each="card : ${allCards}">
+	<table>
+		<tr>
+			<td th:text="${card.foreignWord}">foreign</td>
+		</tr>
+		<tr>
+			<td th:text="${card.translateWord}">translate</td>
+		</tr>
+		<tr>
+			<td>
+				<a th:href="@{/cards/{id}/edit(id=${card.getId()})}">Edit</a>
+			</td>
+		</tr>
+		
+		<!--		<tr>-->
+		<!--			<td>-->
+		<!--				<form th:method="DELETE" th:action="@{/cards/{id}(id=${card.getId()},tab=${'category'})}">-->
+		<!--					<input type="submit" value="Delete!"/>-->
+		<!--				</form>-->
+		<!--			</td>-->
+		<!--		</tr>-->
+	
+	
+	</table>
+	<br>
+</div>
+
+<!--TODO replace by popup-window form-->
+<br><br>
+<form th:method="POST" th:action="@{/cards(tab=${'category'})}" th:object="${card}">
+	<input type="text" id="foreign" required placeholder="Foreign" th:field="*{foreignWord}">
+	
+	<br>
+	
+	<input type="text" id="translate" required placeholder="Translate" th:field="*{translateWord}">
+	
+	<br>
+	
+	<input type="text" id="proficiency" placeholder="Proficiency" th:field="*{proficiencyLevel}">
+	
+	<br><br>
+	<input type="submit" value="Create!">
+</form>
+
+</body>
+</html>
