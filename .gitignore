@@ -9,3 +9,5 @@
 /target
 *.iml
 src/main/webapp/node_modules
+src/main/webapp/resources/img
+src/main/webapp/resources/icons

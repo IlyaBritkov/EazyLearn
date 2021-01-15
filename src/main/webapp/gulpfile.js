@@ -13,25 +13,24 @@ gulp.task('server', function() {
         }
     });
 
-
     gulp.watch("WEB-INF/*.html").on('change', browserSync.reload);
 });
 
 gulp.task('styles', function() {
-    return gulp.src("WEB-INF/resourses/sass/**/*.+(scss|sass)")
+    return gulp.src("resources/sass/**/*.+(scss|sass)")
         .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
         .pipe(rename({
-            suffix: '.min',
-            prefix: ''
+            prefix: '',
+            suffix: '.min'
         }))
         .pipe(autoprefixer())
         .pipe(cleanCSS({compatibility: 'ie8'}))
-        .pipe(gulp.dest("WEB-INF/resourses/css"))
+        .pipe(gulp.dest("resources/css"))
         .pipe(browserSync.stream());
 });
 
 gulp.task('watch', function() {
-    gulp.watch("WEB-INF/resourses/sass/*.+(scss|sass)", gulp.parallel('styles'));
+    gulp.watch("resources/sass/*.+(scss|sass)", gulp.parallel('styles'));
     // gulp.watch("WEB-INF/view/**/*.html").on("change", browserSync.reload);
 })
 
