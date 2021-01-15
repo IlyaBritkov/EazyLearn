@@ -3,7 +3,7 @@ $(document).ready(function(){
         dots: false,
         infinite: false,
         speed: 350,
-        slidesToShow: 5,
+        slidesToShow: 4,
         slidesToScroll: 1,
         prevArrow: '<button type="button" class="slick-prev"><img src="resources/icons/prev.png" alt="arrow previous"></button>',
         nextArrow: '<button type="button" class="slick-next"><img src="resources/icons/next.png" alt="arrow next"></button>',
