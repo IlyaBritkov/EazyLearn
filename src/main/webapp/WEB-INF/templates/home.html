@@ -10,110 +10,171 @@
 	<!-- Favicon -->
 	<!-- TODO add favicon -->
 	<!-- <link rel="shortcut icon" href="/../webapp/WEB-INF/resourses/img/??" type="image/x-icon"> -->
-
+	
 	<!-- Bootstrap CSS-->
 	<link rel="stylesheet" th:href="@{https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css}"
-		integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-
+	      integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+	
 	<!-- Slick CSS-->
 	<link th:href="@{/resources/css/slick.css}" rel="stylesheet" type="text/css">
-	<link th:href="@{slick/slick-theme.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{slick/slick-theme.css}" rel="stylesheet" type="text/css"/>
+	
 	<!-- My CSS-->
 	<link th:href="@{/resources/css/home_style.min.css}" rel="stylesheet" type="text/css">
-
 </head>
 
 <body>
-	<header class="promo">
-		<nav>
-			<ul class="menu">
-				<li class="menu_item"><a th:href="@{/cards}" class="menu_link">HOME</a></li>
-				<li class="menu_item"><a th:href="@{/categories}" class="menu_link">CATEGORY</a></li>
-				<li class="menu_item"><a th:href="@{/cards(tab=${'recent'})}" class="menu_link">RECENT</a></li>
-				<li class="menu_item"><a th:href="@{/profile}" class="menu_link">PROFILE</a></li>
-			</ul>
-		</nav>
-	</header>
+<header class="promo">
+	<nav>
+		<ul class="menu">
+			<li class="menu_item"><a th:href="@{/cards}" class="menu_link">HOME</a></li>
+			<li class="menu_item"><a th:href="@{/categories}" class="menu_link">CATEGORY</a></li>
+			<li class="menu_item"><a th:href="@{/cards(tab=${'recent'})}" class="menu_link">RECENT</a></li>
+			<li class="menu_item"><a th:href="@{/profile}" class="menu_link">PROFILE</a></li>
+		</ul>
+	</nav>
+</header>
 
+<!-- Button trigger modal -->
+<!--Add new card-->
+<button type="button" class="btn btn-primary btn-add" data-toggle="modal" data-target="#addNewCard">
+		<img th:src="@{/resources/icons/plus.png}" alt="add new card">
+</button>
 
-	<section class="carousel">
-		<div class="container">
-			<div class="carousel__inner">
-				<th:block th:each="card : ${allCards}">
-					<div class="carousel__item">
-						<div class="card" style="width: 18rem;">
-							<div class="card-body">
-								<h5 class="card-title" th:text="${card.foreignWord}">Foreign</h5>
-								<p class="card-text" th:text="${card.translateWord}">Translate</p>
-								<a class="card-link" th:href="@{/cards/{id}/edit(id=${card.getId()})}">Edit</a>
-							</div>
-						</div>
-
-<!--						<table>-->
-<!--							<tr>-->
-<!--								<td th:text="${card.foreignWord}">foreign</td>-->
-<!--							</tr>-->
-<!--							<tr>-->
-<!--								<td th:text="${card.translateWord}">translate</td>-->
-<!--							</tr>-->
-<!--							<tr>-->
-<!--								<td>-->
-<!--									<a th:href="@{/cards/{id}/edit(id=${card.getId()})}">Edit</a>-->
-<!--								</td>-->
-<!--							</tr>-->
-<!--							<tr>-->
-<!--								<td>-->
-<!--									<form th:method="DELETE" th:action="@{/cards/{id}(id=${card.getId()})}">-->
-<!--										<input type="submit" value="Delete!" />-->
-<!--									</form>-->
-<!--								</td>-->
-<!--							</tr>-->
-<!--						</table>-->
-					
-					</div>
-				</th:block>
+<!-- Modal -->
+<div class="modal fade" id="addNewCard" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">Add new card</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
 			</div>
+			
+			<form th:method="POST" th:action="@{/cards}" th:object="${card}">
+			<div class="modal-body">
+				<div class="form-group">
+					<input type="text" class="form-control" id="foreign" required placeholder="Foreign word" th:field="*{foreignWord}">
+					<small id="foreignHelp" class="form-text text-muted"> Enter a word you want to learn.</small>
+				</div>
+				<div class="form-group">
+					<input type="text" class="form-control" id="translate" required placeholder="Translate" th:field="*{translateWord}">
+					<small id="translateHelp" class="form-text text-muted"> Enter translation of the word.</small>
+				</div>
+				
+				<div class="form-group">
+					<input type="text" class="form-control" id="proficiency" placeholder="Proficiency" th:field="*{proficiencyLevel}">
+					<small id="translateHelp" class="form-text text-muted"> Choose how you feel you know this word.</small>
+				</div>
+				
+				<!-- TODO: fix category-->
+				<div class="form-group">
+					<input type="text" class="form-control" id="categoryName" placeholder="Category">
+					<small id="translateHelp" class="form-text text-muted">Select or enter category in that the new card will appear.</small>
+				</div>
+			</div>
+			
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="submit" class="btn btn-primary">Add card</button>
+			</div>
+			</form>
+			
 		</div>
-	</section>
+	</div>
+</div>
 
-	<!--TODO replace by popup-window form-->
-	<br><br>
-	<form th:method="POST" th:action="@{/cards}" th:object="${card}">
-		<input type="text" id="foreign" required placeholder="Foreign" th:field="*{foreignWord}">
 
-		<br>
+<section class="carousel">
+	<div class="container">
+		<div class="carousel__inner">
+			<th:block th:each="card : ${allCards}">
+				<div class="carousel__item">
+					<div class="card" style="width: 18rem;">
+						<div class="card-body">
+							<h5 class="card-title" th:text="${card.foreignWord}">Foreign</h5>
+							<p class="card-text" th:text="${card.translateWord}">Translate</p>
+							<a class="card-link" th:href="@{/cards/{id}/edit(id=${card.getId()})}">Edit</a>
+							
+							<!--						todo fix it-->
+							<!-- Button trigger modal -->
+							<!--							<button type="button" class="btn btn-primary btn-edit" data-toggle="modal"-->
+							<!--							        data-target="#editCard">-->
+							<!--								Edit-->
+							<!--							</button>-->
+						</div>
+					</div>
+				</div>
+			</th:block>
+		</div>
+		
+		
+		<!-- todo fix it-->
+		<!-- Modal -->
+		<!--		<div class="modal fade" id="editCard" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"-->
+		<!--		     aria-hidden="true">-->
+		<!--			<div class="modal-dialog modal-dialog-centered" role="document">-->
+		<!--				<div class="modal-content">-->
+		<!--					<div class="modal-header">-->
+		<!--						<h5 class="modal-title" id="exampleModalLongTitle">Edit card</h5>-->
+		<!--						<button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+		<!--							<span aria-hidden="true">&times;</span>-->
+		<!--						</button>-->
+		<!--					</div>-->
+		<!--					<div class="modal-body">-->
+		<!--						<form th:method="PATCH" th:action="@{/cards/{id}(id=${card.getId()})}" th:object="${card}">-->
+		<!--							<input type="text" id="foreign" th:field="*{foreignWord}">-->
+		<!--							-->
+		<!--							<br>-->
+		<!--							-->
+		<!--							<input type="text" id="translate" required placeholder="Translate"-->
+		<!--							       th:field="*{translateWord}">-->
+		<!--							-->
+		<!--							<br>-->
+		<!--							-->
+		<!--							<input type="text" id="proficiency" placeholder="Proficiency"-->
+		<!--							       th:field="*{proficiencyLevel}">-->
+		<!--							-->
+		<!--							<br><br>-->
+		<!--							&lt;!&ndash; <input type="submit" value="Update!">&ndash;&gt;-->
+		<!--							<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+		<!--							<button type="submit" class="btn btn-primary">Save changes</button>-->
+		<!--						</form>-->
+		<!--					</div>-->
+		<!--					-->
+		<!--					&lt;!&ndash;						<div class="modal-footer">&ndash;&gt;-->
+		<!--					&lt;!&ndash;							<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>&ndash;&gt;-->
+		<!--					&lt;!&ndash;							<button type="button" class="btn btn-primary">Save changes</button>&ndash;&gt;-->
+		<!--					&lt;!&ndash;						</div>&ndash;&gt;-->
+		<!--				</div>-->
+		<!--			</div>-->
+		<!--		</div>-->
+	
+	</div>
+</section>
 
-		<input type="text" id="translate" required placeholder="Translate" th:field="*{translateWord}">
+<!-- Bootstrap -->
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script th:src="@{https://code.jquery.com/jquery-3.2.1.slim.min.js}"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js}"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script th:src="@{https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js}"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
 
-		<br>
+<!-- Slick-->
+<script th:src="@{//code.jquery.com/jquery-1.11.0.min.js}" type="text/javascript"></script>
+<script th:src="@{//code.jquery.com/jquery-migrate-1.2.1.min.js}" type="text/javascript"></script>
+<script th:src="@{//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js}" type="text/javascript"></script>
+<script th:src="@{/resources/js/slick.min.js}" type="text/javascript"></script>
 
-		<input type="text" id="proficiency" placeholder="Proficiency" th:field="*{proficiencyLevel}">
-
-		<br><br>
-		<input type="submit" value="Create!">
-	</form>
-
-	<!-- Bootstrap -->
-	<!-- Optional JavaScript -->
-	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-	<script th:src="@{https://code.jquery.com/jquery-3.2.1.slim.min.js}"
-		integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-		crossorigin="anonymous"></script>
-	<script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js}"
-		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-		crossorigin="anonymous"></script>
-	<script th:src="@{https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js}"
-		integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-		crossorigin="anonymous"></script>
-
-	<!-- Slick-->
-	<script th:src="@{//code.jquery.com/jquery-1.11.0.min.js}" type="text/javascript"></script>
-	<script th:src="@{//code.jquery.com/jquery-migrate-1.2.1.min.js}" type="text/javascript"></script>
-	<script th:src="@{//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js}" type="text/javascript"></script>
-	<script th:src="@{/resources/js/slick.min.js}" type="text/javascript"></script>
-
-	<!-- My script-->
-	<script th:src="@{/resources/js/script.js}" type="text/javascript"></script>
+<!-- My script-->
+<script th:src="@{/resources/js/script.js}" type="text/javascript"></script>
 
 </body>
 

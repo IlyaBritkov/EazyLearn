@@ -14,12 +14,60 @@
     .card{
         border-color: $red-color;
         border-radius: 90;
+        &:active{
+            text-decoration: none;
+            outline: none;
+            border: none;
+        }
+        &:checked{
+            text-decoration: none;
+            outline: none;
+            border: none;
+        }
+        &:target{
+            text-decoration: none;
+            outline: none;
+            border: none;
+        }
+        &:focus{
+            text-decoration: none;
+            outline: none;
+            border: none;
+        }
+    
+        &-body{
+            &:active{
+                text-decoration: none;
+                outline: none;
+                border: none;
+            }
+            &:checked{
+                text-decoration: none;
+                outline: none;
+                border: none;
+            }
+            &:target{
+                text-decoration: none;
+                outline: none;
+                border: none;
+            }
+            &:focus{
+                text-decoration: none;
+                outline: none;
+                border: none;
+            }
+        }
         &-title {
             text-align: center;
         }
         &-text{
             text-align: center;
         }
+    }
+    .btn-edit{
+        border-color: white;
+        color: $blue-color;
+        background-color: white;
     }
     .slick-prev, .slick-next{
         position: absolute;

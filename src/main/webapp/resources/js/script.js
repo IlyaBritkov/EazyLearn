@@ -1,3 +1,4 @@
+// Slick-slider
 $(document).ready(function(){
     $('.carousel__inner').slick({
         dots: false,
@@ -37,3 +38,8 @@ $(document).ready(function(){
         ]
     });
 });
+
+// bootstrap modal window
+$('#myModal').on('shown.bs.modal', function () {
+    $('#myInput').trigger('focus')
+})

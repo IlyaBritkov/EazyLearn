@@ -22,6 +22,10 @@
 	
 	<br><br>
 	<input type="submit" value="Update!">
+	
+	<form th:method="DELETE" th:action="@{/cards/{id}(id=${card.getId()})}">
+		<input type="submit" value="Delete!"/>
+	</form>
 </form>
 
 </body>
