@@ -1,17 +1,20 @@
 package eazy.learn.service;
 
-import eazy.learn.dto.CardDto;
+import eazy.learn.dto.request.CardCreateRequestDTO;
+import eazy.learn.dto.response.CardResponseDTO;
+import eazy.learn.exception.CategoryDoesNotExistException;
+import eazy.learn.exception.TabDoesNotExistException;
 
 import java.util.List;
 
 public interface CardService {
-    List<CardDto> findAllCardsByTabAndCategoryId(String tab, Long categoryId);
+    List<CardResponseDTO> findAllCardsByTabAndCategoryId(String tab, Long categoryId) throws TabDoesNotExistException, CategoryDoesNotExistException;
 
-    void createCard(CardDto card);
+    CardResponseDTO createCard(CardCreateRequestDTO cardCreateRequestDTO);
 
-    CardDto findCardById(Long cardId);
+    CardResponseDTO findCardById(Long cardId);
 
-    CardDto updateCard(CardDto card);
+    CardResponseDTO updateCard(CardResponseDTO card);
 
     void deleteCardById(Long cardId);
 }

@@ -1,10 +1,15 @@
 package eazy.learn.controller;
 
-import eazy.learn.dto.CardDto;
+import eazy.learn.dto.request.CardCreateRequestDTO;
+import eazy.learn.dto.response.CardResponseDTO;
 import eazy.learn.enums.TabType;
+import eazy.learn.exception.CategoryDoesNotExistException;
+import eazy.learn.exception.TabDoesNotExistException;
 import eazy.learn.service.CardService;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,73 +17,40 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.OK;
+
 @Slf4j
+@AllArgsConstructor(onConstructor_ = @Autowired)
 
 @RestController
 @RequestMapping("/cards")
 public class CardController {
     private final CardService cardService;
 
-    @Autowired
-    public CardController(CardService cardService) {
-        this.cardService = cardService;
-    }
-
-
+    // todo add global exception handling
     @GetMapping()
-    public String findAllByFilter(@RequestParam(value = "tab", required = false) String tab,
-                                  @RequestParam(value = "categoryId", required = false) Long categoryId,
-                                  Model model, @ModelAttribute("card") CardDto card) {
-        // if not existing tab param
-        if (tab == null) {
-            tab = "home";
-        }
-        String finalTab = tab;
-        if (Arrays.stream(TabType.values()).noneMatch(TabType -> TabType.toString().equalsIgnoreCase(finalTab)) && !tab.equalsIgnoreCase(TabType.HOME.toString())) {
-            // TODO: add redirect to login page
-            return "redirect:/login";
-        }
+    public ResponseEntity<List<CardResponseDTO>> findAllCardsByTabAndCategoryId(@RequestParam(value = "tab", required = false) String tab,
+                                                                                @RequestParam(value = "categoryId", required = false) Long categoryId) throws TabDoesNotExistException, CategoryDoesNotExistException {
 
-
-        List<CardDto> allCards = cardService.findAllCardsByTabAndCategoryId(tab, categoryId);
+        List<CardResponseDTO> allCards = cardService.findAllCardsByTabAndCategoryId(tab, categoryId);
         log.debug("tab = {}, categoryId = {}, allCards = {}", tab, categoryId, allCards);
-        System.out.println(allCards); // todo
-        model.addAttribute("allCards", allCards);
-
-        TabType tabType = TabType.valueOf(tab.toUpperCase());
-        switch (tabType) {
-            case HOME:
-                return "home";
-            case CATEGORY:
-                if (categoryId == null) {
-                    // TODO add redirect to categories page
-                    return "redirect:/category";
-                } else {
-                    // TODO get Category for display its name in view
-//                    model.addAttribute("category", categoryService.getCategoryById(categoryId));
-                    return "category_page";
-                }
-            case RECENT:
-                return "recent";
-            default:
-                return "redirect:/cards";
-        }
+        return new ResponseEntity<>(allCards, OK);
     }
 
     @PostMapping()
-    public String createCard(@RequestParam(value = "tab", required = false) String tab,
-                             @ModelAttribute("card") CardDto card) {
-        log.debug("Created card = {}", card);
-        cardService.createCard(card);
+    public ResponseEntity<CardResponseDTO> createCard(@RequestParam(value = "tab", required = false) String tab,
+                                                      @RequestBody CardCreateRequestDTO cardCreateRequestDTO) {
+        log.trace("CardCreateRequestDTO = {}", cardCreateRequestDTO);
+        CardResponseDTO cardResponseDTO = cardService.createCard(cardCreateRequestDTO);
 
-        return redirectPageByTab(tab);
+        return new ResponseEntity<>(cardResponseDTO, OK);
     }
 
     // TODO remove and replace by popup form
@@ -90,7 +62,7 @@ public class CardController {
 
     @PatchMapping("/{id}")
     public String updateCard(@RequestParam(value = "tab", required = false) String tab,
-                             @ModelAttribute("card") CardDto card) {
+                             @ModelAttribute("card") CardResponseDTO card) {
         log.debug("Updated card = {}", card);
         cardService.updateCard(card);
 

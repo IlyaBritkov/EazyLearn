@@ -1,41 +1,31 @@
-package eazy.learn.dto;
+package eazy.learn.dto.response;
 
+import eazy.learn.dto.BaseCardDTO;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import org.jetbrains.annotations.Nullable;
 
 import javax.validation.constraints.Size;
 
 @NoArgsConstructor
-@RequiredArgsConstructor
 @AllArgsConstructor
 
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Getter
-@Setter
-@ToString
-public class CardDto {
-    @NonNull
+@Data
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
+public class CardResponseDTO extends BaseCardDTO {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @NonNull
     @Size(max = 50)
     private String foreignWord;
 
-    @NonNull
     @Size(max = 50)
     private String translateWord;
 
-    @NonNull
     private Double proficiencyLevel;
 
-    private Long userId;
-
+    @Nullable
     private Long categoryId;
 }
