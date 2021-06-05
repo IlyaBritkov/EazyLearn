@@ -11,12 +11,14 @@ CREATE TABLE IF NOT EXISTS users
 (
     id       bigint GENERATED ALWAYS AS IDENTITY,
     nickname varchar(35) NOT NULL,
-    login    varchar(35) NOT NULL,
+    email    varchar(45) NOT NULL,
     password varchar NOT NULL,
+    status varchar(30),
     role_id  integer,
 
     CONSTRAINT users_id_pk PRIMARY KEY (id),
-    CONSTRAINT role_id_fk FOREIGN KEY (role_id) REFERENCES role (id)
+    CONSTRAINT role_id_fk FOREIGN KEY (role_id) REFERENCES role (id),
+    CONSTRAINT email_unique UNIQUE(email)
     )
 ;
 

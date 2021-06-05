@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,10 +30,9 @@ import static java.util.stream.Collectors.toList;
 @Service
 public class CardServiceImpl implements CardService {
     private final CardRepository cardRepository;
-
     private final CategoryService categoryService;
-
     private final CardMapper cardMapper;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     // TODO: replace it by Spring Security Service
     private final Long userId = 1L;

@@ -1,36 +1,23 @@
 package eazy.learn.entity;
 
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.util.Calendar;
 
+@NoArgsConstructor
+@Data
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
+
 @Entity
 @Table(name = "card")
-@NoArgsConstructor
-@RequiredArgsConstructor
-@Getter
-@Setter
-@ToString
-public class Card {
-    // TODO add validation
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
+public class Card extends BaseEntity{ // TODO add validation
     @Column(name = "foreign_word")
     @NonNull
     @Size(max = 50) // todo add validation variables to property files
@@ -45,6 +32,7 @@ public class Card {
     @NonNull
     private Double proficiencyLevel;
 
+//    @CreatedDate // // TODO: 6/3/2021  
     @Column(name = "time_addition")
     private final Long timeAddition = Calendar.getInstance().getTimeInMillis();
 
