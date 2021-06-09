@@ -1,5 +1,7 @@
 package com.eazylearn.service;
 
 public interface CategoryService {
-    boolean existsByCategoryId(Long categoryId);
+    boolean existsById(Long categoryId);
+
+    boolean existsByIdAndUserId(Long categoryId, Long userId);
 }

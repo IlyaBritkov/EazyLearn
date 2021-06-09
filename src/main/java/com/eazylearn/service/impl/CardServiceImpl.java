@@ -13,6 +13,7 @@ import com.eazylearn.service.CardService;
 import com.eazylearn.service.CategoryService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.lang.Double.compare;
 import static java.util.Comparator.comparingDouble;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.context.annotation.ScopedProxyMode.INTERFACES;
@@ -51,39 +53,35 @@ public class CardServiceImpl implements CardService {
             tab = "HOME";
         }
 
-        final String finalTab = tab;
-        if (Arrays.stream(TabType.values())
-                .noneMatch(tabType -> tabType.toString()
-                        .equalsIgnoreCase(finalTab))) {
-            throw new EntityDoesNotExistException(String.format("Tab with name:%s doesn't exist", tab));
-        }
+        checkTabExistenceByTabName(tab);
 
         TabType tabType = TabType.valueOf(tab.toUpperCase());
-        log.trace("TabType = {}", tabType);
+        log.trace("tabType = {}", tabType);
+
+        checkCategoryExistenceById(categoryId);
+        log.trace("categoryId = {}", categoryId);
+
+
 
         List<CardResponseDTO> allCardsList = null;
         switch (tabType) {
             case HOME:
-                allCardsList = cardRepository.findAllByUserIdAndCategoryId(currentUserId, null)
+                allCardsList = cardRepository.findAllByUserId(currentUserId)
                         .stream()
                         .sorted(comparingDouble(Card::getProficiencyLevel))
                         .map(cardMapper::toResponseDTO)
                         .collect(toList());
                 break;
             case CATEGORY:
-                if ((categoryId == null || categoryId < 0) &&
-                        !categoryService.existsByCategoryId(categoryId)) {
-                    throw new CategoryDoesNotExistException(String.format("Category with id:%d doesn't exist", categoryId));
-                }
                 allCardsList = cardRepository.findAllByUserIdAndCategoryId(currentUserId, categoryId)
                         .stream()
                         .map(cardMapper::toResponseDTO)
                         .collect(toList());
                 break;
             case RECENT:
-                allCardsList = cardRepository.findAllByUserIdAndCategoryId(currentUserId, null)
+                allCardsList = cardRepository.findAllByUserId(currentUserId)
                         .stream()
-                        .sorted((card1, card2) -> card2.getTimeAddition().compareTo(card1.getTimeAddition()))
+                        .sorted((card1, card2) -> compare(card2.getTimeAddition(), card1.getTimeAddition()))
                         .map(cardMapper::toResponseDTO)
                         .collect(toList());
                 break;
@@ -138,5 +136,23 @@ public class CardServiceImpl implements CardService {
     @Override
     public void deleteCardById(Long cardId) {
 
+    }
+
+    protected void checkTabExistenceByTabName(@NotNull String tab) throws EntityDoesNotExistException {
+        final String finalTab = tab;
+        if (Arrays.stream(TabType.values())
+                .noneMatch(tabType -> tabType.toString()
+                        .equalsIgnoreCase(finalTab))) {
+            throw new EntityDoesNotExistException(String.format("Tab with name:%s doesn't exist", tab));
+        }
+    }
+
+    protected void checkCategoryExistenceById(@Nullable Long categoryId) throws EntityDoesNotExistException {
+        if (categoryId != null) {
+            boolean isCategoryExists = categoryService.existsByIdAndUserId(categoryId, currentUserId);
+            if (!isCategoryExists) {
+                throw new EntityDoesNotExistException(String.format("Category with id:%d doesn't exist", categoryId));
+            }
+        }
     }
 }

@@ -37,8 +37,8 @@ import static java.util.stream.Collectors.toList;
 public class JwtTokenProvider {
     @Value("${jwt.token.secret}")
     private String secret;
-    @Value("${jwt.token.expired}")
-    private long validityInSeconds;
+//    @Value("${jwt.token.expired}") uncomment after tests
+    private long validityInSeconds = 86400;
 
     private final UserDetailsService userDetailsService;
 
