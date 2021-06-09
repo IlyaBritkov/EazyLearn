@@ -1,6 +1,7 @@
 package com.eazylearn.service.impl;
 
 import com.eazylearn.dto.request.CardCreateRequestDTO;
+import com.eazylearn.dto.request.CardUpdateRequestDTO;
 import com.eazylearn.dto.response.CardResponseDTO;
 import com.eazylearn.entity.Card;
 import com.eazylearn.enums.TabType;
@@ -29,6 +30,7 @@ import static java.lang.Double.compare;
 import static java.util.Comparator.comparingDouble;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.context.annotation.ScopedProxyMode.INTERFACES;
+import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.web.context.WebApplicationContext.SCOPE_SESSION;
 
 @Slf4j
@@ -91,6 +93,15 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public CardResponseDTO findCardById(@NotNull Long cardId) throws EntityDoesNotExistException {
+        Optional<Card> optionalCard = cardRepository.findByIdAndUserId(cardId, currentUserId);
+        Card card = optionalCard.
+                orElseThrow(() -> new EntityDoesNotExistException(String.format("Card with id=%d doesn't exist", cardId)));
+        return cardMapper.toResponseDTO(card);
+    }
+
+    @Override
     @Transactional
     public CardResponseDTO createCard(CardCreateRequestDTO cardCreateRequestDTO) throws EntityDoesNotExistException {
         Long categoryId = cardCreateRequestDTO.getCategoryId();
@@ -103,37 +114,34 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public CardResponseDTO findCardById(@NotNull Long cardId) throws EntityDoesNotExistException {
-        Optional<Card> optionalCard = cardRepository.findByIdAndUserId(cardId, currentUserId);
-        Card card = optionalCard.
-                orElseThrow(() -> new EntityDoesNotExistException(String.format("Card with id=%d doesn't exist", cardId)));
-        return cardMapper.toResponseDTO(card);
-    }
+    @Transactional(isolation = SERIALIZABLE)
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    public CardResponseDTO updateCardById(Long cardId, CardUpdateRequestDTO updateDto) throws EntityDoesNotExistException {
+        checkCardExistenceById(cardId);
 
-//    @Override
-//    @Transactional
-//    public CardResponseDTO updateCard(@NotNull CardResponseDTO cardDto) {
-//        Card card = cardMapper.toEntity(cardDto);
-//        return cardMapper.toDto(cardRepository.save(card));
-//    }
-//
-//    @Override
-//    @Transactional
-//    public void deleteCardById(@NotNull Long cardId) {
-//        log.debug("Deleted cardDto's id = {}", cardId);
-//        cardRepository.deleteById(cardId);
-//    }
+        Card updatedCard = cardRepository.findByIdAndUserId(cardId, currentUserId).get();
 
-    @Override
-    public CardResponseDTO updateCard(CardResponseDTO card) {
-        return null;
+        cardMapper.updateEntity(updateDto, updatedCard);
+
+        return cardMapper.toResponseDTO(updatedCard);
     }
 
     @Override
     public void deleteCardById(Long cardId) {
 
     }
+
+//    @Override
+//    @Transactional
+//    public void deleteCardById(@NotNull Long cardId) {
+//        log.debug("Deleted cardDto's id = {}", cardId);
+//        cardRepository.deleteById(cardId);
+//    }
+//
+//    @Override
+//    public void deleteCardById(Long cardId) {
+//
+//    }
 
     protected void checkTabExistenceByTabName(@NotNull String tab) throws EntityDoesNotExistException {
         final String finalTab = tab;
@@ -150,6 +158,13 @@ public class CardServiceImpl implements CardService {
             if (!isCategoryExists) {
                 throw new EntityDoesNotExistException(String.format("Category with id:%d doesn't exist", categoryId));
             }
+        }
+    }
+
+    protected void checkCardExistenceById(@Nullable Long cardId) throws EntityDoesNotExistException {
+        boolean isCardExists = cardRepository.existsByIdAndUserId(cardId, currentUserId);
+        if (!isCardExists) {
+            throw new EntityDoesNotExistException(String.format("Card with id:%d doesn't exist", cardId));
         }
     }
 }

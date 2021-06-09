@@ -17,7 +17,7 @@ import java.util.Calendar;
 
 @Entity
 @Table(name = "card")
-public class Card extends BaseEntity{ // TODO add validation
+public class Card extends BaseEntity { // TODO add validation
     @Column(name = "foreign_word")
     @Size(max = 50) // todo add validation variables to property files
     private String foreignWord;
@@ -29,23 +29,21 @@ public class Card extends BaseEntity{ // TODO add validation
     @Column(name = "proficiency_level")
     private Double proficiencyLevel;
 
-//    @CreatedDate // // TODO: 6/3/2021  
+    //    @CreatedDate // // TODO: 6/3/2021
     @Column(name = "time_addition")
     private final Long timeAddition = Calendar.getInstance().getTimeInMillis();
 
-    //    @Column(name = "user_id")
-//    @ManyToOne()
-    private Long userId; // todo
+    @Column(name = "user_id")
+//    @ManyToOne // todo
+    private Long userId;
 
     // TODO: add relation ManyToMany, @ToString.Exclude
     @Column(name = "category_id")
     private Long categoryId;
 
 
-
-
     // TODO replace by lombok annotation
-    public Card(@NonNull String foreignWord, @NonNull String translateWord,  double proficiencyLevel, Long userId, Long categoryId) {
+    public Card(@NonNull String foreignWord, @NonNull String translateWord, double proficiencyLevel, Long userId, Long categoryId) {
         this.foreignWord = foreignWord;
         this.translateWord = translateWord;
         this.proficiencyLevel = proficiencyLevel;

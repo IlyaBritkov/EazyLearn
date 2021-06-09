@@ -1,6 +1,7 @@
 package com.eazylearn.mapper;
 
 import com.eazylearn.dto.request.CardCreateRequestDTO;
+import com.eazylearn.dto.request.CardUpdateRequestDTO;
 import com.eazylearn.dto.response.CardResponseDTO;
 import com.eazylearn.entity.Card;
 import com.eazylearn.enums.ProficiencyLevel;
@@ -11,7 +12,11 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
+import static org.mapstruct.NullValuePropertyMappingStrategy.SET_TO_NULL;
+
 @Mapper(componentModel = "spring",
+        nullValuePropertyMappingStrategy = IGNORE,
         imports = {SecurityContextHolder.class, JwtUser.class})
 public abstract class CardMapper {
 
@@ -24,8 +29,8 @@ public abstract class CardMapper {
 
     @Mapping(target = "card.id", expression = "java(card.getId())")
     @Mapping(target = "card.userId", expression = "java(card.getUserId())")
-    @Mapping(target = "card.categoryId", defaultExpression = "java(card.getCategoryId())")
-    public abstract void updateEntity(CardResponseDTO cardDto, @MappingTarget Card card);
+    @Mapping(target = "card.categoryId", nullValuePropertyMappingStrategy = SET_TO_NULL)
+    public abstract void updateEntity(CardUpdateRequestDTO cardDto, @MappingTarget Card card);
 
     @Named("proficiencyLevelToProficiencyDouble")
     public static double proficiencyLevelToProficiencyDouble(ProficiencyLevel proficiencyLevel) {
