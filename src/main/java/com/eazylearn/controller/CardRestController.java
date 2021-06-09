@@ -3,14 +3,12 @@ package com.eazylearn.controller;
 import com.eazylearn.dto.request.CardCreateRequestDTO;
 import com.eazylearn.dto.response.CardResponseDTO;
 import com.eazylearn.enums.TabType;
-import com.eazylearn.exception.CategoryDoesNotExistException;
 import com.eazylearn.exception.EntityDoesNotExistException;
 import com.eazylearn.service.CardService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -37,27 +35,21 @@ public class CardRestController {
     // todo add global exception handling
     @GetMapping()
     public ResponseEntity<List<CardResponseDTO>> findAllCardsByTabAndCategoryId(@RequestParam(value = "tab", required = false) String tab,
-                                                                                @RequestParam(value = "categoryId", required = false) Long categoryId) throws EntityDoesNotExistException, CategoryDoesNotExistException {
-
+                                                                                @RequestParam(value = "categoryId", required = false) Long categoryId) throws EntityDoesNotExistException {
         List<CardResponseDTO> allCards = cardService.findAllCardsByTabAndCategoryId(tab, categoryId);
-        log.debug("tab = {}, categoryId = {}, allCards = {}", tab, categoryId, allCards);
         return new ResponseEntity<>(allCards, OK);
     }
 
     @PostMapping()
-    public ResponseEntity<CardResponseDTO> createCard(@RequestParam(value = "tab", required = false) String tab,
-                                                      @RequestBody CardCreateRequestDTO cardCreateRequestDTO) {
-        log.trace("CardCreateRequestDTO = {}", cardCreateRequestDTO);
+    public ResponseEntity<CardResponseDTO> createCard(@RequestBody CardCreateRequestDTO cardCreateRequestDTO) throws EntityDoesNotExistException {
         CardResponseDTO cardResponseDTO = cardService.createCard(cardCreateRequestDTO);
-
         return new ResponseEntity<>(cardResponseDTO, OK);
     }
 
-    // TODO remove and replace by popup form
-    @GetMapping("/{id}/edit")
-    public String editCard(Model model, @PathVariable("id") Long cardId) {
-        model.addAttribute("card", cardService.findCardById(cardId));
-        return "edit_card";
+    @GetMapping("/{id}")
+    public ResponseEntity<CardResponseDTO> findCardById(@PathVariable("id") Long cardId) throws EntityDoesNotExistException {
+        CardResponseDTO cardResponseDTO = cardService.findCardById(cardId);
+        return new ResponseEntity<>(cardResponseDTO, OK);
     }
 
     @PatchMapping("/{id}")

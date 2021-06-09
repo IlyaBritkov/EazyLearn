@@ -4,7 +4,6 @@ import com.eazylearn.dto.request.CardCreateRequestDTO;
 import com.eazylearn.dto.response.CardResponseDTO;
 import com.eazylearn.entity.Card;
 import com.eazylearn.enums.TabType;
-import com.eazylearn.exception.CategoryDoesNotExistException;
 import com.eazylearn.exception.EntityDoesNotExistException;
 import com.eazylearn.mapper.CardMapper;
 import com.eazylearn.repository.CardRepository;
@@ -24,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static java.lang.Double.compare;
 import static java.util.Comparator.comparingDouble;
@@ -40,7 +40,7 @@ public class CardServiceImpl implements CardService {
     private final CardRepository cardRepository;
     private final CategoryService categoryService;
     private final CardMapper cardMapper;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder; // TODO: 6/9/2021 ??? maybe delete this
 
     private final JwtUser currentUser = ((JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
@@ -48,7 +48,7 @@ public class CardServiceImpl implements CardService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CardResponseDTO> findAllCardsByTabAndCategoryId(@Nullable String tab, @Nullable Long categoryId) throws EntityDoesNotExistException, CategoryDoesNotExistException {
+    public List<CardResponseDTO> findAllCardsByTabAndCategoryId(@Nullable String tab, @Nullable Long categoryId) throws EntityDoesNotExistException {
         if (tab == null) {
             tab = "HOME";
         }
@@ -60,7 +60,6 @@ public class CardServiceImpl implements CardService {
 
         checkCategoryExistenceById(categoryId);
         log.trace("categoryId = {}", categoryId);
-
 
 
         List<CardResponseDTO> allCardsList = null;
@@ -93,22 +92,25 @@ public class CardServiceImpl implements CardService {
 
     @Override
     @Transactional
-    public CardResponseDTO createCard(CardCreateRequestDTO cardCreateRequestDTO) {
+    public CardResponseDTO createCard(CardCreateRequestDTO cardCreateRequestDTO) throws EntityDoesNotExistException {
+        Long categoryId = cardCreateRequestDTO.getCategoryId();
+        checkCategoryExistenceById(categoryId);
+
         Card card = cardMapper.toEntity(cardCreateRequestDTO);
 
         Card savedCard = cardRepository.save(card);
         return cardMapper.toResponseDTO(savedCard);
     }
 
-//    @Override
-//    @NotNull
-//    @Transactional(readOnly = true)
-//    public CardResponseDTO findCardById(@NotNull Long cardId) {
-//        Optional<Card> optionalCard = cardRepository.findById(cardId);
-//        Card card = optionalCard.get(); // todo
-//        return cardMapper.toDto(card);
-//    }
-//
+    @Override
+    @Transactional(readOnly = true)
+    public CardResponseDTO findCardById(@NotNull Long cardId) throws EntityDoesNotExistException {
+        Optional<Card> optionalCard = cardRepository.findByIdAndUserId(cardId, currentUserId);
+        Card card = optionalCard.
+                orElseThrow(() -> new EntityDoesNotExistException(String.format("Card with id=%d doesn't exist", cardId)));
+        return cardMapper.toResponseDTO(card);
+    }
+
 //    @Override
 //    @Transactional
 //    public CardResponseDTO updateCard(@NotNull CardResponseDTO cardDto) {
@@ -122,11 +124,6 @@ public class CardServiceImpl implements CardService {
 //        log.debug("Deleted cardDto's id = {}", cardId);
 //        cardRepository.deleteById(cardId);
 //    }
-
-    @Override
-    public CardResponseDTO findCardById(Long cardId) {
-        return null;
-    }
 
     @Override
     public CardResponseDTO updateCard(CardResponseDTO card) {
