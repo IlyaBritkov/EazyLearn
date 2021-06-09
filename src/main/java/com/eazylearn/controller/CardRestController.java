@@ -1,11 +1,11 @@
 package com.eazylearn.controller;
 
 import com.eazylearn.dto.request.CardCreateRequestDTO;
+import com.eazylearn.dto.response.CardResponseDTO;
 import com.eazylearn.enums.TabType;
 import com.eazylearn.exception.CategoryDoesNotExistException;
+import com.eazylearn.exception.EntityDoesNotExistException;
 import com.eazylearn.service.CardService;
-import com.eazylearn.dto.response.CardResponseDTO;
-import com.eazylearn.exception.TabDoesNotExistException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,14 +30,14 @@ import static org.springframework.http.HttpStatus.OK;
 @AllArgsConstructor(onConstructor_ = @Autowired)
 
 @RestController
-@RequestMapping("/cards")
+@RequestMapping(value = "/api/v1/cards")
 public class CardRestController {
     private final CardService cardService;
 
     // todo add global exception handling
     @GetMapping()
     public ResponseEntity<List<CardResponseDTO>> findAllCardsByTabAndCategoryId(@RequestParam(value = "tab", required = false) String tab,
-                                                                                @RequestParam(value = "categoryId", required = false) Long categoryId) throws TabDoesNotExistException, CategoryDoesNotExistException {
+                                                                                @RequestParam(value = "categoryId", required = false) Long categoryId) throws EntityDoesNotExistException, CategoryDoesNotExistException {
 
         List<CardResponseDTO> allCards = cardService.findAllCardsByTabAndCategoryId(tab, categoryId);
         log.debug("tab = {}, categoryId = {}, allCards = {}", tab, categoryId, allCards);

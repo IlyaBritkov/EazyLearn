@@ -7,6 +7,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -30,6 +31,7 @@ import static java.time.LocalDateTime.now;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
+@Slf4j
 
 @Component
 public class JwtTokenProvider {

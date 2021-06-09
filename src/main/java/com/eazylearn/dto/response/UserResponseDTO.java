@@ -4,27 +4,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.jetbrains.annotations.Nullable;
-
-import javax.validation.constraints.Size;
 
 @NoArgsConstructor
 @AllArgsConstructor
-
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class CardResponseDTO {
+public class UserResponseDTO {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @Size(max = 50)
-    private String foreignWord;
+    private String nickname;
 
-    @Size(max = 50)
-    private String translateWord;
+    private String email;
 
-    private Double proficiencyLevel;
-
-    @Nullable
-    private Long categoryId;
+    private Integer roleId;
 }

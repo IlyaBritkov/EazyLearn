@@ -1,7 +1,9 @@
 package com.eazylearn.controller;
 
-import com.eazylearn.dto.request.AuthenticationRequestDTO;
-import com.eazylearn.dto.response.AuthenticationResponseDTO;
+import com.eazylearn.dto.request.UserAuthenticationRequestDTO;
+import com.eazylearn.dto.request.UserRegistryRequestDTO;
+import com.eazylearn.dto.response.UserAuthenticationResponseDTO;
+import com.eazylearn.dto.response.UserResponseDTO;
 import com.eazylearn.service.AuthenticationService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,20 +19,30 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/api/v1/auth/")
-public class AuthenticationRestController {
+public class AuthenticationRestController {  // todo add global exception handling
 
     private final AuthenticationService authenticationService;
 
-    @PostMapping("login")    // todo add global exception handling
-    public ResponseEntity<AuthenticationResponseDTO> login(@RequestBody AuthenticationRequestDTO requestDTO) {
+    @PostMapping("login")
+    public ResponseEntity<UserAuthenticationResponseDTO> login(@RequestBody UserAuthenticationRequestDTO requestDTO) throws BadCredentialsException{
         try {
             String email = requestDTO.getEmail();
             String password = requestDTO.getPassword();
 
-            AuthenticationResponseDTO authenticationResponse = authenticationService.login(email, password);
+            UserAuthenticationResponseDTO authenticationResponse = authenticationService.login(email, password);
             return ResponseEntity.ok(authenticationResponse);
         } catch (AuthenticationException ex) {
             throw new BadCredentialsException("Invalid email or password");
+        }
+    }
+
+    @PostMapping("registry")
+    public ResponseEntity<UserResponseDTO> registry(@RequestBody UserRegistryRequestDTO requestDTO) throws BadCredentialsException{
+        try {
+            UserResponseDTO userResponse = authenticationService.registry(requestDTO);
+            return ResponseEntity.ok(userResponse);
+        } catch (AuthenticationException ex) {
+            throw new BadCredentialsException(ex.getMessage());
         }
     }
 }

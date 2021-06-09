@@ -1,19 +1,22 @@
 package com.eazylearn.service.impl;
 
 import com.eazylearn.dto.request.CardCreateRequestDTO;
-import com.eazylearn.exception.CategoryDoesNotExistException;
-import com.eazylearn.service.CategoryService;
 import com.eazylearn.dto.response.CardResponseDTO;
 import com.eazylearn.entity.Card;
 import com.eazylearn.enums.TabType;
-import com.eazylearn.exception.TabDoesNotExistException;
+import com.eazylearn.exception.CategoryDoesNotExistException;
+import com.eazylearn.exception.EntityDoesNotExistException;
 import com.eazylearn.mapper.CardMapper;
 import com.eazylearn.repository.CardRepository;
+import com.eazylearn.security.jwt.JwtUser;
 import com.eazylearn.service.CardService;
+import com.eazylearn.service.CategoryService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,23 +26,27 @@ import java.util.List;
 
 import static java.util.Comparator.comparingDouble;
 import static java.util.stream.Collectors.toList;
+import static org.springframework.context.annotation.ScopedProxyMode.INTERFACES;
+import static org.springframework.web.context.WebApplicationContext.SCOPE_SESSION;
 
 @Slf4j
 @AllArgsConstructor(onConstructor_ = @Autowired)
 
 @Service
+@Scope(value = SCOPE_SESSION, proxyMode = INTERFACES)
 public class CardServiceImpl implements CardService {
     private final CardRepository cardRepository;
     private final CategoryService categoryService;
     private final CardMapper cardMapper;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    // TODO: replace it by Spring Security Service
-    private final Long userId = 1L;
+    private final JwtUser currentUser = ((JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+    private final Long currentUserId = currentUser.getId();
 
     @Override
     @Transactional(readOnly = true)
-    public List<CardResponseDTO> findAllCardsByTabAndCategoryId(@Nullable String tab, @Nullable Long categoryId) throws TabDoesNotExistException, CategoryDoesNotExistException {
+    public List<CardResponseDTO> findAllCardsByTabAndCategoryId(@Nullable String tab, @Nullable Long categoryId) throws EntityDoesNotExistException, CategoryDoesNotExistException {
         if (tab == null) {
             tab = "HOME";
         }
@@ -48,7 +55,7 @@ public class CardServiceImpl implements CardService {
         if (Arrays.stream(TabType.values())
                 .noneMatch(tabType -> tabType.toString()
                         .equalsIgnoreCase(finalTab))) {
-            throw new TabDoesNotExistException(String.format("Tab with name:%s doesn't exist", tab));
+            throw new EntityDoesNotExistException(String.format("Tab with name:%s doesn't exist", tab));
         }
 
         TabType tabType = TabType.valueOf(tab.toUpperCase());
@@ -57,7 +64,7 @@ public class CardServiceImpl implements CardService {
         List<CardResponseDTO> allCardsList = null;
         switch (tabType) {
             case HOME:
-                allCardsList = cardRepository.findAllByUserIdAndCategoryId(userId, null)
+                allCardsList = cardRepository.findAllByUserIdAndCategoryId(currentUserId, null)
                         .stream()
                         .sorted(comparingDouble(Card::getProficiencyLevel))
                         .map(cardMapper::toResponseDTO)
@@ -68,13 +75,13 @@ public class CardServiceImpl implements CardService {
                         !categoryService.existsByCategoryId(categoryId)) {
                     throw new CategoryDoesNotExistException(String.format("Category with id:%d doesn't exist", categoryId));
                 }
-                allCardsList = cardRepository.findAllByUserIdAndCategoryId(userId, categoryId)
+                allCardsList = cardRepository.findAllByUserIdAndCategoryId(currentUserId, categoryId)
                         .stream()
                         .map(cardMapper::toResponseDTO)
                         .collect(toList());
                 break;
             case RECENT:
-                allCardsList = cardRepository.findAllByUserIdAndCategoryId(userId, null)
+                allCardsList = cardRepository.findAllByUserIdAndCategoryId(currentUserId, null)
                         .stream()
                         .sorted((card1, card2) -> card2.getTimeAddition().compareTo(card1.getTimeAddition()))
                         .map(cardMapper::toResponseDTO)
@@ -89,8 +96,8 @@ public class CardServiceImpl implements CardService {
     @Override
     @Transactional
     public CardResponseDTO createCard(CardCreateRequestDTO cardCreateRequestDTO) {
-        Card card = cardMapper.createDTOtoEntity(cardCreateRequestDTO);
-        card.setUserId(userId);
+        Card card = cardMapper.toEntity(cardCreateRequestDTO);
+
         Card savedCard = cardRepository.save(card);
         return cardMapper.toResponseDTO(savedCard);
     }

@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class ExceptionResponse{
+public class ExceptionResponseDTO {
     private String message;
 }

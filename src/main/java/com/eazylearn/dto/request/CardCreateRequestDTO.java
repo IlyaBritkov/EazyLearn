@@ -1,14 +1,15 @@
 package com.eazylearn.dto.request;
 
-import com.eazylearn.dto.BaseCardDTO;
-import com.eazylearn.enums.ProficientLevel;
+import com.eazylearn.enums.ProficiencyLevel;
+import lombok.Data;
 
-public class CardCreateRequestDTO extends BaseCardDTO { // todo: add validation
+@Data
+public class CardCreateRequestDTO { // todo: add validation
     private String foreignWord;
 
     private String translateWord;
 
-    private ProficientLevel proficientLevel;
+    private ProficiencyLevel proficiencyLevel;
 
     private Long categoryId;
 }

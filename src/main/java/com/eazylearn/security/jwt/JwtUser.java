@@ -1,6 +1,5 @@
 package com.eazylearn.security.jwt;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -25,12 +24,6 @@ public class JwtUser implements UserDetails {
 
     private final Collection<? extends GrantedAuthority> grantedAuthorities;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
-
-    @JsonIgnore
     public Long getId() {
         return id;
     }
@@ -63,5 +56,10 @@ public class JwtUser implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return grantedAuthorities;
     }
 }

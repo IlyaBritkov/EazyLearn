@@ -9,7 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.List;
 
-import static java.util.Collections.singletonList;
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static lombok.AccessLevel.PRIVATE;
 
@@ -22,7 +22,7 @@ public final class JwtUserFactory {
                 .nickname(user.getNickname())
                 .email(user.getEmail())
                 .password(user.getPassword())
-                .grantedAuthorities(mapToGrantedAuthorities(singletonList(user.getRole())))
+                .grantedAuthorities(mapToGrantedAuthorities(asList(user.getRole())))
                 .enabled(UserStatus.ACTIVE.equals(user.getStatus()))
                 .build();
     }
