@@ -18,7 +18,6 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,10 +41,8 @@ public class CardServiceImpl implements CardService {
     private final CardRepository cardRepository;
     private final CategoryService categoryService;
     private final CardMapper cardMapper;
-    private final BCryptPasswordEncoder passwordEncoder; // TODO: 6/9/2021 ??? maybe delete this
 
     private final JwtUser currentUser = ((JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-
     private final Long currentUserId = currentUser.getId();
 
     @Override
@@ -127,21 +124,12 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public void deleteCardById(Long cardId) {
+    @Transactional
+    public void deleteCardById(Long cardId) throws EntityDoesNotExistException {
+        checkCardExistenceById(cardId);
 
+        cardRepository.deleteById(cardId);
     }
-
-//    @Override
-//    @Transactional
-//    public void deleteCardById(@NotNull Long cardId) {
-//        log.debug("Deleted cardDto's id = {}", cardId);
-//        cardRepository.deleteById(cardId);
-//    }
-//
-//    @Override
-//    public void deleteCardById(Long cardId) {
-//
-//    }
 
     protected void checkTabExistenceByTabName(@NotNull String tab) throws EntityDoesNotExistException {
         final String finalTab = tab;
@@ -155,16 +143,20 @@ public class CardServiceImpl implements CardService {
     protected void checkCategoryExistenceById(@Nullable Long categoryId) throws EntityDoesNotExistException {
         if (categoryId != null) {
             boolean isCategoryExists = categoryService.existsByIdAndUserId(categoryId, currentUserId);
-            if (!isCategoryExists) {
-                throw new EntityDoesNotExistException(String.format("Category with id:%d doesn't exist", categoryId));
+            if (isCategoryExists) {
+                return;
             }
         }
+        throw new EntityDoesNotExistException(String.format("Category with id:%d doesn't exist", categoryId));
     }
 
     protected void checkCardExistenceById(@Nullable Long cardId) throws EntityDoesNotExistException {
-        boolean isCardExists = cardRepository.existsByIdAndUserId(cardId, currentUserId);
-        if (!isCardExists) {
-            throw new EntityDoesNotExistException(String.format("Card with id:%d doesn't exist", cardId));
+        if (cardId != null) {
+            boolean isCardExists = cardRepository.existsByIdAndUserId(cardId, currentUserId);
+            if (isCardExists) {
+                return;
+            }
         }
+        throw new EntityDoesNotExistException(String.format("Card with id:%d doesn't exist", cardId));
     }
 }

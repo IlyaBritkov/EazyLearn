@@ -16,5 +16,5 @@ public interface CardService {
 
     CardResponseDTO updateCardById(Long cardId, CardUpdateRequestDTO updateDto) throws EntityDoesNotExistException;
 
-    void deleteCardById(Long cardId);
+    void deleteCardById(Long cardId) throws EntityDoesNotExistException;
 }

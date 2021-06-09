@@ -3,7 +3,6 @@ package com.eazylearn.controller;
 import com.eazylearn.dto.request.CardCreateRequestDTO;
 import com.eazylearn.dto.request.CardUpdateRequestDTO;
 import com.eazylearn.dto.response.CardResponseDTO;
-import com.eazylearn.enums.TabType;
 import com.eazylearn.exception.EntityDoesNotExistException;
 import com.eazylearn.service.CardService;
 import lombok.AllArgsConstructor;
@@ -51,38 +50,17 @@ public class CardRestController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<CardResponseDTO> updateCard(@PathVariable("id") Long cardId,
-                                                      @RequestBody CardUpdateRequestDTO updateDto) throws EntityDoesNotExistException {
+    public ResponseEntity<CardResponseDTO> updateCardById(@PathVariable("id") Long cardId,
+                                                          @RequestBody CardUpdateRequestDTO updateDto) throws EntityDoesNotExistException {
         CardResponseDTO cardResponseDTO = cardService.updateCardById(cardId, updateDto);
 
         return ResponseEntity.ok(cardResponseDTO);
     }
 
     @DeleteMapping("/{id}")
-    public String deleteCardById(@RequestParam(value = "tab", required = false) String tab,
-                                 @PathVariable("id") Long cardId) {
-        log.debug("CardId for deleting = {}", cardId);
+    public ResponseEntity<?> deleteCardById(@PathVariable("id") Long cardId) throws EntityDoesNotExistException {
         cardService.deleteCardById(cardId);
 
-        return redirectPageByTab(tab);
-    }
-
-    private String redirectPageByTab(String tab) {
-        log.trace("Input tab for redirection = {}", tab);
-        if (tab == null) {
-            tab = "home";
-        }
-        log.trace("Tab for redirection = {}", tab);
-
-        TabType tabType = TabType.valueOf(tab.toUpperCase());
-        switch (tabType) {
-            case CATEGORY:
-                // TODO fix it
-                return "redirect:/cards?tab=category&categoryId=??????????";
-            case RECENT:
-                return "redirect:/cards?tab=recent";
-            default:
-                return "redirect:/cards";
-        }
+        return ResponseEntity.noContent().build();
     }
 }
