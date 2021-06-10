@@ -2,6 +2,7 @@ package com.eazylearn.controller;
 
 
 import com.eazylearn.dto.request.CategoryCreateRequestDTO;
+import com.eazylearn.dto.request.CategoryUpdateRequestDTO;
 import com.eazylearn.dto.response.CategoryResponseDTO;
 import com.eazylearn.exception.EntityAlreadyExistsException;
 import com.eazylearn.exception.EntityDoesNotExistException;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,13 +48,13 @@ public class CategoryRestController { // todo add exception global handling
         return ResponseEntity.ok(categoryResponseDTO);
     }
 
-//    @PatchMapping("/{id}")
-//    public ResponseEntity<CategoryResponseDTO> updateCategoryById(@PathVariable("id") Long CategoryId,
-//                                                                  @RequestBody CategoryUpdateRequestDTO updateDto) throws EntityDoesNotExistException {
-//        CategoryResponseDTO CategoryResponseDTO = CategoryService.updateCategoryById(CategoryId, updateDto);
-//
-//        return ResponseEntity.ok(CategoryResponseDTO);
-//    }
+    @PatchMapping("/{id}")
+    public ResponseEntity<CategoryResponseDTO> updateCategoryById(@PathVariable("id") Long categoryId,
+                                                                  @RequestBody CategoryUpdateRequestDTO updateDto) throws EntityDoesNotExistException {
+        CategoryResponseDTO categoryResponseDTO = categoryService.updateCategoryById(categoryId, updateDto);
+
+        return ResponseEntity.ok(categoryResponseDTO);
+    }
 
 //    @DeleteMapping("/{id}")
 //    public ResponseEntity<?> deleteCategoryById(@PathVariable("id") Long CategoryId) throws EntityDoesNotExistException {

@@ -1,6 +1,7 @@
 package com.eazylearn.service.impl;
 
 import com.eazylearn.dto.request.CategoryCreateRequestDTO;
+import com.eazylearn.dto.request.CategoryUpdateRequestDTO;
 import com.eazylearn.dto.response.CategoryResponseDTO;
 import com.eazylearn.entity.Category;
 import com.eazylearn.exception.EntityAlreadyExistsException;
@@ -75,6 +76,18 @@ public class CategoryServiceImpl implements CategoryService {
 
             return categoryMapper.toResponseDTO(persistedCategory);
         }
+    }
+
+    @Override
+    @Transactional(isolation = SERIALIZABLE)
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    public CategoryResponseDTO updateCategoryById(Long categoryId, CategoryUpdateRequestDTO updateDTO) throws EntityDoesNotExistException {
+        checkCategoryExistenceById(categoryId);
+
+        Category updatedCategory = categoryRepository.findByIdAndUserId(categoryId, currentUserId).get();
+        categoryMapper.updateEntity(updateDTO, updatedCategory);
+
+        return categoryMapper.toResponseDTO(updatedCategory);
     }
 
     protected void checkCategoryExistenceById(@Nullable Long categoryId) throws EntityDoesNotExistException {
