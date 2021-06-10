@@ -26,10 +26,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1/cards")
-public class CardRestController {
+public class CardRestController {  // todo add global exception handling
+
     private final CardService cardService;
 
-    // todo add global exception handling
     @GetMapping()
     public ResponseEntity<List<CardResponseDTO>> findAllCardsByTabAndCategoryId(@RequestParam(value = "tab", required = false) String tab,
                                                                                 @RequestParam(value = "categoryId", required = false) Long categoryId) throws EntityDoesNotExistException {

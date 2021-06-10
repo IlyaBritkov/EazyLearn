@@ -142,7 +142,7 @@ public class CardServiceImpl implements CardService {
 
     protected void checkCategoryExistenceById(@Nullable Long categoryId) throws EntityDoesNotExistException {
         if (categoryId != null) {
-            boolean isCategoryExists = categoryService.existsByIdAndUserId(categoryId, currentUserId);
+            boolean isCategoryExists = categoryService.existsById(categoryId);
             if (isCategoryExists) {
                 return;
             }
