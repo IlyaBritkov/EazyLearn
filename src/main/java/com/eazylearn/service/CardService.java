@@ -4,7 +4,7 @@ import com.eazylearn.dto.request.CardCreateRequestDTO;
 import com.eazylearn.dto.request.CardUpdateRequestDTO;
 import com.eazylearn.dto.response.CardResponseDTO;
 import com.eazylearn.entity.Card;
-import com.eazylearn.exception.EntityDoesNotExistException;
+import com.eazylearn.exception_handling.exception.EntityDoesNotExistException;
 
 import java.util.List;
 

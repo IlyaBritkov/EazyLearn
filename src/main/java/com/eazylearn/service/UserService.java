@@ -4,8 +4,8 @@ import com.eazylearn.dto.request.UserRegistryRequestDTO;
 import com.eazylearn.dto.request.UserUpdateRequestDTO;
 import com.eazylearn.dto.response.UserResponseDTO;
 import com.eazylearn.entity.User;
-import com.eazylearn.exception.EntityDoesNotExistException;
-import com.eazylearn.exception.UserAlreadyExistAuthenticationException;
+import com.eazylearn.exception_handling.exception.EntityDoesNotExistException;
+import com.eazylearn.exception_handling.exception.UserAlreadyExistAuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.List;

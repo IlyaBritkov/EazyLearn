@@ -1,7 +1,7 @@
 package com.eazylearn.security.jwt;
 
 import com.eazylearn.entity.Role;
-import com.eazylearn.exception.JwtAuthenticationException;
+import com.eazylearn.exception_handling.exception.JwtAuthenticationException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;

@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/api/v1/auth/")
-public class AuthenticationRestController {  // todo add global exception handling
+public class AuthenticationRestController {
 
     private final AuthenticationService authenticationService;
 

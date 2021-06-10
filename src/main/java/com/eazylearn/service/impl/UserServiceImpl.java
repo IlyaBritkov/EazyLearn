@@ -5,7 +5,7 @@ import com.eazylearn.dto.request.UserUpdateRequestDTO;
 import com.eazylearn.dto.response.UserResponseDTO;
 import com.eazylearn.entity.Role;
 import com.eazylearn.entity.User;
-import com.eazylearn.exception.UserAlreadyExistAuthenticationException;
+import com.eazylearn.exception_handling.exception.UserAlreadyExistAuthenticationException;
 import com.eazylearn.mapper.UserMapper;
 import com.eazylearn.repository.UserRepository;
 import com.eazylearn.service.RoleService;

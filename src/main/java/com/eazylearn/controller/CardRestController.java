@@ -3,7 +3,7 @@ package com.eazylearn.controller;
 import com.eazylearn.dto.request.CardCreateRequestDTO;
 import com.eazylearn.dto.request.CardUpdateRequestDTO;
 import com.eazylearn.dto.response.CardResponseDTO;
-import com.eazylearn.exception.EntityDoesNotExistException;
+import com.eazylearn.exception_handling.exception.EntityDoesNotExistException;
 import com.eazylearn.service.CardService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1/cards")
-public class CardRestController {  // todo add global exception handling
+public class CardRestController {
 
     private final CardService cardService;
 

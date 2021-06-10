@@ -3,8 +3,8 @@ package com.eazylearn.service;
 import com.eazylearn.dto.request.CategoryCreateRequestDTO;
 import com.eazylearn.dto.request.CategoryUpdateRequestDTO;
 import com.eazylearn.dto.response.CategoryResponseDTO;
-import com.eazylearn.exception.EntityAlreadyExistsException;
-import com.eazylearn.exception.EntityDoesNotExistException;
+import com.eazylearn.exception_handling.exception.EntityAlreadyExistsException;
+import com.eazylearn.exception_handling.exception.EntityDoesNotExistException;
 
 import java.util.List;
 

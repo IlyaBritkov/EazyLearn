@@ -31,18 +31,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-//        http
-//                .exceptionHandling()
-//                .authenticationEntryPoint((request, response, e) ->
-//                {
-//                    response.setContentType("application/json;charset=UTF-8");
-//                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-//                    response.getWriter().write(new JSONObject()
-//                            .put("timestamp", LocalDateTime.now())
-//                            .put("message", "Access denied")
-//                            .toString());
-//                }); // TODO: 6/8/2021
-
         http
                 .httpBasic().disable()
                 .csrf().disable()

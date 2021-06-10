@@ -4,8 +4,8 @@ package com.eazylearn.controller;
 import com.eazylearn.dto.request.CategoryCreateRequestDTO;
 import com.eazylearn.dto.request.CategoryUpdateRequestDTO;
 import com.eazylearn.dto.response.CategoryResponseDTO;
-import com.eazylearn.exception.EntityAlreadyExistsException;
-import com.eazylearn.exception.EntityDoesNotExistException;
+import com.eazylearn.exception_handling.exception.EntityAlreadyExistsException;
+import com.eazylearn.exception_handling.exception.EntityDoesNotExistException;
 import com.eazylearn.service.CategoryService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +28,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1/categories")
-public class CategoryRestController { // todo add exception global handling
+public class CategoryRestController {
 
     private final CategoryService categoryService;
 

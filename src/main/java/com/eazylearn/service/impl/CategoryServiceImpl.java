@@ -5,8 +5,8 @@ import com.eazylearn.dto.request.CategoryUpdateRequestDTO;
 import com.eazylearn.dto.response.CategoryResponseDTO;
 import com.eazylearn.entity.Card;
 import com.eazylearn.entity.Category;
-import com.eazylearn.exception.EntityAlreadyExistsException;
-import com.eazylearn.exception.EntityDoesNotExistException;
+import com.eazylearn.exception_handling.exception.EntityAlreadyExistsException;
+import com.eazylearn.exception_handling.exception.EntityDoesNotExistException;
 import com.eazylearn.mapper.CategoryMapper;
 import com.eazylearn.repository.CategoryRepository;
 import com.eazylearn.security.jwt.JwtUser;
@@ -101,8 +101,6 @@ public class CategoryServiceImpl implements CategoryService {
         checkCategoryExistenceById(categoryId);
 
         Category category = categoryRepository.findByIdAndUserId(categoryId, currentUserId).get();
-
-        log.info("! isDeleteAllCardsInCategory = " + isDeleteAllCardsInCategory); // TODO: 6/10/2021
 
         if (isDeleteAllCardsInCategory) {
             cardService.deleteCardByCategoryId(categoryId);
