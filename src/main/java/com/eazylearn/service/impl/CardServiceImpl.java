@@ -57,10 +57,6 @@ public class CardServiceImpl implements CardService {
         TabType tabType = TabType.valueOf(tab.toUpperCase());
         log.trace("tabType = {}", tabType);
 
-        checkCategoryExistenceById(categoryId);
-        log.trace("categoryId = {}", categoryId);
-
-
         List<CardResponseDTO> allCardsList = null;
         switch (tabType) {
             case HOME:
@@ -71,6 +67,8 @@ public class CardServiceImpl implements CardService {
                         .collect(toList());
                 break;
             case CATEGORY:
+                checkCategoryExistenceById(categoryId);
+                log.trace("categoryId = {}", categoryId);
                 allCardsList = cardRepository.findAllByUserIdAndCategoryId(currentUserId, categoryId)
                         .stream()
                         .map(cardMapper::toResponseDTO)
@@ -90,6 +88,13 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
+    public List<Card> findAllCardsEntityByCategoryId(Long categoryId) throws EntityDoesNotExistException {
+        checkCategoryExistenceById(categoryId);
+
+        return cardRepository.findAllByUserIdAndCategoryId(currentUserId, categoryId);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public CardResponseDTO findCardById(@NotNull Long cardId) throws EntityDoesNotExistException {
         Optional<Card> optionalCard = cardRepository.findByIdAndUserId(cardId, currentUserId);
@@ -102,7 +107,10 @@ public class CardServiceImpl implements CardService {
     @Transactional
     public CardResponseDTO createCard(CardCreateRequestDTO cardCreateRequestDTO) throws EntityDoesNotExistException {
         Long categoryId = cardCreateRequestDTO.getCategoryId();
-        checkCategoryExistenceById(categoryId);
+
+        if (categoryId != null) {
+            checkCategoryExistenceById(categoryId);
+        }
 
         Card card = cardMapper.toEntity(cardCreateRequestDTO);
 
@@ -129,6 +137,13 @@ public class CardServiceImpl implements CardService {
         checkCardExistenceById(cardId);
 
         cardRepository.deleteById(cardId);
+    }
+
+    @Override
+    public void deleteCardByCategoryId(Long categoryId) throws EntityDoesNotExistException {
+        checkCategoryExistenceById(categoryId);
+
+        cardRepository.deleteCardByCategoryIdAndUserId(categoryId, currentUserId);
     }
 
     protected void checkTabExistenceByTabName(@NotNull String tab) throws EntityDoesNotExistException {

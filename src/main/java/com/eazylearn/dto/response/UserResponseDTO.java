@@ -17,5 +17,5 @@ public class UserResponseDTO {
 
     private String email;
 
-    private Integer roleId;
+    private Long roleId;
 }

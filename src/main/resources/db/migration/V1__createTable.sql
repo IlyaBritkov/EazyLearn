@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS category
     user_id bigint,
 
     CONSTRAINT category_id_pk PRIMARY KEY (id),
-    CONSTRAINT name_unique UNIQUE(name),
+    CONSTRAINT name_per_user_unique UNIQUE(name,user_id),
     CONSTRAINT user_id_fk FOREIGN KEY (user_id) REFERENCES users (id)
 )
 ;

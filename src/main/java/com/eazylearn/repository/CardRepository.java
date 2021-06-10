@@ -17,4 +17,6 @@ public interface CardRepository extends CrudRepository<Card, Long> {
     Optional<Card> findByIdAndUserId(Long cardId, Long userId);
 
     boolean existsByIdAndUserId(Long cardId, Long userId);
+
+    void deleteCardByCategoryIdAndUserId(Long categoryId, Long userId);
 }

@@ -47,8 +47,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     @Transactional(isolation = SERIALIZABLE)
     public UserResponseDTO registry(UserRegistryRequestDTO registryRequest) throws AuthenticationException {
-        String password = registryRequest.getPassword();
-
         return userService.createUser(registryRequest);
     }
 }

@@ -19,4 +19,6 @@ public interface CategoryService {
     CategoryResponseDTO createCategory(CategoryCreateRequestDTO categoryCreateRequestDTO) throws EntityAlreadyExistsException;
 
     CategoryResponseDTO updateCategoryById(Long categoryId, CategoryUpdateRequestDTO categoryUpdateRequestDTO) throws EntityDoesNotExistException;
+
+    void deleteCategoryById(Long categoryId, boolean isDeleteAllCardsInCategory) throws EntityDoesNotExistException;
 }

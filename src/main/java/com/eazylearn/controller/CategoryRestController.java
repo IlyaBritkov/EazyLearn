@@ -11,12 +11,14 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -56,10 +58,10 @@ public class CategoryRestController { // todo add exception global handling
         return ResponseEntity.ok(categoryResponseDTO);
     }
 
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<?> deleteCategoryById(@PathVariable("id") Long CategoryId) throws EntityDoesNotExistException {
-//        CategoryService.deleteCategoryById(CategoryId);
-//
-//        return ResponseEntity.noContent().build();
-//    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteCategoryById(@PathVariable("id") Long categoryId, @RequestParam boolean isDeleteAllCardsInCategory) throws EntityDoesNotExistException {
+        categoryService.deleteCategoryById(categoryId, isDeleteAllCardsInCategory);
+
+        return ResponseEntity.noContent().build();
+    }
 }

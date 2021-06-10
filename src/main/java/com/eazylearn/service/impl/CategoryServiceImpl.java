@@ -3,12 +3,14 @@ package com.eazylearn.service.impl;
 import com.eazylearn.dto.request.CategoryCreateRequestDTO;
 import com.eazylearn.dto.request.CategoryUpdateRequestDTO;
 import com.eazylearn.dto.response.CategoryResponseDTO;
+import com.eazylearn.entity.Card;
 import com.eazylearn.entity.Category;
 import com.eazylearn.exception.EntityAlreadyExistsException;
 import com.eazylearn.exception.EntityDoesNotExistException;
 import com.eazylearn.mapper.CategoryMapper;
 import com.eazylearn.repository.CategoryRepository;
 import com.eazylearn.security.jwt.JwtUser;
+import com.eazylearn.service.CardService;
 import com.eazylearn.service.CategoryService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +37,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
+
+    private final CardService cardService;
 
     private final JwtUser currentUser = (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     private final Long currentUserId = currentUser.getId();
@@ -88,6 +92,27 @@ public class CategoryServiceImpl implements CategoryService {
         categoryMapper.updateEntity(updateDTO, updatedCategory);
 
         return categoryMapper.toResponseDTO(updatedCategory);
+    }
+
+    @Override
+    @Transactional(isolation = SERIALIZABLE)
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    public void deleteCategoryById(Long categoryId,boolean isDeleteAllCardsInCategory) throws EntityDoesNotExistException {
+        checkCategoryExistenceById(categoryId);
+
+        Category category = categoryRepository.findByIdAndUserId(categoryId, currentUserId).get();
+
+        log.info("! isDeleteAllCardsInCategory = " + isDeleteAllCardsInCategory); // TODO: 6/10/2021
+
+        if (isDeleteAllCardsInCategory) {
+            cardService.deleteCardByCategoryId(categoryId);
+        } else {
+            List<Card> allCardsByCategory = cardService.findAllCardsEntityByCategoryId(categoryId);
+            allCardsByCategory
+                    .forEach(card -> card.setCategoryId(null));
+        }
+
+        categoryRepository.delete(category);
     }
 
     protected void checkCategoryExistenceById(@Nullable Long categoryId) throws EntityDoesNotExistException {
