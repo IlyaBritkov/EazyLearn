@@ -1,6 +1,8 @@
 package com.eazylearn.service;
 
+import com.eazylearn.dto.request.CategoryCreateRequestDTO;
 import com.eazylearn.dto.response.CategoryResponseDTO;
+import com.eazylearn.exception.EntityAlreadyExistsException;
 import com.eazylearn.exception.EntityDoesNotExistException;
 
 import java.util.List;
@@ -13,4 +15,5 @@ public interface CategoryService {
 
     boolean existsById(Long categoryId);
 
+    CategoryResponseDTO createCategory(CategoryCreateRequestDTO categoryCreateRequestDTO) throws EntityAlreadyExistsException;
 }

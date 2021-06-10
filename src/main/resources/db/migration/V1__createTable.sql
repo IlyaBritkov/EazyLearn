@@ -29,8 +29,9 @@ CREATE TABLE IF NOT EXISTS category
     user_id bigint,
 
     CONSTRAINT category_id_pk PRIMARY KEY (id),
+    CONSTRAINT name_unique UNIQUE(name),
     CONSTRAINT user_id_fk FOREIGN KEY (user_id) REFERENCES users (id)
-    )
+)
 ;
 
 CREATE TABLE IF NOT EXISTS card

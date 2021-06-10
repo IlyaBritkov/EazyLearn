@@ -1,7 +1,9 @@
 package com.eazylearn.service.impl;
 
+import com.eazylearn.dto.request.CategoryCreateRequestDTO;
 import com.eazylearn.dto.response.CategoryResponseDTO;
 import com.eazylearn.entity.Category;
+import com.eazylearn.exception.EntityAlreadyExistsException;
 import com.eazylearn.exception.EntityDoesNotExistException;
 import com.eazylearn.mapper.CategoryMapper;
 import com.eazylearn.repository.CategoryRepository;
@@ -59,6 +61,20 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional(readOnly = true)
     public boolean existsById(Long categoryId) {
         return categoryRepository.existsByIdAndUserId(categoryId, currentUserId);
+    }
+
+    @Override
+    @Transactional(isolation = SERIALIZABLE)
+    public CategoryResponseDTO createCategory(CategoryCreateRequestDTO categoryCreateRequestDTO) throws EntityAlreadyExistsException {
+        String newCategoryName = categoryCreateRequestDTO.getName();
+        if (categoryRepository.existsByNameAndUserId(newCategoryName, currentUserId)) {
+            throw new EntityAlreadyExistsException(String.format("Category with name = %s already exists", newCategoryName));
+        } else {
+            Category newCategory = categoryMapper.toEntity(categoryCreateRequestDTO);
+            Category persistedCategory = categoryRepository.save(newCategory);
+
+            return categoryMapper.toResponseDTO(persistedCategory);
+        }
     }
 
     protected void checkCategoryExistenceById(@Nullable Long categoryId) throws EntityDoesNotExistException {
