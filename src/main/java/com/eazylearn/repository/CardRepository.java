@@ -6,17 +6,18 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface CardRepository extends CrudRepository<Card, Long> {
+public interface CardRepository extends CrudRepository<Card, UUID> {
 
-    List<Card> findAllByUserId(Long userId);
+    List<Card> findAllByUserId(UUID userId);
 
-    List<Card> findAllByUserIdAndCategoryId(Long userId, Long categoryId);
+    List<Card> findAllByUserIdAndCardSetId(UUID userId, UUID cardSetId);
 
-    Optional<Card> findByIdAndUserId(Long cardId, Long userId);
+    Optional<Card> findByIdAndUserId(UUID cardId, UUID userId);
 
-    boolean existsByIdAndUserId(Long cardId, Long userId);
+    boolean existsByIdAndUserId(UUID cardId, UUID userId);
 
-    void deleteCardByCategoryIdAndUserId(Long categoryId, Long userId);
+    void deleteCardByCardSetIdAndUserId(UUID cardSetId, UUID userId);
 }

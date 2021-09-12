@@ -9,12 +9,13 @@ import com.eazylearn.exception_handling.exception.UserAlreadyExistAuthentication
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface UserService {
 
     List<UserResponseDTO> findAllUsers();
 
-    UserResponseDTO findUserById(Long id) throws EntityDoesNotExistException;
+    UserResponseDTO findUserById(UUID id) throws EntityDoesNotExistException;
 
     UserResponseDTO findUserByEmail(String login) throws UsernameNotFoundException;
 
@@ -22,7 +23,8 @@ public interface UserService {
 
     UserResponseDTO createUser(UserRegistryRequestDTO registryRequest) throws UserAlreadyExistAuthenticationException;
 
-    UserResponseDTO updateUserById(Long id, UserUpdateRequestDTO updateRequest) throws UsernameNotFoundException, UserAlreadyExistAuthenticationException;
+    UserResponseDTO updateUserById(UUID id, UserUpdateRequestDTO updateRequest)
+            throws UsernameNotFoundException, UserAlreadyExistAuthenticationException;
 
-    void deleteUserById(Long id);
+    void deleteUserById(UUID id);
 }

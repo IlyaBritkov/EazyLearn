@@ -1,6 +1,7 @@
 package com.eazylearn.enums;
 
-public enum TabType {
+public enum TabType { // todo maybe get rid of it
+
     HOME("home"),
     CATEGORY("category"),
     RECENT("recent");

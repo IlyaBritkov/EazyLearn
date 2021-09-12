@@ -27,13 +27,14 @@ public abstract class CardMapper {
             expression = "java( ((JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal() ).getId() )")
     public abstract Card toEntity(CardCreateRequestDTO cardDto);
 
-    @Mapping(target = "card.id", expression = "java(card.getId())")
+    @Mapping(target = "card.id", expression = "java(card.getId())") // todo maybe just ignore
     @Mapping(target = "card.userId", expression = "java(card.getUserId())")
-    @Mapping(target = "card.categoryId", nullValuePropertyMappingStrategy = SET_TO_NULL)
+    @Mapping(target = "card.cardSetId", nullValuePropertyMappingStrategy = SET_TO_NULL)
     public abstract void updateEntity(CardUpdateRequestDTO cardDto, @MappingTarget Card card);
 
     @Named("proficiencyLevelToProficiencyDouble")
     public static double proficiencyLevelToProficiencyDouble(ProficiencyLevel proficiencyLevel) {
         return proficiencyLevel.getLevelPoints();
     }
+
 }

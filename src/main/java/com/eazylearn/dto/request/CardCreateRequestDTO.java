@@ -3,13 +3,17 @@ package com.eazylearn.dto.request;
 import com.eazylearn.enums.ProficiencyLevel;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 public class CardCreateRequestDTO { // todo: add validation
-    private String foreignWord;
 
-    private String translateWord;
+    private String term;
+
+    private String definition;
 
     private ProficiencyLevel proficiencyLevel;
 
-    private Long categoryId;
+    private UUID cardSetId; // todo: maybe many cardSets
+
 }

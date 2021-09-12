@@ -2,13 +2,17 @@ package com.eazylearn.dto.request;
 
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 public class CardUpdateRequestDTO { // TODO: 6/9/2021 add validation
-    private String foreignWord;
 
-    private String translateWord;
+    private String term;
+
+    private String definition;
 
     private Double proficiencyLevel;
 
-    private Long categoryId;
+    private UUID cardSetId; // todo many
+
 }

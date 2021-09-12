@@ -31,12 +31,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public UserAuthenticationResponseDTO login(String email, String password) throws AuthenticationException {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
-        User user = userService.findUserEntityByEmail(email);
 
-        log.info("user after login = " + user);
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
+
+        User user = userService.findUserEntityByEmail(email);
+        log.info("User after login = {}", user);
 
         String token = jwtTokenProvider.createToken(email, asList(user.getRole()));
+
         return UserAuthenticationResponseDTO.builder()
                 .id(user.getId())
                 .email(email)
@@ -49,4 +51,5 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public UserResponseDTO registry(UserRegistryRequestDTO registryRequest) throws AuthenticationException {
         return userService.createUser(registryRequest);
     }
+
 }

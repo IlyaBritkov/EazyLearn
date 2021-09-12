@@ -20,25 +20,27 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @AllArgsConstructor(onConstructor_ = @Autowired)
 
 @RestController
 @RequestMapping(value = "/api/v1/cards")
-public class CardRestController {
+public class CardRestController { // TODO: refactor tab logic
 
     private final CardService cardService;
 
     @GetMapping()
-    public ResponseEntity<List<CardResponseDTO>> findAllCardsByTabAndCategoryId(@RequestParam(value = "tab", required = false) String tab,
-                                                                                @RequestParam(value = "categoryId", required = false) Long categoryId) throws EntityDoesNotExistException {
-        List<CardResponseDTO> allCards = cardService.findAllCardsByTabAndCategoryId(tab, categoryId);
+    public ResponseEntity<List<CardResponseDTO>> findAllCardsByTabAndCardSetId(@RequestParam(value = "tab", required = false) String tab,
+                                                                               @RequestParam(value = "cardSetId", required = false) UUID cardSetId)
+            throws EntityDoesNotExistException {
+        List<CardResponseDTO> allCards = cardService.findAllCardsByTabAndCardSetId(tab, cardSetId);
         return ResponseEntity.ok(allCards);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CardResponseDTO> findCardById(@PathVariable("id") Long cardId) throws EntityDoesNotExistException {
+    public ResponseEntity<CardResponseDTO> findCardById(@PathVariable("id") UUID cardId) throws EntityDoesNotExistException {
         CardResponseDTO cardResponseDTO = cardService.findCardById(cardId);
         return ResponseEntity.ok(cardResponseDTO);
     }
@@ -50,7 +52,7 @@ public class CardRestController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<CardResponseDTO> updateCardById(@PathVariable("id") Long cardId,
+    public ResponseEntity<CardResponseDTO> updateCardById(@PathVariable("id") UUID cardId,
                                                           @RequestBody CardUpdateRequestDTO updateDto) throws EntityDoesNotExistException {
         CardResponseDTO cardResponseDTO = cardService.updateCardById(cardId, updateDto);
 
@@ -58,7 +60,7 @@ public class CardRestController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCardById(@PathVariable("id") Long cardId) throws EntityDoesNotExistException {
+    public ResponseEntity<?> deleteCardById(@PathVariable("id") UUID cardId) throws EntityDoesNotExistException {
         cardService.deleteCardById(cardId);
 
         return ResponseEntity.noContent().build();

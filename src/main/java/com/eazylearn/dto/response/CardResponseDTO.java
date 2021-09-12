@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 
-import javax.validation.constraints.Size;
+import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,17 +14,17 @@ import javax.validation.constraints.Size;
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class CardResponseDTO {
+
     @EqualsAndHashCode.Include
-    private Long id;
+    private UUID id;
 
-    @Size(max = 50)
-    private String foreignWord;
+    private String term;
 
-    @Size(max = 50)
-    private String translateWord;
+    private String definition;
 
     private Double proficiencyLevel;
 
     @Nullable
-    private Long categoryId;
+    private UUID cardSetId; // TODO many
+
 }

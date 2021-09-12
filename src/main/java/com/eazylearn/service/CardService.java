@@ -7,19 +7,21 @@ import com.eazylearn.entity.Card;
 import com.eazylearn.exception_handling.exception.EntityDoesNotExistException;
 
 import java.util.List;
+import java.util.UUID;
 
-public interface CardService {
-    List<CardResponseDTO> findAllCardsByTabAndCategoryId(String tab, Long categoryId) throws EntityDoesNotExistException;
+public interface CardService { // todo refactor
 
-    List<Card> findAllCardsEntityByCategoryId(Long categoryId) throws EntityDoesNotExistException;
+    List<CardResponseDTO> findAllCardsByTabAndCardSetId(String tab, UUID categoryId) throws EntityDoesNotExistException;
 
-    CardResponseDTO findCardById(Long cardId) throws EntityDoesNotExistException;
+    List<Card> findAllCardsEntityByCardSetId(UUID categoryId) throws EntityDoesNotExistException;
+
+    CardResponseDTO findCardById(UUID cardId) throws EntityDoesNotExistException;
 
     CardResponseDTO createCard(CardCreateRequestDTO cardCreateRequestDTO) throws EntityDoesNotExistException;
 
-    CardResponseDTO updateCardById(Long cardId, CardUpdateRequestDTO updateDto) throws EntityDoesNotExistException;
+    CardResponseDTO updateCardById(UUID cardId, CardUpdateRequestDTO updateDto) throws EntityDoesNotExistException;
 
-    void deleteCardById(Long cardId) throws EntityDoesNotExistException;
+    void deleteCardById(UUID cardId) throws EntityDoesNotExistException;
 
-    void deleteCardByCategoryId(Long categoryId) throws EntityDoesNotExistException;
+    void deleteCardByCardSetId(UUID categoryId) throws EntityDoesNotExistException;
 }

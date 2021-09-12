@@ -11,13 +11,13 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public abstract class UserMapper {
 
-    @Mapping(target = "roleId", expression = "java( user.getRole().getId() )")
+    @Mapping(target = "role", expression = "java( user.getRole().name() )")
     public abstract UserResponseDTO toResponseDTO(User user);
 
     @Mapping(target = "id", ignore = true)
     public abstract User toEntity(UserRegistryRequestDTO userDto);
 
-    //    @Mapping(target = "user.id", expression = "java(user.getId())") // TODO maybe delete and leave under approach
     @Mapping(target = "id", ignore = true)
     public abstract void updateEntity(UserUpdateRequestDTO userDTO, @MappingTarget User user);
+
 }

@@ -1,6 +1,7 @@
 package com.eazylearn.enums;
 
 public enum ProficiencyLevel {
+
     LOW(15),
     AVERAGE(50),
     HIGH(85);

@@ -24,7 +24,9 @@ public class AuthenticationRestController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("login")
-    public ResponseEntity<UserAuthenticationResponseDTO> login(@RequestBody UserAuthenticationRequestDTO requestDTO) throws BadCredentialsException{
+    public ResponseEntity<UserAuthenticationResponseDTO> login(@RequestBody UserAuthenticationRequestDTO requestDTO)
+            throws BadCredentialsException {
+
         try {
             String email = requestDTO.getEmail();
             String password = requestDTO.getPassword();
@@ -37,7 +39,9 @@ public class AuthenticationRestController {
     }
 
     @PostMapping("registry")
-    public ResponseEntity<UserResponseDTO> registry(@RequestBody UserRegistryRequestDTO requestDTO) throws BadCredentialsException{
+    public ResponseEntity<UserResponseDTO> registry(@RequestBody UserRegistryRequestDTO requestDTO)
+            throws BadCredentialsException {
+
         try {
             UserResponseDTO userResponse = authenticationService.registry(requestDTO);
             return ResponseEntity.ok(userResponse);
@@ -45,4 +49,5 @@ public class AuthenticationRestController {
             throw new BadCredentialsException(ex.getMessage());
         }
     }
+
 }

@@ -7,14 +7,16 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Data
 @Builder
-public class JwtUser implements UserDetails {
-    private final Long id;
+public class JwtUser implements UserDetails { // todo
 
-    private final String nickname;
+    private final UUID id;
+
+    private final String username;
 
     private final String email;
 
@@ -23,15 +25,6 @@ public class JwtUser implements UserDetails {
     private final boolean enabled;
 
     private final Collection<? extends GrantedAuthority> grantedAuthorities;
-
-    public Long getId() {
-        return id;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
 
     @Override
     public String getUsername() {
@@ -44,7 +37,7 @@ public class JwtUser implements UserDetails {
     }
 
     @Override
-    public boolean isAccountNonLocked() {
+    public boolean isAccountNonLocked() { // todo check logic
         return true;
     }
 
@@ -62,4 +55,5 @@ public class JwtUser implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return grantedAuthorities;
     }
+
 }

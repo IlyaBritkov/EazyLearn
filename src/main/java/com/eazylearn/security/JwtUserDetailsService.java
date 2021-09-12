@@ -1,9 +1,9 @@
 package com.eazylearn.security;
 
-import com.eazylearn.service.UserService;
 import com.eazylearn.entity.User;
 import com.eazylearn.security.jwt.JwtUser;
 import com.eazylearn.security.jwt.JwtUserFactory;
+import com.eazylearn.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
+
     private final UserService userService;
 
     @Override
@@ -25,6 +26,8 @@ public class JwtUserDetailsService implements UserDetailsService {
 
         JwtUser jwtUser = JwtUserFactory.create(user);
         log.info("User with email '{}' successfully loaded", email);
+
         return jwtUser;
     }
+
 }

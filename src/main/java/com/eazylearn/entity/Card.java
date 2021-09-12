@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.Size;
 import java.util.Calendar;
+import java.util.UUID;
 
 @NoArgsConstructor
 @Data
@@ -17,24 +17,23 @@ import java.util.Calendar;
 @Entity
 @Table(name = "card")
 public class Card extends BaseEntity { // TODO add validation
-    @Column(name = "foreign_word")
-    @Size(max = 50) // todo add validation variables to property files
-    private String foreignWord;
 
-    @Column(name = "translate_word")
-    @Size(max = 50)
-    private String translateWord;
+    @Column(name = "term")
+    private String term;
+
+    @Column(name = "definition")
+    private String definition;
 
     @Column(name = "proficiency_level")
     private Double proficiencyLevel;
 
-    //    @CreatedDate // // TODO: 6/3/2021
-    @Column(name = "time_addition")
-    private final Long timeAddition = Calendar.getInstance().getTimeInMillis();
+    @Column(name = "created_time")
+    private final Long createdTime = Calendar.getInstance().getTimeInMillis();
 
     @Column(name = "user_id")
-    private Long userId;
+    private UUID userId;
 
     @Column(name = "category_id")
-    private Long categoryId;
+    private UUID cardSetId; // todo fix to many to many
+
 }

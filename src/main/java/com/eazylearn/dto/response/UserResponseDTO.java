@@ -5,17 +5,23 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class UserResponseDTO {
-    @EqualsAndHashCode.Include
-    private Long id;
 
-    private String nickname;
+    @EqualsAndHashCode.Include
+    private UUID id;
+
+    private String username;
 
     private String email;
 
-    private Long roleId;
+    private String status;
+
+    private String role;
+
 }

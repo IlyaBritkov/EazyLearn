@@ -1,6 +1,6 @@
 package com.eazylearn.security.jwt;
 
-import com.eazylearn.entity.Role;
+import com.eazylearn.enums.UserRole;
 import com.eazylearn.exception_handling.exception.JwtAuthenticationException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -32,10 +32,11 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 
 @Component
-public class JwtTokenProvider {
+public class JwtTokenProvider { // check code logic after refactroring
+
     @Value("${jwt.token.secret}")
     private String secret;
-//    @Value("${jwt.token.expired}") uncomment after tests // TODO: 6/10/2021  
+    //    @Value("${jwt.token.expired}") uncomment after tests // TODO: 6/10/2021
     private long validityInSeconds = 86400;
 
     private final UserDetailsService userDetailsService;
@@ -45,7 +46,7 @@ public class JwtTokenProvider {
         secret = Base64.getEncoder().encodeToString(secret.getBytes());
     }
 
-    public String createToken(String email, List<Role> userRoles) {
+    public String createToken(String email, List<UserRole> userRoles) {
         Claims claims = Jwts.claims().setSubject(email);
         claims.put("roles", getRolesNames(userRoles));
 
@@ -93,9 +94,9 @@ public class JwtTokenProvider {
         }
     }
 
-    private List<String> getRolesNames(List<Role> userRoles) {
+    private List<String> getRolesNames(List<UserRole> userRoles) {
         return userRoles.stream()
-                .map(Role::getName)
+                .map(UserRole::name)
                 .collect(toList());
     }
 
