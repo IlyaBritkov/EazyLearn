@@ -1,6 +1,11 @@
-<h1 align="center">Swagger</h1>
+<h1 align="center">Eazy Learn <br> [the link]</h1>
 
+<h2 align="center">Swagger</h2>
+// todo
 
-<h1 align="center">Database architecture</h1>
+<h2 align="center">Database and domain model</h2>
 
-<iframe width="560" height="315" src='https://dbdiagram.io/embed/613ce070825b5b0146fd85d9'> </iframe>
+[Database architecture](https://dbdiagram.io/d/613ce070825b5b0146fd85d9)
+
+<h2 align="center">Postman API collection </h2>
+// todo
