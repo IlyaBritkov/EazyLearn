@@ -6,9 +6,20 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.UUID;
+
+import static javax.persistence.CascadeType.DETACH;
+import static javax.persistence.CascadeType.MERGE;
+import static javax.persistence.CascadeType.PERSIST;
+import static javax.persistence.CascadeType.REFRESH;
+import static javax.persistence.FetchType.LAZY;
 
 @NoArgsConstructor
 @Data
@@ -33,7 +44,17 @@ public class Card extends BaseEntity { // TODO add validation
     @Column(name = "user_id")
     private UUID userId;
 
-    @Column(name = "category_id")
-    private UUID cardSetId; // todo fix to many to many
+    @ManyToMany(cascade = {
+            PERSIST,
+            MERGE,
+            REFRESH,
+            DETACH},
+            fetch = LAZY)
+    @JoinTable(
+            name = "set_card",
+            joinColumns = {@JoinColumn(name = "card_id")},
+            inverseJoinColumns = {@JoinColumn(name = "set_id")}
+    )
+    private List<CardSet> linkedCardSets = new ArrayList<>();
 
 }

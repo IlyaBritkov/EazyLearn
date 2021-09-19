@@ -104,6 +104,7 @@ public class CardSetServiceImpl implements CardSetService {
     @Override
     @Transactional(isolation = SERIALIZABLE)
     @SuppressWarnings("OptionalGetWithoutIsPresent")
+    // todo refactor it
     public void deleteCategoryById(UUID categoryId, boolean isDeleteAllCardsInCategory) throws EntityDoesNotExistException {
         checkCategoryExistenceById(categoryId);
 
@@ -113,8 +114,8 @@ public class CardSetServiceImpl implements CardSetService {
             cardService.deleteCardByCardSetId(categoryId);
         } else {
             List<Card> allCardsByCategory = cardService.findAllCardsEntityByCardSetId(categoryId);
-            allCardsByCategory
-                    .forEach(card -> card.setCardSetId(null));
+//            allCardsByCategory
+//                    .forEach(card -> card.setCardSetId(null)); todo
         }
 
         cardSetRepository.delete(cardSet);

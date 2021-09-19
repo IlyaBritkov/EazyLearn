@@ -70,10 +70,10 @@ public class CardServiceImpl implements CardService { // TODO: refactor
             case CATEGORY:
                 checkCategoryExistenceById(categoryId);
                 log.trace("categoryId = {}", categoryId);
-                allCardsList = cardRepository.findAllByUserIdAndCardSetId(currentUserId, categoryId)
-                        .stream()
-                        .map(cardMapper::toResponseDTO)
-                        .collect(toList());
+//                allCardsList = cardRepository.findAllByUserIdAndCardSetId(currentUserId, categoryId)
+//                        .stream()
+//                        .map(cardMapper::toResponseDTO)
+//                        .collect(toList()); TODO
                 break;
             case RECENT:
                 allCardsList = cardRepository.findAllByUserId(currentUserId)
@@ -91,7 +91,8 @@ public class CardServiceImpl implements CardService { // TODO: refactor
     public List<Card> findAllCardsEntityByCardSetId(UUID categoryId) throws EntityDoesNotExistException {
         checkCategoryExistenceById(categoryId);
 
-        return cardRepository.findAllByUserIdAndCardSetId(currentUserId, categoryId);
+//        return cardRepository.findAllByUserIdAndCardSetId(currentUserId, categoryId); TODO
+        return null;
     }
 
     @Override
@@ -143,7 +144,7 @@ public class CardServiceImpl implements CardService { // TODO: refactor
     public void deleteCardByCardSetId(UUID cardSetId) throws EntityDoesNotExistException {
         checkCategoryExistenceById(cardSetId);
 
-        cardRepository.deleteCardByCardSetIdAndUserId(cardSetId, currentUserId);
+//        cardRepository.deleteCardByCardSetIdAndUserId(cardSetId, currentUserId); TODO
     }
 
     protected void checkTabExistenceByTabName(@NotNull String tab) throws EntityDoesNotExistException {
@@ -174,4 +175,5 @@ public class CardServiceImpl implements CardService { // TODO: refactor
         }
         throw new EntityDoesNotExistException(String.format("Card with id:%d doesn't exist", cardId));
     }
+
 }

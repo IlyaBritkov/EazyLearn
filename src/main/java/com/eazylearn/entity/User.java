@@ -24,7 +24,7 @@ import static javax.persistence.EnumType.STRING;
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 
 @Entity
-@Table(name = "\"user\"")
+@Table(name = "users")
 public class User extends BaseEntity { // todo: add validation
 
     @Column(name = "username")

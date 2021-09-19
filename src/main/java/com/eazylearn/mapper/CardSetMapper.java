@@ -23,7 +23,7 @@ public abstract class CardSetMapper {
             expression = "java( ((JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal() ).getId() )")
     public abstract CardSet toEntity(CardSetCreateRequestDTO cardSetDto);
 
-    @Mapping(target = "card.id", expression = "java(card.getId())")
-    @Mapping(target = "card.userId", expression = "java(card.getUserId())")
+    @Mapping(target = "cardSet.id", expression = "java(cardSet.getId())")
+    @Mapping(target = "cardSet.userId", expression = "java(cardSet.getUserId())") // todo maybe ignore
     public abstract void updateEntity(CardSetUpdateRequestDTO cardSetDto, @MappingTarget CardSet cardSet);
 }

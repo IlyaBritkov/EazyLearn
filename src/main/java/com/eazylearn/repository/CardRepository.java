@@ -9,15 +9,15 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface CardRepository extends CrudRepository<Card, UUID> {
+public interface CardRepository extends CrudRepository<Card, UUID> { // todo refactor it
 
     List<Card> findAllByUserId(UUID userId);
 
-    List<Card> findAllByUserIdAndCardSetId(UUID userId, UUID cardSetId);
+//    List<Card> findAllByUserIdAndCardSetId(UUID userId, UUID cardSetId); todo
 
     Optional<Card> findByIdAndUserId(UUID cardId, UUID userId);
 
     boolean existsByIdAndUserId(UUID cardId, UUID userId);
 
-    void deleteCardByCardSetIdAndUserId(UUID cardSetId, UUID userId);
+//    void deleteCardByCardSetIdAndUserId(UUID cardSetId, UUID userId); todo
 }

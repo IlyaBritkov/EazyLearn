@@ -13,7 +13,6 @@ import org.mapstruct.Named;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
-import static org.mapstruct.NullValuePropertyMappingStrategy.SET_TO_NULL;
 
 @Mapper(componentModel = "spring",
         nullValuePropertyMappingStrategy = IGNORE,
@@ -29,7 +28,6 @@ public abstract class CardMapper {
 
     @Mapping(target = "card.id", expression = "java(card.getId())") // todo maybe just ignore
     @Mapping(target = "card.userId", expression = "java(card.getUserId())")
-    @Mapping(target = "card.cardSetId", nullValuePropertyMappingStrategy = SET_TO_NULL)
     public abstract void updateEntity(CardUpdateRequestDTO cardDto, @MappingTarget Card card);
 
     @Named("proficiencyLevelToProficiencyDouble")
