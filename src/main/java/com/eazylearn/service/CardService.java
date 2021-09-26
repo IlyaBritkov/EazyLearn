@@ -1,27 +1,37 @@
 package com.eazylearn.service;
 
-import com.eazylearn.dto.request.CardCreateRequestDTO;
-import com.eazylearn.dto.request.CardUpdateRequestDTO;
-import com.eazylearn.dto.response.CardResponseDTO;
+import com.eazylearn.dto.request.card.CardCreateRequestDTO;
+import com.eazylearn.dto.request.card.CardUpdateRequestDTO;
+import com.eazylearn.dto.request.card.UpdateCardProficiencyLevelDTO;
 import com.eazylearn.entity.Card;
-import com.eazylearn.exception_handling.exception.EntityDoesNotExistException;
 
 import java.util.List;
 import java.util.UUID;
 
-public interface CardService { // todo refactor
+public interface CardService {
 
-    List<CardResponseDTO> findAllCardsByTabAndCardSetId(String tab, UUID categoryId) throws EntityDoesNotExistException;
+    List<Card> findAllCards();
 
-    List<Card> findAllCardsEntityByCardSetId(UUID categoryId) throws EntityDoesNotExistException;
+    Card findCardById(UUID cardId);
 
-    CardResponseDTO findCardById(UUID cardId) throws EntityDoesNotExistException;
+    List<Card> findAllFavouriteCards();
 
-    CardResponseDTO createCard(CardCreateRequestDTO cardCreateRequestDTO) throws EntityDoesNotExistException;
+    List<Card> findAllCardsBySetId(UUID cardSetId);
 
-    CardResponseDTO updateCardById(UUID cardId, CardUpdateRequestDTO updateDto) throws EntityDoesNotExistException;
+    List<Card> findAllFavouriteCardsBySetId(UUID cardSetId);
 
-    void deleteCardById(UUID cardId) throws EntityDoesNotExistException;
+    List<Card> findAllCardsEntityByCardSetId(UUID categoryId);
 
-    void deleteCardByCardSetId(UUID categoryId) throws EntityDoesNotExistException;
+    List<Card> createCards(List<CardCreateRequestDTO> cardCreateRequestDTO);
+
+    Card updateCardById(UUID cardId, CardUpdateRequestDTO updateDto);
+
+    List<Card> updateCards(List<CardUpdateRequestDTO> updateDTOList);
+
+    void deleteCardById(UUID cardId);
+
+    void deleteCardByCardSetId(UUID categoryId);
+
+    List<Card> updateCardsProficiencyLevel(List<UpdateCardProficiencyLevelDTO> updateProficiencyDTOList);
+
 }
