@@ -1,7 +1,7 @@
 package com.eazylearn.mapper;
 
-import com.eazylearn.dto.request.CardCreateRequestDTO;
-import com.eazylearn.dto.request.CardUpdateRequestDTO;
+import com.eazylearn.dto.request.card.CardCreateRequestDTO;
+import com.eazylearn.dto.request.card.CardUpdateRequestDTO;
 import com.eazylearn.dto.response.CardResponseDTO;
 import com.eazylearn.entity.Card;
 import com.eazylearn.enums.ProficiencyLevel;
@@ -12,6 +12,9 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
 
 @Mapper(componentModel = "spring",
@@ -33,6 +36,13 @@ public abstract class CardMapper {
     @Named("proficiencyLevelToProficiencyDouble")
     public static double proficiencyLevelToProficiencyDouble(ProficiencyLevel proficiencyLevel) {
         return proficiencyLevel.getLevelPoints();
+    }
+
+    public List<CardResponseDTO> mapCardListToCardResponseDTOList(List<Card> cardList) {
+
+        return cardList.stream()
+                .map(this::toResponseDTO)
+                .collect(toList());
     }
 
 }

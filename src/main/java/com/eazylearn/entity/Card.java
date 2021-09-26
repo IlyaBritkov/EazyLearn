@@ -3,6 +3,7 @@ package com.eazylearn.entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -27,20 +29,24 @@ import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Table(name = "card")
-public class Card extends BaseEntity { // TODO add validation
+public class Card extends BaseEntity {
 
+    @Length(min = 1, max = 100)
     @Column(name = "term")
     private String term;
 
+    @Length(min = 1, max = 1000)
     @Column(name = "definition")
     private String definition;
 
+    @NotNull
     @Column(name = "proficiency_level")
     private Double proficiencyLevel;
 
     @Column(name = "created_time")
     private final Long createdTime = Calendar.getInstance().getTimeInMillis();
 
+    @NotNull
     @Column(name = "user_id")
     private UUID userId;
 
