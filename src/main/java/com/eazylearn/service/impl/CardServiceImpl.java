@@ -1,7 +1,8 @@
 package com.eazylearn.service.impl;
 
-import com.eazylearn.dto.request.CardCreateRequestDTO;
-import com.eazylearn.dto.request.CardUpdateRequestDTO;
+import com.eazylearn.dto.request.card.CardCreateRequestDTO;
+import com.eazylearn.dto.request.card.CardUpdateRequestDTO;
+import com.eazylearn.dto.request.card.UpdateCardProficiencyLevelDTO;
 import com.eazylearn.dto.response.CardResponseDTO;
 import com.eazylearn.entity.Card;
 import com.eazylearn.enums.TabType;
@@ -48,7 +49,8 @@ public class CardServiceImpl implements CardService { // TODO: refactor
     private final UUID currentUserId = currentUser.getId();
 
     @Transactional(readOnly = true)
-    public List<CardResponseDTO> findAllCardsByTabAndCardSetId(@Nullable String tab, @Nullable UUID categoryId) throws EntityDoesNotExistException {
+    // TODO
+    public List<Card> findAllCards(@Nullable String tab, @Nullable UUID categoryId) throws EntityDoesNotExistException {
         if (tab == null) {
             tab = "HOME";
         }
@@ -61,7 +63,7 @@ public class CardServiceImpl implements CardService { // TODO: refactor
         List<CardResponseDTO> allCardsList = null;
         switch (tabType) {
             case HOME:
-                allCardsList = cardRepository.findAllByUserId(currentUserId)
+                allCardsList = cardRepository.findAlByUserId(currentUserId)
                         .stream()
                         .sorted(comparingDouble(Card::getProficiencyLevel))
                         .map(cardMapper::toResponseDTO)
@@ -76,7 +78,7 @@ public class CardServiceImpl implements CardService { // TODO: refactor
 //                        .collect(toList()); TODO
                 break;
             case RECENT:
-                allCardsList = cardRepository.findAllByUserId(currentUserId)
+                allCardsList = cardRepository.findAlByUserId(currentUserId)
                         .stream()
                         .sorted((card1, card2) -> compare(card2.getCreatedTime(), card1.getCreatedTime()))
                         .map(cardMapper::toResponseDTO)
@@ -88,25 +90,48 @@ public class CardServiceImpl implements CardService { // TODO: refactor
         return allCardsList;
     }
 
-    public List<Card> findAllCardsEntityByCardSetId(UUID categoryId) throws EntityDoesNotExistException {
-        checkCategoryExistenceById(categoryId);
-
-//        return cardRepository.findAllByUserIdAndCardSetId(currentUserId, categoryId); TODO
-        return null;
+    @Override
+    @Transactional(readOnly = true)
+    public List<Card> findAllCards() {
+        return cardRepository.findAlByUserId(currentUserId);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public CardResponseDTO findCardById(@NotNull UUID cardId) throws EntityDoesNotExistException {
+    public Card findCardById(@NotNull UUID cardId) {
         Optional<Card> optionalCard = cardRepository.findByIdAndUserId(cardId, currentUserId);
-        Card card = optionalCard.
-                orElseThrow(() -> new EntityDoesNotExistException(String.format("Card with id=%d doesn't exist", cardId)));
-        return cardMapper.toResponseDTO(card);
+
+        return optionalCard.
+                orElseThrow(() ->
+                        new EntityDoesNotExistException(String.format("Card with id=%s doesn't exist", cardId)));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Card> findAllFavouriteCards() {
+        return cardRepository.findAllByIsFavouriteAndUserId(true, currentUserId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Card> findAllCardsBySetId(UUID cardSetId) {
+        return cardRepository.findAllByCardSetIdAndUserId(cardSetId, currentUserId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Card> findAllFavouriteCardsBySetId(UUID cardSetId) {
+        return cardRepository.findAllByIsFavouriteAndCardSetIdAndUserId(true, cardSetId, currentUserId);
+    }
+
+    @Override
+    public List<Card> createCards(List<CardCreateRequestDTO> cardCreateRequestDTO) {
+        return null;
     }
 
     @Override
     @Transactional
-    public CardResponseDTO createCard(CardCreateRequestDTO cardCreateRequestDTO) throws EntityDoesNotExistException {
+    public Card createCard(CardCreateRequestDTO cardCreateRequestDTO) throws EntityDoesNotExistException {
         UUID cardSetId = cardCreateRequestDTO.getCardSetId();
 
         if (cardSetId != null) {
@@ -122,7 +147,7 @@ public class CardServiceImpl implements CardService { // TODO: refactor
     @Override
     @Transactional(isolation = SERIALIZABLE)
     @SuppressWarnings("OptionalGetWithoutIsPresent")
-    public CardResponseDTO updateCardById(UUID cardId, CardUpdateRequestDTO updateDto) throws EntityDoesNotExistException {
+    public Card updateCardById(UUID cardId, CardUpdateRequestDTO updateDto) throws EntityDoesNotExistException {
         checkCardExistenceById(cardId);
 
         Card updatedCard = cardRepository.findByIdAndUserId(cardId, currentUserId).get();
@@ -130,6 +155,11 @@ public class CardServiceImpl implements CardService { // TODO: refactor
         cardMapper.updateEntity(updateDto, updatedCard);
 
         return cardMapper.toResponseDTO(updatedCard);
+    }
+
+    @Override
+    public List<Card> updateCards(List<CardUpdateRequestDTO> updateDTOList) {
+        return null;
     }
 
     @Override
@@ -145,6 +175,11 @@ public class CardServiceImpl implements CardService { // TODO: refactor
         checkCategoryExistenceById(cardSetId);
 
 //        cardRepository.deleteCardByCardSetIdAndUserId(cardSetId, currentUserId); TODO
+    }
+
+    @Override
+    public List<Card> updateCardsProficiencyLevel(List<UpdateCardProficiencyLevelDTO> updateProficiencyDTOList) {
+        return null;
     }
 
     protected void checkTabExistenceByTabName(@NotNull String tab) throws EntityDoesNotExistException {

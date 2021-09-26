@@ -152,6 +152,23 @@
                     </excludes>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>7.15.0</version>
+
+                <configuration>
+                    <user>postgres</user>
+                    <password>password</password>
+                    <schemas>
+                        <schema>public</schema>
+                    </schemas>
+                    <url>jdbc:postgresql://localhost:5432/eazylearn</url>
+                </configuration>
+
+            </plugin>
+
         </plugins>
     </build>
 

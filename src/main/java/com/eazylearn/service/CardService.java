@@ -20,8 +20,6 @@ public interface CardService {
 
     List<Card> findAllFavouriteCardsBySetId(UUID cardSetId);
 
-    List<Card> findAllCardsEntityByCardSetId(UUID categoryId);
-
     List<Card> createCards(List<CardCreateRequestDTO> cardCreateRequestDTO);
 
     Card updateCardById(UUID cardId, CardUpdateRequestDTO updateDto);

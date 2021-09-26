@@ -46,6 +46,9 @@ public class Card extends BaseEntity {
     @Column(name = "created_time")
     private final Long createdTime = Calendar.getInstance().getTimeInMillis();
 
+    @Column(name = "is_favourite")
+    private Boolean isFavourite;
+
     @NotNull
     @Column(name = "user_id")
     private UUID userId;
