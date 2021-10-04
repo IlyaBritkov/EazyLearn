@@ -1,6 +1,6 @@
 package com.eazylearn.service.impl;
 
-import com.eazylearn.dto.request.UserRegistryRequestDTO;
+import com.eazylearn.dto.request.user.UserRegistryRequestDTO;
 import com.eazylearn.dto.response.UserAuthenticationResponseDTO;
 import com.eazylearn.dto.response.UserResponseDTO;
 import com.eazylearn.entity.User;

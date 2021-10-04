@@ -1,7 +1,7 @@
 package com.eazylearn.mapper;
 
-import com.eazylearn.dto.request.CardSetCreateRequestDTO;
-import com.eazylearn.dto.request.CardSetUpdateRequestDTO;
+import com.eazylearn.dto.request.cardset.CardSetCreateRequestDTO;
+import com.eazylearn.dto.request.cardset.CardSetUpdateRequestDTO;
 import com.eazylearn.dto.response.CardSetResponseDTO;
 import com.eazylearn.entity.CardSet;
 import com.eazylearn.security.jwt.JwtUser;

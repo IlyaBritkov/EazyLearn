@@ -1,8 +1,8 @@
 package com.eazylearn.controller;
 
 
-import com.eazylearn.dto.request.CardSetCreateRequestDTO;
-import com.eazylearn.dto.request.CardSetUpdateRequestDTO;
+import com.eazylearn.dto.request.cardset.CardSetCreateRequestDTO;
+import com.eazylearn.dto.request.cardset.CardSetUpdateRequestDTO;
 import com.eazylearn.dto.response.CardSetResponseDTO;
 import com.eazylearn.exception_handling.exception.EntityAlreadyExistsException;
 import com.eazylearn.exception_handling.exception.EntityDoesNotExistException;
@@ -28,10 +28,15 @@ import java.util.UUID;
 @AllArgsConstructor(onConstructor_ = @Autowired)
 
 @RestController
-@RequestMapping(value = "/api/v1/categories")
-public class CategoryRestController {
+@RequestMapping(value = "/api/v1/sets")
+public class CardSetRestController {
 
     private final CardSetService cardSetService;
+
+    // TODO API
+    // get all sets
+    // get favourite sets
+    // create set
 
     @GetMapping()
     public ResponseEntity<List<CardSetResponseDTO>> findAllCategories() {

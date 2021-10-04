@@ -1,19 +1,21 @@
 package com.eazylearn.service.impl;
 
 import com.eazylearn.dto.request.card.CardCreateRequestDTO;
+import com.eazylearn.dto.request.card.CardRequest;
 import com.eazylearn.dto.request.card.CardUpdateRequestDTO;
 import com.eazylearn.dto.request.card.UpdateCardProficiencyLevelDTO;
-import com.eazylearn.dto.response.CardResponseDTO;
 import com.eazylearn.entity.Card;
-import com.eazylearn.enums.TabType;
+import com.eazylearn.entity.CardSet;
 import com.eazylearn.exception_handling.exception.EntityDoesNotExistException;
 import com.eazylearn.mapper.CardMapper;
 import com.eazylearn.repository.CardRepository;
 import com.eazylearn.security.jwt.JwtUser;
 import com.eazylearn.service.CardService;
 import com.eazylearn.service.CardSetService;
+import com.eazylearn.service.CheckExistenceService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.buf.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +24,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
-import static java.lang.Double.compare;
-import static java.util.Comparator.comparingDouble;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.context.annotation.ScopedProxyMode.INTERFACES;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
@@ -39,55 +40,22 @@ import static org.springframework.web.context.WebApplicationContext.SCOPE_SESSIO
 
 @Service
 @Scope(value = SCOPE_SESSION, proxyMode = INTERFACES)
-public class CardServiceImpl implements CardService { // TODO: refactor
+public class CardServiceImpl implements CardService { // TODO refactor
 
     private final CardRepository cardRepository;
     private final CardSetService cardSetService;
+    private final CheckExistenceService checkExistenceService;
     private final CardMapper cardMapper;
 
-    private final JwtUser currentUser = ((JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-    private final UUID currentUserId = currentUser.getId();
+    private final JwtUser currentUser;
+    private final UUID currentUserId;
 
-    @Transactional(readOnly = true)
-    // TODO
-    public List<Card> findAllCards(@Nullable String tab, @Nullable UUID categoryId) throws EntityDoesNotExistException {
-        if (tab == null) {
-            tab = "HOME";
-        }
+    {
+        currentUser = (JwtUser) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
 
-        checkTabExistenceByTabName(tab);
-
-        TabType tabType = TabType.valueOf(tab.toUpperCase());
-        log.trace("tabType = {}", tabType);
-
-        List<CardResponseDTO> allCardsList = null;
-        switch (tabType) {
-            case HOME:
-                allCardsList = cardRepository.findAlByUserId(currentUserId)
-                        .stream()
-                        .sorted(comparingDouble(Card::getProficiencyLevel))
-                        .map(cardMapper::toResponseDTO)
-                        .collect(toList());
-                break;
-            case CATEGORY:
-                checkCategoryExistenceById(categoryId);
-                log.trace("categoryId = {}", categoryId);
-//                allCardsList = cardRepository.findAllByUserIdAndCardSetId(currentUserId, categoryId)
-//                        .stream()
-//                        .map(cardMapper::toResponseDTO)
-//                        .collect(toList()); TODO
-                break;
-            case RECENT:
-                allCardsList = cardRepository.findAlByUserId(currentUserId)
-                        .stream()
-                        .sorted((card1, card2) -> compare(card2.getCreatedTime(), card1.getCreatedTime()))
-                        .map(cardMapper::toResponseDTO)
-                        .collect(toList());
-                break;
-        }
-
-        log.trace("allCardsList = {}", allCardsList);
-        return allCardsList;
+        currentUserId = currentUser.getId();
     }
 
     @Override
@@ -125,23 +93,14 @@ public class CardServiceImpl implements CardService { // TODO: refactor
     }
 
     @Override
-    public List<Card> createCards(List<CardCreateRequestDTO> cardCreateRequestDTO) {
-        return null;
-    }
+    public List<Card> createCards(List<CardCreateRequestDTO> cardCreateRequestList) {
+        checkAssignedCardSetsExistence(cardCreateRequestList);
 
-    @Override
-    @Transactional
-    public Card createCard(CardCreateRequestDTO cardCreateRequestDTO) throws EntityDoesNotExistException {
-        UUID cardSetId = cardCreateRequestDTO.getCardSetId();
+        List<Card> newCardsList = cardCreateRequestList.stream()
+                .map(cardMapper::toEntity)
+                .collect(toList());
 
-        if (cardSetId != null) {
-            checkCategoryExistenceById(cardSetId);
-        }
-
-        Card card = cardMapper.toEntity(cardCreateRequestDTO);
-
-        Card savedCard = cardRepository.save(card);
-        return cardMapper.toResponseDTO(savedCard);
+        return cardRepository.saveAll(newCardsList);
     }
 
     @Override
@@ -182,15 +141,32 @@ public class CardServiceImpl implements CardService { // TODO: refactor
         return null;
     }
 
-    protected void checkTabExistenceByTabName(@NotNull String tab) throws EntityDoesNotExistException {
-        final String finalTab = tab;
-        if (Arrays.stream(TabType.values())
-                .noneMatch(tabType -> tabType.toString()
-                        .equalsIgnoreCase(finalTab))) {
-            throw new EntityDoesNotExistException(String.format("Tab with name:%s doesn't exist", tab));
+    /**
+     * Check that all CardSets assigned to a Card exist
+     * If at least one CardSet doesn't exist exception is thrown
+     *
+     * @param cardRequestList - list from which IDs of CardSets will be extracted
+     * @throws EntityDoesNotExistException if at least one CardSet doesn't exist the exception is thrown
+     **/
+    protected void checkAssignedCardSetsExistence(List<? extends CardRequest> cardRequestList) {
+        Set<UUID> assignedCardSetIds = new HashSet<>();
+
+        cardRequestList.stream()
+                .map(CardRequest::getCardSetIds)
+                .forEach(assignedCardSetIds::addAll);
+
+        boolean allCardSetExist = checkExistenceService.areCardSetByIdsExist(assignedCardSetIds);
+
+        if (!allCardSetExist) {
+            throw new EntityDoesNotExistException(String.format(
+                    "%s with some of the following IDs %s doesnt exist",
+                    CardSet.class.getName(),
+                    assignedCardSetIds.toString())); // TODO check if toString call is needed
         }
+
     }
 
+    // TODO is needed?
     protected void checkCategoryExistenceById(@Nullable UUID cardSetId) throws EntityDoesNotExistException {
         if (cardSetId != null) {
             boolean isCategoryExists = cardSetService.existsById(cardSetId);
@@ -201,6 +177,7 @@ public class CardServiceImpl implements CardService { // TODO: refactor
         throw new EntityDoesNotExistException(String.format("CardSet with id:%d doesn't exist", cardSetId));
     }
 
+    // TODO is needed?
     protected void checkCardExistenceById(@Nullable UUID cardId) throws EntityDoesNotExistException {
         if (cardId != null) {
             boolean isCardExists = cardRepository.existsByIdAndUserId(cardId, currentUserId);

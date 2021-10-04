@@ -24,16 +24,21 @@ public abstract class CardMapper {
 
     public abstract CardResponseDTO toResponseDTO(Card card);
 
-    @Mapping(source = "proficiencyLevel", target = "proficiencyLevel", qualifiedByName = "proficiencyLevelToProficiencyDouble")
+    @Mapping(source = "proficiencyLevel",
+            target = "proficiencyLevel",
+            qualifiedByName = "proficiencyLevelToProficiencyDouble")
+    // TODO ADD CardSet mapping
     @Mapping(target = "userId",
-            expression = "java( ((JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal() ).getId() )")
+            expression =
+                    "java( ((JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId() )")
     public abstract Card toEntity(CardCreateRequestDTO cardDto);
 
-    @Mapping(target = "card.id", expression = "java(card.getId())") // todo maybe just ignore
-    @Mapping(target = "card.userId", expression = "java(card.getUserId())")
+    @Mapping(target = "card.id", ignore = true)
+    @Mapping(target = "card.userId", ignore = true) // TODO check if ignore is needed
     public abstract void updateEntity(CardUpdateRequestDTO cardDto, @MappingTarget Card card);
 
     @Named("proficiencyLevelToProficiencyDouble")
+    // TODO maybe make it protected
     public static double proficiencyLevelToProficiencyDouble(ProficiencyLevel proficiencyLevel) {
         return proficiencyLevel.getLevelPoints();
     }

@@ -1,7 +1,7 @@
 package com.eazylearn.controller;
 
-import com.eazylearn.dto.request.UserAuthenticationRequestDTO;
-import com.eazylearn.dto.request.UserRegistryRequestDTO;
+import com.eazylearn.dto.request.user.UserAuthenticationRequestDTO;
+import com.eazylearn.dto.request.user.UserRegistryRequestDTO;
 import com.eazylearn.dto.response.UserAuthenticationResponseDTO;
 import com.eazylearn.dto.response.UserResponseDTO;
 import com.eazylearn.service.AuthenticationService;

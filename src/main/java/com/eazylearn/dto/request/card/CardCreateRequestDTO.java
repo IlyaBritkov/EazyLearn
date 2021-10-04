@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
-public class CardCreateRequestDTO { // todo: add validation
+public class CardCreateRequestDTO implements CardRequest { // todo: add validation
 
     @Length(min = 1, max = 100)
     private String term;
@@ -20,6 +20,7 @@ public class CardCreateRequestDTO { // todo: add validation
     @NotNull
     private ProficiencyLevel proficiencyLevel;
 
+     @NotNull
     private List<UUID> cardSetIds;
 
 }

@@ -1,4 +1,4 @@
-package com.eazylearn.dto.request;
+package com.eazylearn.dto.request.user;
 
 import lombok.Data;
 

@@ -7,12 +7,14 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.util.UUID;
 
+import static javax.persistence.GenerationType.AUTO;
+
 @Data
 @MappedSuperclass
 public class BaseEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = AUTO)
     private UUID id;
 
 }

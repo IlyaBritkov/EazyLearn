@@ -1,7 +1,7 @@
 package com.eazylearn.mapper;
 
-import com.eazylearn.dto.request.UserRegistryRequestDTO;
-import com.eazylearn.dto.request.UserUpdateRequestDTO;
+import com.eazylearn.dto.request.user.UserRegistryRequestDTO;
+import com.eazylearn.dto.request.user.UserUpdateRequestDTO;
 import com.eazylearn.dto.response.UserResponseDTO;
 import com.eazylearn.entity.User;
 import org.mapstruct.Mapper;

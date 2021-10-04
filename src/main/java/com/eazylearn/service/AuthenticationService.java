@@ -1,6 +1,6 @@
 package com.eazylearn.service;
 
-import com.eazylearn.dto.request.UserRegistryRequestDTO;
+import com.eazylearn.dto.request.user.UserRegistryRequestDTO;
 import com.eazylearn.dto.response.UserAuthenticationResponseDTO;
 import com.eazylearn.dto.response.UserResponseDTO;
 import org.springframework.security.core.AuthenticationException;

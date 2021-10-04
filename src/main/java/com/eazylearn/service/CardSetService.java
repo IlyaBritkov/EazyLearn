@@ -1,7 +1,7 @@
 package com.eazylearn.service;
 
-import com.eazylearn.dto.request.CardSetCreateRequestDTO;
-import com.eazylearn.dto.request.CardSetUpdateRequestDTO;
+import com.eazylearn.dto.request.cardset.CardSetCreateRequestDTO;
+import com.eazylearn.dto.request.cardset.CardSetUpdateRequestDTO;
 import com.eazylearn.dto.response.CardSetResponseDTO;
 import com.eazylearn.exception_handling.exception.EntityAlreadyExistsException;
 import com.eazylearn.exception_handling.exception.EntityDoesNotExistException;

@@ -16,7 +16,7 @@ public enum ProficiencyLevel {
         return levelPoints;
     }
 
-    public ProficiencyLevel resolveLevelByPoint(double point) { // TODO maybe replace that logic by math rounding
+    public static ProficiencyLevel resolveLevelByPoint(double point) { // TODO maybe replace that logic by math rounding
         if (point < AVERAGE.getLevelPoints()) {
             return LOW;
         } else if (point < HIGH.getLevelPoints()) {
@@ -28,4 +28,5 @@ public enum ProficiencyLevel {
             return AVERAGE;
         }
     }
+
 }
