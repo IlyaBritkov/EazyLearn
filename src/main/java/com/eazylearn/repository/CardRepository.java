@@ -25,8 +25,8 @@ public interface CardRepository extends CrudRepository<Card, UUID> { // todo ref
 
     @Query(value = "SELECT *"
             + "FROM card"
-            + "         INNER JOIN set_card set on card.id = set.card_id"
-            + "WHERE set.set_id = :cardSetId"
+            + "         INNER JOIN set_card on set_card.card_id = card.id"
+            + "WHERE set_card.set_id = :cardSetId"
             + "AND card.user_id = :userId"
             + ";",
             nativeQuery = true)
