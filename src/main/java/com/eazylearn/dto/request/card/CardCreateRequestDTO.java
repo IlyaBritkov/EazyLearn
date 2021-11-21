@@ -21,7 +21,7 @@ public class CardCreateRequestDTO implements CardRequest { // todo: add validati
     @NotNull
     private ProficiencyLevel proficiencyLevel;
 
-    // TODO: handle mapping with null value
+    // todo: handle mapping with null value
     @Nullable
     private List<UUID> linkedCardSetsIds;
 

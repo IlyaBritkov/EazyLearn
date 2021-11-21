@@ -1,7 +1,7 @@
 package com.eazylearn.security.jwt;
 
 import com.eazylearn.enums.UserRole;
-import com.eazylearn.exception_handling.exception.JwtAuthenticationException;
+import com.eazylearn.exception.JwtAuthenticationException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
@@ -32,11 +32,11 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 
 @Component
-public class JwtTokenProvider { // check code logic after refactroring
+public class JwtTokenProvider { // check code logic after refactoring
 
     @Value("${jwt.token.secret}")
     private String secret;
-    //    @Value("${jwt.token.expired}") uncomment after tests // TODO: 6/10/2021
+    //    @Value("${jwt.token.expired}") uncomment after tests // todo: 6/10/2021
     private long validityInSeconds = 86400;
 
     private final UserDetailsService userDetailsService;
@@ -52,13 +52,13 @@ public class JwtTokenProvider { // check code logic after refactroring
 
         LocalDateTime now = now();
         LocalDateTime validity = now.plusSeconds(validityInSeconds);
+
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(mapToDateViaSqlTimestamp(now))
                 .setExpiration(mapToDateViaSqlTimestamp(validity))
                 .signWith(HS256, secret)
-                .compact()
-                ;
+                .compact();
     }
 
     public Authentication getAuthentication(String token) {

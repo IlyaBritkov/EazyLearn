@@ -37,7 +37,9 @@ public class CardRestController {
      * Returns all cards created by authorized user
      * or only cards associated with cardSetId.
      *
-     * @param cardSetId - optional request parameter. If passed only cards that belong to cardSet will be returned. Otherwise, will be returned all cards.
+     * @param cardSetId - optional request parameter.
+     *                  If passed only cards that belong to cardSet will be returned.
+     *                  Otherwise, will be returned all cards.
      **/
     @GetMapping
     public ResponseEntity<List<CardResponseDTO>> findAllCards(
@@ -65,7 +67,8 @@ public class CardRestController {
      * Returns all cards with the field value isFavourite = true and created by authorized user
      * or only cards associated with cardSetId.
      *
-     * @param cardSetId - optional request parameter. If passed only cards that are favourite and belong to cardSet will be returned.
+     * @param cardSetId - optional request parameter.
+     *                  If passed only cards that are favourite and belong to cardSet will be returned.
      *                  Otherwise, will be returned all favourite cards.
      **/
     @GetMapping("/favourite")

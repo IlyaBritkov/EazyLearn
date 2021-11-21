@@ -1,4 +1,4 @@
-package com.eazylearn.exception_handling.exception;
+package com.eazylearn.exception;
 
 import org.springframework.web.bind.annotation.ResponseStatus;
 

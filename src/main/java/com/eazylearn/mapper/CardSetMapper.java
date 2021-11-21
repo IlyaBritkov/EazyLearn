@@ -15,12 +15,12 @@ import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
 @Mapper(componentModel = "spring",
         nullValuePropertyMappingStrategy = IGNORE,
         imports = {SecurityContextHolder.class, JwtUser.class})
-public abstract class CardSetMapper {
+public abstract class CardSetMapper { // todo: update mapping
 
     public abstract CardSetResponseDTO toResponseDTO(CardSet cardSet);
 
     @Mapping(target = "userId",
-            expression = "java( ((JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal() ).getId() )")
+            expression = "java(((JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal() ).getId())")
     public abstract CardSet toEntity(CardSetCreateRequestDTO cardSetDto);
 
     @Mapping(target = "cardSet.id", expression = "java(cardSet.getId())")

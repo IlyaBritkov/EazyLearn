@@ -4,7 +4,7 @@ import com.eazylearn.dto.request.user.UserRegistryRequestDTO;
 import com.eazylearn.dto.request.user.UserUpdateRequestDTO;
 import com.eazylearn.dto.response.UserResponseDTO;
 import com.eazylearn.entity.User;
-import com.eazylearn.exception_handling.exception.UserAlreadyExistAuthenticationException;
+import com.eazylearn.exception.UserAlreadyExistAuthenticationException;
 import com.eazylearn.mapper.UserMapper;
 import com.eazylearn.repository.UserRepository;
 import com.eazylearn.service.UserService;
@@ -70,12 +70,14 @@ public class UserServiceImpl implements UserService { // todo: add current user
     public User findUserEntityByEmail(String email) throws UsernameNotFoundException {
 
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException(String.format("User with email = %s doesn't exist", email)));
+                .orElseThrow(() -> new UsernameNotFoundException(
+                        String.format("User with email = %s doesn't exist", email)));
     }
 
     @Override
     @Transactional(isolation = SERIALIZABLE)
-    public UserResponseDTO createUser(UserRegistryRequestDTO registryRequest) throws UserAlreadyExistAuthenticationException {
+    public UserResponseDTO createUser(UserRegistryRequestDTO registryRequest)
+            throws UserAlreadyExistAuthenticationException {
 
         String email = registryRequest.getEmail();
 
@@ -90,20 +92,24 @@ public class UserServiceImpl implements UserService { // todo: add current user
 
             return userMapper.toResponseDTO(persistedUser);
         } else {
-            throw new UserAlreadyExistAuthenticationException(String.format("User with email = %s already exists", email));
+            throw new UserAlreadyExistAuthenticationException(
+                    String.format("User with email = %s already exists", email));
         }
     }
 
     @Override
     @Transactional(isolation = SERIALIZABLE)
-    public UserResponseDTO updateUserById(UUID id, UserUpdateRequestDTO updateRequest) throws UsernameNotFoundException, UserAlreadyExistAuthenticationException {
-        // TODO: 6/8/2021 add check right for update
+    public UserResponseDTO updateUserById(UUID id, UserUpdateRequestDTO updateRequest)
+            throws UsernameNotFoundException, UserAlreadyExistAuthenticationException {
+
+        // todo: 6/8/2021 add check right for update
         User persistedUser = userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format("User with id = %s doesn't exist", id)));
 
         String newEmail = updateRequest.getEmail();
         if (userRepository.existsByEmail(newEmail)) {
-            throw new UserAlreadyExistAuthenticationException(String.format("user with email = %s already exists", newEmail));
+            throw new UserAlreadyExistAuthenticationException(
+                    String.format("user with email = %s already exists", newEmail));
         }
 
         userMapper.updateEntity(updateRequest, persistedUser);
@@ -114,7 +120,7 @@ public class UserServiceImpl implements UserService { // todo: add current user
     @Override
     @Transactional
     public void deleteUserById(UUID id) {
-        // TODO: 6/8/2021 add check right for update
+        // todo: 6/8/2021 add check right for update
 
         userRepository.deleteById(id);
     }

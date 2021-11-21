@@ -25,11 +25,11 @@ public class CardResponseDTO {
 
     private Double proficiencyLevel;
 
-    private boolean isFavourite;
+    private Boolean isFavourite;
 
     private Long createdTime;
 
-    // TODO: check whether a list is always returned or null value is possible
+    //todo: check whether a list is always returned or null value is possible
     @Nullable
     private List<UUID> linkedCardSetsIds;
 

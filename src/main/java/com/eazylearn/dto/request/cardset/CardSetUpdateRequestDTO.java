@@ -3,7 +3,7 @@ package com.eazylearn.dto.request.cardset;
 import lombok.Data;
 
 @Data
-public class CardSetUpdateRequestDTO { // TODO: 6/10/2021 add validation
+public class CardSetUpdateRequestDTO { // todo: 6/10/2021 add validation
 
     private String name;
 

@@ -6,7 +6,7 @@ import com.eazylearn.dto.request.card.CardUpdateRequestDTO;
 import com.eazylearn.dto.request.card.UpdateCardProficiencyLevelDTO;
 import com.eazylearn.entity.Card;
 import com.eazylearn.entity.CardSet;
-import com.eazylearn.exception_handling.exception.EntityDoesNotExistException;
+import com.eazylearn.exception.EntityDoesNotExistException;
 import com.eazylearn.mapper.CardMapper;
 import com.eazylearn.repository.CardRepository;
 import com.eazylearn.security.jwt.JwtUser;
@@ -121,9 +121,10 @@ public class CardServiceImpl implements CardService { // TODO refactor
     @Transactional(isolation = SERIALIZABLE)
     public List<Card> updateCards(List<CardUpdateRequestDTO> updateDTOList) { // TODO add asynchronous logic
         // ? maybe use Callable for the purpose below
-        // TODO: 1 Thread: sort updateDTOList by ID descending
+        // todo: 1 Thread: sort updateDTOList by ID descending
 
-        // TODO 2 Thread: checkCardsExistenceById + request database and receive Card collection (maybe user LinkedList)
+        // todo: 2 Thread: checkCardsExistenceById +
+        //  request database and receive Card collection (maybe user LinkedList)
         checkCardsExistenceById(updateDTOList);
 
         return null;

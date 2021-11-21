@@ -22,7 +22,7 @@ import static javax.persistence.CascadeType.DETACH;
 import static javax.persistence.CascadeType.MERGE;
 import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.CascadeType.REFRESH;
-import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.FetchType.EAGER;
 
 @SuppressWarnings({"LombokDataInspection", "LombokEqualsAndHashCodeInspection"})
 @NoArgsConstructor
@@ -61,7 +61,7 @@ public class Card extends BaseEntity {
             MERGE,
             REFRESH,
             DETACH},
-            fetch = LAZY)
+            fetch = EAGER)
     @JoinTable(
             name = "set_card",
             joinColumns = {@JoinColumn(name = "card_id")},

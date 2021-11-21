@@ -4,8 +4,7 @@ package com.eazylearn.controller;
 import com.eazylearn.dto.request.cardset.CardSetCreateRequestDTO;
 import com.eazylearn.dto.request.cardset.CardSetUpdateRequestDTO;
 import com.eazylearn.dto.response.CardSetResponseDTO;
-import com.eazylearn.exception_handling.exception.EntityAlreadyExistsException;
-import com.eazylearn.exception_handling.exception.EntityDoesNotExistException;
+import com.eazylearn.exception.EntityAlreadyExistsException;
 import com.eazylearn.service.CardSetService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +32,7 @@ public class CardSetRestController {
 
     private final CardSetService cardSetService;
 
-    // TODO API
+    // todo: API
     // get all sets
     // get favourite sets
     // create set
@@ -45,27 +44,29 @@ public class CardSetRestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CardSetResponseDTO> findCategoryById(@PathVariable("id") UUID categoryId) throws EntityDoesNotExistException {
+    public ResponseEntity<CardSetResponseDTO> findCategoryById(@PathVariable("id") UUID categoryId) {
         CardSetResponseDTO cardSetResponseDTO = cardSetService.findCategoryById(categoryId);
         return ResponseEntity.ok(cardSetResponseDTO);
     }
 
     @PostMapping()
-    public ResponseEntity<CardSetResponseDTO> createCategory(@RequestBody CardSetCreateRequestDTO cardSetCreateRequestDTO) throws EntityAlreadyExistsException {
+    public ResponseEntity<CardSetResponseDTO> createCategory(
+            @RequestBody CardSetCreateRequestDTO cardSetCreateRequestDTO) throws EntityAlreadyExistsException {
         CardSetResponseDTO cardSetResponseDTO = cardSetService.createCategory(cardSetCreateRequestDTO);
         return ResponseEntity.ok(cardSetResponseDTO);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<CardSetResponseDTO> updateCategoryById(@PathVariable("id") UUID categoryId,
-                                                                 @RequestBody CardSetUpdateRequestDTO updateDto) throws EntityDoesNotExistException {
+                                                                 @RequestBody CardSetUpdateRequestDTO updateDto) {
         CardSetResponseDTO cardSetResponseDTO = cardSetService.updateCategoryById(categoryId, updateDto);
 
         return ResponseEntity.ok(cardSetResponseDTO);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCategoryById(@PathVariable("id") UUID categoryId, @RequestParam boolean isDeleteAllCardsInCategory) throws EntityDoesNotExistException {
+    public ResponseEntity<?> deleteCategoryById(@PathVariable("id") UUID categoryId,
+                                                @RequestParam boolean isDeleteAllCardsInCategory) {
         cardSetService.deleteCategoryById(categoryId, isDeleteAllCardsInCategory);
 
         return ResponseEntity.noContent().build();

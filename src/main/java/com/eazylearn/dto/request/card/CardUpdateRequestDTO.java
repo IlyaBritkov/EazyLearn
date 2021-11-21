@@ -22,14 +22,14 @@ public class CardUpdateRequestDTO implements CardRequest {
     @Length(min = 1, max = 1000)
     private String definition;
 
-    // TODO: check that mapping from this string value to double equivalent works right
+    // todo: check that mapping from this string value to double equivalent works right
     @Nullable
     private ProficiencyLevel proficiencyLevel;
 
     @Nullable
     private Boolean isFavourite;
 
-    // TODO: handle mapping with null value
+    // todo: handle mapping with null value
     @Nullable
     private List<UUID> linkedCardSetsIds;
 

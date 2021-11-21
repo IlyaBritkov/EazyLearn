@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class CardSetDeleteRequestDTO {
 
-    boolean isDeleteAllCardsInSet;
+    private boolean isDeleteAllCardsInSet;
 
 }

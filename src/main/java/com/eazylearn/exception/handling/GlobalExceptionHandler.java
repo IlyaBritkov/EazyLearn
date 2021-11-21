@@ -1,10 +1,10 @@
-package com.eazylearn.exception_handling;
+package com.eazylearn.exception.handling;
 
 import com.eazylearn.dto.response.ExceptionResponseDTO;
-import com.eazylearn.exception_handling.exception.EntityAlreadyExistsException;
-import com.eazylearn.exception_handling.exception.EntityDoesNotExistException;
-import com.eazylearn.exception_handling.exception.JwtAuthenticationException;
-import com.eazylearn.exception_handling.exception.UserAlreadyExistAuthenticationException;
+import com.eazylearn.exception.EntityAlreadyExistsException;
+import com.eazylearn.exception.EntityDoesNotExistException;
+import com.eazylearn.exception.JwtAuthenticationException;
+import com.eazylearn.exception.UserAlreadyExistAuthenticationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

@@ -5,8 +5,8 @@ import com.eazylearn.dto.request.cardset.CardSetUpdateRequestDTO;
 import com.eazylearn.dto.response.CardSetResponseDTO;
 import com.eazylearn.entity.Card;
 import com.eazylearn.entity.CardSet;
-import com.eazylearn.exception_handling.exception.EntityAlreadyExistsException;
-import com.eazylearn.exception_handling.exception.EntityDoesNotExistException;
+import com.eazylearn.exception.EntityAlreadyExistsException;
+import com.eazylearn.exception.EntityDoesNotExistException;
 import com.eazylearn.mapper.CardSetMapper;
 import com.eazylearn.repository.CardSetRepository;
 import com.eazylearn.security.jwt.JwtUser;
@@ -74,12 +74,14 @@ public class CardSetServiceImpl implements CardSetService {
 
     @Override
     @Transactional(isolation = SERIALIZABLE)
-    public CardSetResponseDTO createCategory(CardSetCreateRequestDTO cardSetCreateRequestDTO) throws EntityAlreadyExistsException {
+    public CardSetResponseDTO createCategory(CardSetCreateRequestDTO cardSetCreateRequestDTO)
+            throws EntityAlreadyExistsException {
 
         String newCategoryName = cardSetCreateRequestDTO.getName();
 
         if (cardSetRepository.existsByNameAndUserId(newCategoryName, currentUserId)) { // todo
-            throw new EntityAlreadyExistsException(String.format("CardSet with name = %s already exists", newCategoryName));
+            throw new EntityAlreadyExistsException(String.format("CardSet with name = %s already exists",
+                    newCategoryName));
         } else {
             CardSet newCardSet = cardSetMapper.toEntity(cardSetCreateRequestDTO);
             CardSet persistedCardSet = cardSetRepository.save(newCardSet);
@@ -91,7 +93,8 @@ public class CardSetServiceImpl implements CardSetService {
     @Override
     @Transactional(isolation = SERIALIZABLE)
     @SuppressWarnings("OptionalGetWithoutIsPresent")
-    public CardSetResponseDTO updateCategoryById(UUID categoryId, CardSetUpdateRequestDTO updateDTO) throws EntityDoesNotExistException {
+    public CardSetResponseDTO updateCategoryById(UUID categoryId, CardSetUpdateRequestDTO updateDTO)
+            throws EntityDoesNotExistException {
 
         checkCategoryExistenceById(categoryId);
 
@@ -105,15 +108,16 @@ public class CardSetServiceImpl implements CardSetService {
     @Transactional(isolation = SERIALIZABLE)
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     // todo refactor it
-    public void deleteCategoryById(UUID categoryId, boolean isDeleteAllCardsInCategory) throws EntityDoesNotExistException {
-        checkCategoryExistenceById(categoryId);
+    public void deleteCategoryById(UUID setId, boolean isDeleteAllCardsInCategory)
+            throws EntityDoesNotExistException {
+        checkCategoryExistenceById(setId);
 
-        CardSet cardSet = cardSetRepository.findByIdAndUserId(categoryId, currentUserId).get();
+        CardSet cardSet = cardSetRepository.findByIdAndUserId(setId, currentUserId).get();
 
         if (isDeleteAllCardsInCategory) {
-            cardService.deleteCardByCardSetId(categoryId);
+            cardService.deleteCardByCardSetId(setId);
         } else {
-            List<Card> allCardsByCategory = cardService.findAllCardsEntityByCardSetId(categoryId);
+            List<Card> allCardsByCategory = cardService.findAllCardsBySetId(setId);
 //            allCardsByCategory
 //                    .forEach(card -> card.setCardSetId(null)); todo
         }
