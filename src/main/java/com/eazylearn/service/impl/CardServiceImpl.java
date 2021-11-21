@@ -15,7 +15,6 @@ import com.eazylearn.service.CardSetService;
 import com.eazylearn.service.CheckExistenceService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.buf.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +30,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static org.springframework.context.annotation.ScopedProxyMode.INTERFACES;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.web.context.WebApplicationContext.SCOPE_SESSION;
@@ -106,19 +106,48 @@ public class CardServiceImpl implements CardService { // TODO refactor
     @Override
     @Transactional(isolation = SERIALIZABLE)
     @SuppressWarnings("OptionalGetWithoutIsPresent")
-    public Card updateCardById(UUID cardId, CardUpdateRequestDTO updateDto) throws EntityDoesNotExistException {
+    public Card updateCard(CardUpdateRequestDTO updateDto) throws EntityDoesNotExistException {
+        final UUID cardId = updateDto.getCardId();
         checkCardExistenceById(cardId);
 
-        Card updatedCard = cardRepository.findByIdAndUserId(cardId, currentUserId).get();
+        Card cardToUpdate = cardRepository.findByIdAndUserId(cardId, currentUserId).get();
 
-        cardMapper.updateEntity(updateDto, updatedCard);
+        cardMapper.updateEntity(updateDto, cardToUpdate);
 
-        return cardMapper.toResponseDTO(updatedCard);
+        return cardToUpdate;
     }
 
     @Override
-    public List<Card> updateCards(List<CardUpdateRequestDTO> updateDTOList) {
+    @Transactional(isolation = SERIALIZABLE)
+    public List<Card> updateCards(List<CardUpdateRequestDTO> updateDTOList) { // TODO add asynchronous logic
+        // ? maybe use Callable for the purpose below
+        // TODO: 1 Thread: sort updateDTOList by ID descending
+
+        // TODO 2 Thread: checkCardsExistenceById + request database and receive Card collection (maybe user LinkedList)
+        checkCardsExistenceById(updateDTOList);
+
         return null;
+    }
+
+    /**
+     * Checks that all entities exist according passed updateDTOList
+     *
+     * @throws IllegalArgumentException if at least one DTO object doesn't contain ID value
+     * @throws IllegalArgumentException if at least one Card doesn't exist by ID
+     */
+    private void checkCardsExistenceById(@NotNull final List<CardUpdateRequestDTO> updateDTOList) {
+        Set<UUID> cardIds = updateDTOList.stream()
+                .map(CardUpdateRequestDTO::getCardId)
+                .collect(toSet());
+
+        if (updateDTOList.size() != cardIds.size()) {
+            throw new IllegalArgumentException("Some CardDTO doesn't have CardId in the payload");
+        }
+
+        boolean areAllCardsExist = checkExistenceService.areCardsByIdsExist(cardIds);
+        if (!areAllCardsExist) {
+            throw new IllegalArgumentException("Some Card or Cards doesn't exist and cannot be updated");
+        }
     }
 
     @Override
@@ -152,7 +181,7 @@ public class CardServiceImpl implements CardService { // TODO refactor
         Set<UUID> assignedCardSetIds = new HashSet<>();
 
         cardRequestList.stream()
-                .map(CardRequest::getCardSetIds)
+                .map(CardRequest::getLinkedCardSetsIds)
                 .forEach(assignedCardSetIds::addAll);
 
         boolean allCardSetExist = checkExistenceService.areCardSetByIdsExist(assignedCardSetIds);

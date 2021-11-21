@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -24,7 +25,12 @@ public class CardResponseDTO {
 
     private Double proficiencyLevel;
 
+    private boolean isFavourite;
+
+    private Long createdTime;
+
+    // TODO: check whether a list is always returned or null value is possible
     @Nullable
-    private UUID cardSetId; // TODO many
+    private List<UUID> linkedCardSetsIds;
 
 }

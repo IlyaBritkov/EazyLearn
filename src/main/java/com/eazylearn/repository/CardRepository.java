@@ -5,8 +5,10 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -49,6 +51,8 @@ public interface CardRepository extends CrudRepository<Card, UUID> { // todo ref
 //    List<Card> findAllByUserIdAndCardSetId(UUID userId, UUID cardSetId); todo
 
     boolean existsByIdAndUserId(UUID cardId, UUID userId);
+
+    long countByIdIn(@NonNull Collection<UUID> ids);
 
 //    void deleteCardByCardSetIdAndUserId(UUID cardSetId, UUID userId); todo
 }

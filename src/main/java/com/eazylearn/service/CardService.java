@@ -22,7 +22,7 @@ public interface CardService {
 
     List<Card> createCards(List<CardCreateRequestDTO> cardCreateRequestList);
 
-    Card updateCardById(UUID cardId, CardUpdateRequestDTO updateDto);
+    Card updateCard(CardUpdateRequestDTO updateDto);
 
     List<Card> updateCards(List<CardUpdateRequestDTO> updateDTOList);
 

@@ -1,5 +1,6 @@
 package com.eazylearn.service.impl;
 
+import com.eazylearn.repository.CardRepository;
 import com.eazylearn.repository.CardSetRepository;
 import com.eazylearn.service.CheckExistenceService;
 import lombok.RequiredArgsConstructor;
@@ -14,12 +15,18 @@ import java.util.UUID;
 public class CheckExistenceServiceImpl implements CheckExistenceService {
 
     private final CardSetRepository cardSetRepository;
+    private final CardRepository cardRepository;
 
     @Override
     public boolean areCardSetByIdsExist(Collection<UUID> cardSetIds) {
         long countByIds = cardSetRepository.countByIds(cardSetIds);
 
         return cardSetIds.size() == countByIds;
+    }
+
+    @Override
+    public boolean areCardsByIdsExist(Collection<UUID> cardIds) {
+        return cardIds.size() == cardRepository.countByIdIn(cardIds);
     }
 
 }

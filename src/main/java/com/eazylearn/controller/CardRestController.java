@@ -33,12 +33,17 @@ public class CardRestController {
     private final CardService cardService;
     private final CardMapper cardMapper;
 
+    /**
+     * Returns all cards created by authorized user
+     * or only cards associated with cardSetId.
+     *
+     * @param cardSetId - optional request parameter. If passed only cards that belong to cardSet will be returned. Otherwise, will be returned all cards.
+     **/
     @GetMapping
     public ResponseEntity<List<CardResponseDTO>> findAllCards(
             @RequestParam(value = "cardSetId", required = false) UUID cardSetId) {
 
         List<Card> allCards;
-
         if (cardSetId == null) {
             allCards = cardService.findAllCards();
         } else {
@@ -46,7 +51,6 @@ public class CardRestController {
         }
 
         List<CardResponseDTO> cardResponseDTOList = cardMapper.mapCardListToCardResponseDTOList(allCards);
-
         return ResponseEntity.ok(cardResponseDTOList);
     }
 
@@ -57,12 +61,18 @@ public class CardRestController {
         return ResponseEntity.ok(cardMapper.toResponseDTO(card));
     }
 
+    /**
+     * Returns all cards with the field value isFavourite = true and created by authorized user
+     * or only cards associated with cardSetId.
+     *
+     * @param cardSetId - optional request parameter. If passed only cards that are favourite and belong to cardSet will be returned.
+     *                  Otherwise, will be returned all favourite cards.
+     **/
     @GetMapping("/favourite")
     public ResponseEntity<List<CardResponseDTO>> findAllFavouriteCards(
-            @RequestParam(value = "cardSetId") UUID cardSetId) {
+            @RequestParam(value = "cardSetId", required = false) UUID cardSetId) {
 
         List<Card> allCards;
-
         if (cardSetId == null) {
             allCards = cardService.findAllFavouriteCards();
         } else {
@@ -70,7 +80,6 @@ public class CardRestController {
         }
 
         List<CardResponseDTO> cardResponseDTOList = cardMapper.mapCardListToCardResponseDTOList(allCards);
-
         return ResponseEntity.ok(cardResponseDTOList);
     }
 
@@ -79,8 +88,8 @@ public class CardRestController {
             @RequestBody List<CardCreateRequestDTO> cardCreateDTOList) {
 
         List<Card> cardList = cardService.createCards(cardCreateDTOList);
-        List<CardResponseDTO> cardResponseDTOList = cardMapper.mapCardListToCardResponseDTOList(cardList);
 
+        List<CardResponseDTO> cardResponseDTOList = cardMapper.mapCardListToCardResponseDTOList(cardList);
         return ResponseEntity.ok(cardResponseDTOList);
     }
 
@@ -88,17 +97,30 @@ public class CardRestController {
     public ResponseEntity<CardResponseDTO> updateCardById(@PathVariable("id") UUID cardId,
                                                           @RequestBody CardUpdateRequestDTO updateDto) {
 
-        Card card = cardService.updateCardById(cardId, updateDto);
+        updateDto.setCardId(cardId);
+        Card card = cardService.updateCard(updateDto);
 
         return ResponseEntity.ok(cardMapper.toResponseDTO(card));
     }
 
     @PatchMapping
     public ResponseEntity<List<CardResponseDTO>> updateCards(@RequestBody List<CardUpdateRequestDTO> updateDTOList) {
-
         List<Card> cardList = cardService.updateCards(updateDTOList);
-        List<CardResponseDTO> cardResponseDTOList = cardMapper.mapCardListToCardResponseDTOList(cardList);
 
+        List<CardResponseDTO> cardResponseDTOList = cardMapper.mapCardListToCardResponseDTOList(cardList);
+        return ResponseEntity.ok(cardResponseDTOList);
+    }
+
+    /**
+     * Updates ProficiencyLevel of cards by cardId and new proficiencyLevel passed in DTO
+     **/
+    @PatchMapping(value = "/proficiencyLevel")
+    public ResponseEntity<List<CardResponseDTO>> updateCardsProficiencyLevel(
+            @RequestBody List<UpdateCardProficiencyLevelDTO> updateProficiencyDTOList) {
+
+        List<Card> cardList = cardService.updateCardsProficiencyLevel(updateProficiencyDTOList);
+
+        List<CardResponseDTO> cardResponseDTOList = cardMapper.mapCardListToCardResponseDTOList(cardList);
         return ResponseEntity.ok(cardResponseDTOList);
     }
 
@@ -107,16 +129,6 @@ public class CardRestController {
         cardService.deleteCardById(cardId);
 
         return ResponseEntity.noContent().build();
-    }
-
-    @PatchMapping(value = "/updateProficiencyLevel")
-    public ResponseEntity<List<CardResponseDTO>> updateCardsProficiencyLevel(
-            @RequestBody List<UpdateCardProficiencyLevelDTO> updateProficiencyDTOList) {
-
-        List<Card> cardList = cardService.updateCardsProficiencyLevel(updateProficiencyDTOList);
-        List<CardResponseDTO> cardResponseDTOList = cardMapper.mapCardListToCardResponseDTOList(cardList);
-
-        return ResponseEntity.ok(cardResponseDTOList);
     }
 
 }

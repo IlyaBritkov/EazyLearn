@@ -7,4 +7,5 @@ public interface CheckExistenceService {
 
     boolean areCardSetByIdsExist(Collection<UUID> cardSetIds);
 
+    boolean areCardsByIdsExist(Collection<UUID> cardIds);
 }

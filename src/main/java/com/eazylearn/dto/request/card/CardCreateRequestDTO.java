@@ -3,6 +3,7 @@ package com.eazylearn.dto.request.card;
 import com.eazylearn.enums.ProficiencyLevel;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
+import org.jetbrains.annotations.Nullable;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -20,7 +21,8 @@ public class CardCreateRequestDTO implements CardRequest { // todo: add validati
     @NotNull
     private ProficiencyLevel proficiencyLevel;
 
-     @NotNull
-    private List<UUID> cardSetIds;
+    // TODO: handle mapping with null value
+    @Nullable
+    private List<UUID> linkedCardSetsIds;
 
 }

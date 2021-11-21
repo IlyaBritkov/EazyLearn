@@ -3,6 +3,7 @@ package com.eazylearn.entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.Column;
@@ -23,6 +24,7 @@ import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.CascadeType.REFRESH;
 import static javax.persistence.FetchType.LAZY;
 
+@SuppressWarnings({"LombokDataInspection", "LombokEqualsAndHashCodeInspection"})
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
@@ -50,6 +52,7 @@ public class Card extends BaseEntity {
     private Boolean isFavourite;
 
     @NotNull
+    @ToString.Exclude
     @Column(name = "user_id")
     private UUID userId;
 

@@ -5,26 +5,32 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.jetbrains.annotations.Nullable;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
 
 @Data
-public class CardUpdateRequestDTO implements CardRequest  {
+public class CardUpdateRequestDTO implements CardRequest {
 
     @Nullable
-    private UUID cardId; // null when id is a path variable
+    private UUID cardId; // can be null while dto creation, but injected from path variable
 
+    @Nullable
     @Length(min = 1, max = 100)
     private String term;
 
+    @Nullable
     @Length(min = 1, max = 1000)
     private String definition;
 
+    // TODO: check that mapping from this string value to double equivalent works right
     @Nullable
     private ProficiencyLevel proficiencyLevel;
 
-    @NotNull
-    private List<UUID> cardSetIds;
+    @Nullable
+    private Boolean isFavourite;
+
+    // TODO: handle mapping with null value
+    @Nullable
+    private List<UUID> linkedCardSetsIds;
 
 }

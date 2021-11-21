@@ -5,6 +5,6 @@ import java.util.UUID;
 
 public interface CardRequest {
 
-    List<UUID> getCardSetIds();
+    List<UUID> getLinkedCardSetsIds();
 
 }
