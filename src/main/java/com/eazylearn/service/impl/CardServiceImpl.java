@@ -50,13 +50,14 @@ public class CardServiceImpl implements CardService { // TODO refactor
     private final JwtUser currentUser;
     private final UUID currentUserId;
 
-    {
-        currentUser = (JwtUser) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
-
-        currentUserId = currentUser.getId();
-    }
+    // todo fixme: build failure if uncomment
+//    {
+//        currentUser = (JwtUser) SecurityContextHolder.getContext()
+//                .getAuthentication()
+//                .getPrincipal();
+//
+//        currentUserId = currentUser.getId();
+//    }
 
     @Override
     @Transactional(readOnly = true)
