@@ -1,14 +1,13 @@
+FROM maven:3.8.4-jdk-11 AS build
+RUN mkdir -p /workspace
+WORKDIR /workspace
+
+COPY pom.xml /workspace
+COPY src /workspace/src
+RUN mvn -f pom.xml clean package
+
 FROM adoptopenjdk/openjdk11
-
-# cd /opt/app
-WORKDIR /opt/app
-
-# Refers to Maven build -> finalName
-ARG JAR_FILE=target/spring-boot-eazylearn-app.jar
-
-#Copy spring-boot-eazylearn-app.jar to /opt/app/app.jar
-COPY ${JAR_FILE} app.jar
+COPY --from=build /workspace/target/*.jar app.jar
 
 EXPOSE 8080
-# java -jar /opt/app/app.jar
 ENTRYPOINT ["java","-jar","app.jar"]
