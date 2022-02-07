@@ -3,20 +3,23 @@ package com.eazylearn.service.impl;
 import com.eazylearn.dto.request.user.UserRegistryRequestDTO;
 import com.eazylearn.dto.request.user.UserUpdateRequestDTO;
 import com.eazylearn.dto.response.UserResponseDTO;
+import com.eazylearn.entity.Role;
 import com.eazylearn.entity.User;
 import com.eazylearn.exception.UserAlreadyExistAuthenticationException;
 import com.eazylearn.mapper.UserMapper;
+import com.eazylearn.repository.RoleRepository;
 import com.eazylearn.repository.UserRepository;
 import com.eazylearn.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static com.eazylearn.enums.UserRole.USER;
@@ -24,16 +27,16 @@ import static com.eazylearn.enums.UserStatus.ACTIVE;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
-@Slf4j
-
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService { // todo: add current user
 
+    private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Override
     @Transactional(readOnly = true)
@@ -58,40 +61,35 @@ public class UserServiceImpl implements UserService { // todo: add current user
 
     @Override
     @Transactional(readOnly = true)
-    public UserResponseDTO findUserByEmail(String email) throws UsernameNotFoundException {
+    public Optional<User> findUserByEmail(String email) {
 
-        User userByEmail = findUserEntityByEmail(email);
-
-        return userMapper.toResponseDTO(userByEmail);
+        return userRepository.findByEmail(email);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public User findUserEntityByEmail(String email) throws UsernameNotFoundException {
-
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException(
-                        String.format("User with email = %s doesn't exist", email)));
-    }
-
+    // todo: maybe perform login here
     @Override
     @Transactional(isolation = SERIALIZABLE)
-    public UserResponseDTO createUser(UserRegistryRequestDTO registryRequest)
+    public User createUser(UserRegistryRequestDTO registryRequest)
             throws UserAlreadyExistAuthenticationException {
 
-        String email = registryRequest.getEmail();
+        final String email = registryRequest.getEmail();
 
         if (!userRepository.existsByEmail(email)) {
             User newUser = userMapper.toEntity(registryRequest);
             newUser.setPassword(passwordEncoder.encode(registryRequest.getPassword()));
 
+            // todo: ADD CACHE for Roles and Authorities
+            final Role userRole = roleRepository.findByName(USER)
+                    .orElseGet(() -> new Role(USER));
+
             newUser.setStatus(ACTIVE);
-            newUser.setRole(USER);
+            newUser.setRoles(new ArrayList<>(List.of(userRole)));
 
-            User persistedUser = userRepository.save(newUser);
-
-            return userMapper.toResponseDTO(persistedUser);
+            User savedUser = userRepository.save(newUser);
+            log.debug(String.format("User with email = %s was created", email));
+            return savedUser;
         } else {
+            log.error(String.format("User with email = %s already exists", email));
             throw new UserAlreadyExistAuthenticationException(
                     String.format("User with email = %s already exists", email));
         }

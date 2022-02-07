@@ -1,6 +1,6 @@
 package com.eazylearn.enums;
 
-public enum ProficiencyLevel {
+public enum ProficiencyLevel { // todo: make table in the database
 
     LOW(15),
     AVERAGE(50),

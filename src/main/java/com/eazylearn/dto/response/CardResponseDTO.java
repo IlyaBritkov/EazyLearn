@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,7 +28,9 @@ public class CardResponseDTO {
 
     private Boolean isFavourite;
 
-    private Long createdTime;
+    private LocalDateTime createdDateTime;
+
+    private LocalDateTime updatedDateTime;
 
     //todo: check whether a list is always returned or null value is possible
     @Nullable

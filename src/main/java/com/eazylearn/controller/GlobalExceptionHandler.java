@@ -1,4 +1,4 @@
-package com.eazylearn.exception.handling;
+package com.eazylearn.controller;
 
 import com.eazylearn.dto.response.ExceptionResponseDTO;
 import com.eazylearn.exception.EntityAlreadyExistsException;
@@ -7,6 +7,7 @@ import com.eazylearn.exception.JwtAuthenticationException;
 import com.eazylearn.exception.UserAlreadyExistAuthenticationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -30,6 +31,13 @@ public class GlobalExceptionHandler {
         ExceptionResponseDTO exceptionResponse = new ExceptionResponseDTO(ex.getMessage());
 
         return new ResponseEntity<>(exceptionResponse, NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ExceptionResponseDTO> handleException(BadCredentialsException ex) {
+        ExceptionResponseDTO exceptionResponse = new ExceptionResponseDTO(ex.getMessage());
+
+        return new ResponseEntity<>(exceptionResponse, BAD_REQUEST);
     }
 
     @ExceptionHandler

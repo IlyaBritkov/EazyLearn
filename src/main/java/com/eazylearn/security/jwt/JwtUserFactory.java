@@ -1,14 +1,15 @@
 package com.eazylearn.security.jwt;
 
+import com.eazylearn.entity.Role;
 import com.eazylearn.entity.User;
-import com.eazylearn.enums.UserRole;
-import com.eazylearn.enums.UserStatus;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.List;
+import java.util.Objects;
 
+import static com.eazylearn.enums.UserStatus.ACTIVE;
 import static java.util.stream.Collectors.toList;
 import static lombok.AccessLevel.PRIVATE;
 
@@ -22,16 +23,24 @@ public final class JwtUserFactory {
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .password(user.getPassword())
-                .grantedAuthorities(mapToGrantedAuthorities(List.of(user.getRole())))
-                .enabled(UserStatus.ACTIVE.equals(user.getStatus()))
+                .authorities(mapUserRolesToAuthorities(user.getRoles()))
+                .isAccountNonExpired(true)
+                .isAccountNonLocked(true)
+                .isCredentialsNonExpired(true)
+                .isEnabled(Objects.equals(ACTIVE, user.getStatus()))
                 .build();
     }
 
-    private static List<GrantedAuthority> mapToGrantedAuthorities(List<UserRole> userRoles) {
-
-        return userRoles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.name()))
+    private static List<GrantedAuthority> mapUserRolesToAuthorities(List<Role> userRoles) {
+        final List<GrantedAuthority> authorities = userRoles.stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName().name()))
                 .collect(toList());
+
+        userRoles.stream()
+                .flatMap(role -> role.getAuthorities().stream())
+                .forEach(authority -> authorities.add(new SimpleGrantedAuthority(authority.getName().name())));
+
+        return authorities;
     }
 
 }

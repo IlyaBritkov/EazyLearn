@@ -1,7 +1,7 @@
 package com.eazylearn.security.jwt;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,9 +10,9 @@ import java.util.Collection;
 import java.util.UUID;
 
 @RequiredArgsConstructor
-@Data
+@Getter
 @Builder
-public class JwtUser implements UserDetails { // todo
+public class JwtUser implements UserDetails {
 
     private final UUID id;
 
@@ -22,38 +22,13 @@ public class JwtUser implements UserDetails { // todo
 
     private final String password;
 
-    private final boolean enabled;
+    private final boolean isAccountNonExpired;
 
-    private final Collection<? extends GrantedAuthority> grantedAuthorities;
+    private final boolean isAccountNonLocked;
 
-    @Override
-    public String getUsername() {
-        return email;
-    }
+    private final boolean isCredentialsNonExpired;
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
+    private final boolean isEnabled;
 
-    @Override
-    public boolean isAccountNonLocked() { // todo check logic
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return grantedAuthorities;
-    }
-
+    private final Collection<? extends GrantedAuthority> authorities;
 }

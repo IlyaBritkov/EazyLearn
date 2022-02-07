@@ -14,7 +14,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,9 +43,6 @@ public class Card extends BaseEntity {
     @NotNull
     @Column(name = "proficiency_level")
     private Double proficiencyLevel;
-
-    @Column(name = "created_time")
-    private final Long createdTime = Calendar.getInstance().getTimeInMillis();
 
     @Column(name = "is_favourite")
     private Boolean isFavourite;

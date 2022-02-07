@@ -12,10 +12,9 @@ import com.eazylearn.repository.CardSetRepository;
 import com.eazylearn.security.jwt.JwtUser;
 import com.eazylearn.service.CardService;
 import com.eazylearn.service.CardSetService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -27,13 +26,12 @@ import java.util.UUID;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.context.annotation.ScopedProxyMode.INTERFACES;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
-import static org.springframework.web.context.WebApplicationContext.SCOPE_SESSION;
-
-@Slf4j
-@AllArgsConstructor(onConstructor_ = @Autowired)
+import static org.springframework.web.context.WebApplicationContext.SCOPE_REQUEST;
 
 @Service
-@Scope(value = SCOPE_SESSION, proxyMode = INTERFACES)
+@Scope(value = SCOPE_REQUEST, proxyMode = INTERFACES)
+@RequiredArgsConstructor
+@Slf4j
 public class CardSetServiceImpl implements CardSetService {
 
     private final CardSetRepository cardSetRepository;

@@ -23,6 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.UUID;
 
+import static org.springframework.http.ResponseEntity.noContent;
+import static org.springframework.http.ResponseEntity.ok;
+
 @Slf4j
 @RequiredArgsConstructor
 
@@ -53,14 +56,14 @@ public class CardRestController {
         }
 
         List<CardResponseDTO> cardResponseDTOList = cardMapper.mapCardListToCardResponseDTOList(allCards);
-        return ResponseEntity.ok(cardResponseDTOList);
+        return ok(cardResponseDTOList);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CardResponseDTO> findCardById(@PathVariable("id") UUID cardId) {
         Card card = cardService.findCardById(cardId);
 
-        return ResponseEntity.ok(cardMapper.toResponseDTO(card));
+        return ok(cardMapper.toResponseDTO(card));
     }
 
     /**
@@ -83,7 +86,7 @@ public class CardRestController {
         }
 
         List<CardResponseDTO> cardResponseDTOList = cardMapper.mapCardListToCardResponseDTOList(allCards);
-        return ResponseEntity.ok(cardResponseDTOList);
+        return ok(cardResponseDTOList);
     }
 
     @PostMapping
@@ -93,7 +96,7 @@ public class CardRestController {
         List<Card> cardList = cardService.createCards(cardCreateDTOList);
 
         List<CardResponseDTO> cardResponseDTOList = cardMapper.mapCardListToCardResponseDTOList(cardList);
-        return ResponseEntity.ok(cardResponseDTOList);
+        return ok(cardResponseDTOList);
     }
 
     @PatchMapping("/{id}")
@@ -103,7 +106,7 @@ public class CardRestController {
         updateDto.setCardId(cardId);
         Card card = cardService.updateCard(updateDto);
 
-        return ResponseEntity.ok(cardMapper.toResponseDTO(card));
+        return ok(cardMapper.toResponseDTO(card));
     }
 
     @PatchMapping
@@ -111,11 +114,12 @@ public class CardRestController {
         List<Card> cardList = cardService.updateCards(updateDTOList);
 
         List<CardResponseDTO> cardResponseDTOList = cardMapper.mapCardListToCardResponseDTOList(cardList);
-        return ResponseEntity.ok(cardResponseDTOList);
+        return ok(cardResponseDTOList);
     }
 
     /**
-     * Updates ProficiencyLevel of cards by cardId and new proficiencyLevel passed in DTO
+     * Updates {@link Card#proficiencyLevel} of cards by cardId and
+     * new proficiencyLevel passed in {@link UpdateCardProficiencyLevelDTO}
      **/
     @PatchMapping(value = "/proficiencyLevel")
     public ResponseEntity<List<CardResponseDTO>> updateCardsProficiencyLevel(
@@ -124,14 +128,14 @@ public class CardRestController {
         List<Card> cardList = cardService.updateCardsProficiencyLevel(updateProficiencyDTOList);
 
         List<CardResponseDTO> cardResponseDTOList = cardMapper.mapCardListToCardResponseDTOList(cardList);
-        return ResponseEntity.ok(cardResponseDTOList);
+        return ok(cardResponseDTOList);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCardById(@PathVariable("id") UUID cardId) {
         cardService.deleteCardById(cardId);
 
-        return ResponseEntity.noContent().build();
+        return noContent().build();
     }
 
 }

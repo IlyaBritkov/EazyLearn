@@ -19,11 +19,13 @@ public abstract class CardSetMapper { // todo: update mapping
 
     public abstract CardSetResponseDTO toResponseDTO(CardSet cardSet);
 
-    @Mapping(target = "userId",
-            expression = "java(((JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal() ).getId())")
+    // todo: add facade pattern
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "linkedCards", ignore = true)
+    @Mapping(target = "userId", expression = "java(((JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal() ).getId())")
     public abstract CardSet toEntity(CardSetCreateRequestDTO cardSetDto);
 
     @Mapping(target = "cardSet.id", expression = "java(cardSet.getId())")
-    @Mapping(target = "cardSet.userId", expression = "java(cardSet.getUserId())") // todo maybe ignore
+    @Mapping(target = "cardSet.userId", expression = "java(cardSet.getUserId())") // todo maybe ignore or delete mapping
     public abstract void updateEntity(CardSetUpdateRequestDTO cardSetDto, @MappingTarget CardSet cardSet);
 }

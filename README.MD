@@ -14,19 +14,27 @@
 <hr>
 
 <h3 align="center">System and environment requirements</h3>
-1. JDK 11. Setter *JAVA_HOME* environment variable.
-2. Maven.
-3. Docker.
+1. [JDK 11](https://www.oracle.com/java/technologies/javase/jdk11-archive-downloads.html).
+Set `JAVA_HOME` environment variable.
+2. [Maven](https://maven.apache.org/download.cgi).
+3. [Docker](https://www.docker.com/).
 <hr>
 
-Use `mvn clean package` command to **build** project. <br>
-Being in the root folder run `docker-compose up` 
-to start up docker containers containing spring boot application along with PostgreSQL instance. <br>
+- Use `mvn clean package` command to **build** the project. <br>
+- Being in the root folder run `docker-compose up` command
+to **start up** docker containers containing *spring boot application*
+along with *PostgreSQL instance*.
+Or use the [IDE tools](https://www.jetbrains.com/help/idea/docker.html#managing-images)
+for Docker usage.<br>
 **Port 8080** is listened for spring boot app. <br>
-**Port 5453** is listened for PostgreSQL instance.
-<br><br>
+**Port 5453** is listened for PostgreSQL instance. <br>
+- Being in the root folder run `docker-compose down` command
+to **stop** docker containers.
+<br>
+
 Database, tables and all functional elements are *automatically
-created and updated* when application is started by [Flyway](https://flywaydb.org/). <br>
+created and updated* by [Flyway](https://flywaydb.org/) when application is started. <br>
+Use `mvn flyway:migrate`, if you want to perform database migration *manually*. <br>
 If something in the database (table, column definition, etc.)
-is getting change, all changes should be placed as a new sql-file
+is **getting change**, all changes should be placed as a new sql-file
 in the `resource/db/migration` folder according to the [Flyway](https://flywaydb.org/) rules.

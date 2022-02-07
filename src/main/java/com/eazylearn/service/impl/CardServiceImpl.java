@@ -13,11 +13,10 @@ import com.eazylearn.security.jwt.JwtUser;
 import com.eazylearn.service.CardService;
 import com.eazylearn.service.CardSetService;
 import com.eazylearn.service.CheckExistenceService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -35,11 +34,10 @@ import static org.springframework.context.annotation.ScopedProxyMode.INTERFACES;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.web.context.WebApplicationContext.SCOPE_SESSION;
 
-@Slf4j
-@AllArgsConstructor(onConstructor_ = @Autowired)
-
 @Service
 @Scope(value = SCOPE_SESSION, proxyMode = INTERFACES)
+@RequiredArgsConstructor
+@Slf4j
 public class CardServiceImpl implements CardService { // TODO refactor
 
     private final CardRepository cardRepository;
@@ -47,8 +45,16 @@ public class CardServiceImpl implements CardService { // TODO refactor
     private final CheckExistenceService checkExistenceService;
     private final CardMapper cardMapper;
 
-    private final JwtUser currentUser;
-    private final UUID currentUserId;
+    // todo: inject to controller as Principal or use Facade pattern
+    private final JwtUser currentUser = (JwtUser) SecurityContextHolder.getContext()
+            .getAuthentication()
+            .getPrincipal();
+
+    private final UUID currentUserId = currentUser.getId();
+
+//    private final JwtUser currentUser;
+//
+//    private final UUID currentUserId;
 
     // todo fixme: build failure if uncomment
 //    {

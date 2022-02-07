@@ -1,5 +1,6 @@
 package com.eazylearn.security.jwt;
 
+import com.eazylearn.entity.Role;
 import com.eazylearn.enums.UserRole;
 import com.eazylearn.exception.JwtAuthenticationException;
 import io.jsonwebtoken.Claims;
@@ -8,7 +9,6 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,16 +28,15 @@ import static java.sql.Timestamp.valueOf;
 import static java.time.LocalDateTime.now;
 import static java.util.stream.Collectors.toList;
 
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
-@Slf4j
-
 @Component
-public class JwtTokenProvider { // check code logic after refactoring
+@RequiredArgsConstructor
+@Slf4j
+public class JwtTokenProvider {
 
     @Value("${jwt.token.secret}")
     private String secret;
-    //    @Value("${jwt.token.expired}") uncomment after tests // todo: 6/10/2021
-    private long validityInSeconds = 86400;
+    @Value("${jwt.token.expired}")
+    private long validityInSeconds;
 
     private final UserDetailsService userDetailsService;
 
@@ -46,7 +45,7 @@ public class JwtTokenProvider { // check code logic after refactoring
         secret = Base64.getEncoder().encodeToString(secret.getBytes());
     }
 
-    public String createToken(String email, List<UserRole> userRoles) {
+    public String createToken(String email, List<Role> userRoles) {
         Claims claims = Jwts.claims().setSubject(email);
         claims.put("roles", getRolesNames(userRoles));
 
@@ -55,14 +54,16 @@ public class JwtTokenProvider { // check code logic after refactoring
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setIssuedAt(mapToDateViaSqlTimestamp(now))
-                .setExpiration(mapToDateViaSqlTimestamp(validity))
+                .setIssuedAt(mapToDate(now))
+                .setExpiration(mapToDate(validity))
                 .signWith(HS256, secret)
                 .compact();
     }
 
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = this.userDetailsService.loadUserByUsername(getEmailFromToken(token));
+        // todo: maybe fix and don't go to userDetails but just get Authentication from token
+        UserDetails userDetails = userDetailsService.loadUserByUsername(getEmailFromToken(token));
+
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
@@ -87,20 +88,22 @@ public class JwtTokenProvider { // check code logic after refactoring
             Jws<Claims> claims = Jwts.parser()
                     .setSigningKey(secret)
                     .parseClaimsJws(token);
+
             return !claims.getBody().getExpiration()
-                    .before(mapToDateViaSqlTimestamp(now()));
+                    .before(mapToDate(now()));
         } catch (JwtException | IllegalArgumentException ex) {
             throw new JwtAuthenticationException("JWT token is expired or invalid");
         }
     }
 
-    private List<String> getRolesNames(List<UserRole> userRoles) {
+    private List<String> getRolesNames(List<Role> userRoles) {
         return userRoles.stream()
+                .map(Role::getName)
                 .map(UserRole::name)
                 .collect(toList());
     }
 
-    public Date mapToDateViaSqlTimestamp(LocalDateTime dateToConvert) {
+    private Date mapToDate(LocalDateTime dateToConvert) {
         return valueOf(dateToConvert);
     }
 }

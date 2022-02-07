@@ -35,7 +35,7 @@ public abstract class CardMapper {
     // todo: ADD CardSet mapping
     @Mapping(target = "userId",
             expression =
-                    "java( ((JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId() )")
+                    "java( ((com.eazylearn.security.jwt.JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId() )")
     public abstract Card toEntity(CardCreateRequestDTO cardDto);
 
     @Mapping(target = "card.id", ignore = true)

@@ -5,8 +5,7 @@ import com.eazylearn.dto.request.user.UserRegistryRequestDTO;
 import com.eazylearn.dto.response.UserAuthenticationResponseDTO;
 import com.eazylearn.dto.response.UserResponseDTO;
 import com.eazylearn.service.AuthenticationService;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
@@ -15,10 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@AllArgsConstructor(onConstructor_ = @Autowired)
-
 @RestController
 @RequestMapping(value = "/api/v1/auth/")
+@RequiredArgsConstructor
 public class AuthenticationRestController {
 
     private final AuthenticationService authenticationService;
@@ -41,7 +39,6 @@ public class AuthenticationRestController {
     @PostMapping("registry")
     public ResponseEntity<UserResponseDTO> registry(@RequestBody UserRegistryRequestDTO requestDTO)
             throws BadCredentialsException {
-
         try {
             UserResponseDTO userResponse = authenticationService.registry(requestDTO);
             return ResponseEntity.ok(userResponse);

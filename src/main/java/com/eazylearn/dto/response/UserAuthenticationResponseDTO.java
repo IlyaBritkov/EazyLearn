@@ -8,9 +8,7 @@ import java.util.UUID;
 @Data
 @Builder
 public class UserAuthenticationResponseDTO {
-
     private UUID id;
     private String email;
     private String token;
-
 }
