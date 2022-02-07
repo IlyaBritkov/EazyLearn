@@ -9,21 +9,20 @@ import org.springframework.stereotype.Repository;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
-public interface CardSetRepository extends CrudRepository<CardSet, UUID> {
+public interface CardSetRepository extends CrudRepository<CardSet, String> {
 
-    List<CardSet> findAllByUserId(UUID userId);
+    List<CardSet> findAllByUserId(String userId);
 
-    Optional<CardSet> findByIdAndUserId(UUID id, UUID userId);
+    Optional<CardSet> findByIdAndUserId(String id, String userId);
 
-    boolean existsByIdAndUserId(UUID cardSetId, UUID userId);
+    boolean existsByIdAndUserId(String cardSetId, String userId);
 
-    boolean existsByNameAndUserId(String name, UUID userId);
+    boolean existsByNameAndUserId(String name, String userId);
 
     @Query("SELECT COUNT(cardSet) "
             + "FROM CardSet cardSet "
             + "WHERE cardSet.id IN (:ids)")
-    long countByIds(@Param("ids") Collection<UUID> ids);
+    long countByIds(@Param("ids") Collection<String> ids);
 }

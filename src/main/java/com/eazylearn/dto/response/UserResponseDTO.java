@@ -7,7 +7,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,7 +15,7 @@ import java.util.UUID;
 public class UserResponseDTO { // todo: maybe add more fields (createdDateTime, updatedDateTime)
 
     @EqualsAndHashCode.Include
-    private UUID id;
+    private String id;
 
     private String username;
 

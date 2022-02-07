@@ -10,7 +10,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @SuppressWarnings({"com.haulmont.jpb.LombokDataInspection", "com.haulmont.jpb.LombokEqualsAndHashCodeInspection"})
 @Entity
@@ -27,7 +26,7 @@ public class CardSet extends BaseEntity { // todo: add validation
     private Boolean isFavourite = false;
 
     @Column(name = "user_id")
-    private UUID userId;
+    private String userId;
 
     @ManyToMany(mappedBy = "linkedCardSets")
     private List<Card> linkedCards = new ArrayList<>();

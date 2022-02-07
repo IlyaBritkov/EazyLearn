@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.UUID;
 
+import static com.eazylearn.util.Convertor.uuidToString;
 import static org.springframework.http.ResponseEntity.noContent;
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -52,7 +53,7 @@ public class CardRestController {
         if (cardSetId == null) {
             allCards = cardService.findAllCards();
         } else {
-            allCards = cardService.findAllCardsBySetId(cardSetId);
+            allCards = cardService.findAllCardsBySetId(uuidToString(cardSetId));
         }
 
         List<CardResponseDTO> cardResponseDTOList = cardMapper.mapCardListToCardResponseDTOList(allCards);
@@ -61,7 +62,7 @@ public class CardRestController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CardResponseDTO> findCardById(@PathVariable("id") UUID cardId) {
-        Card card = cardService.findCardById(cardId);
+        Card card = cardService.findCardById(uuidToString(cardId));
 
         return ok(cardMapper.toResponseDTO(card));
     }
@@ -82,7 +83,7 @@ public class CardRestController {
         if (cardSetId == null) {
             allCards = cardService.findAllFavouriteCards();
         } else {
-            allCards = cardService.findAllFavouriteCardsBySetId(cardSetId);
+            allCards = cardService.findAllFavouriteCardsBySetId(uuidToString(cardSetId));
         }
 
         List<CardResponseDTO> cardResponseDTOList = cardMapper.mapCardListToCardResponseDTOList(allCards);
@@ -103,7 +104,7 @@ public class CardRestController {
     public ResponseEntity<CardResponseDTO> updateCardById(@PathVariable("id") UUID cardId,
                                                           @RequestBody CardUpdateRequestDTO updateDto) {
 
-        updateDto.setCardId(cardId);
+        updateDto.setCardId(uuidToString(cardId));
         Card card = cardService.updateCard(updateDto);
 
         return ok(cardMapper.toResponseDTO(card));
@@ -118,7 +119,7 @@ public class CardRestController {
     }
 
     /**
-     * Updates {@link Card#proficiencyLevel} of cards by cardId and
+     * Updates {@link Card#getProficiencyLevel()} of cards by cardId and
      * new proficiencyLevel passed in {@link UpdateCardProficiencyLevelDTO}
      **/
     @PatchMapping(value = "/proficiencyLevel")
@@ -133,7 +134,7 @@ public class CardRestController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCardById(@PathVariable("id") UUID cardId) {
-        cardService.deleteCardById(cardId);
+        cardService.deleteCardById(uuidToString(cardId));
 
         return noContent().build();
     }

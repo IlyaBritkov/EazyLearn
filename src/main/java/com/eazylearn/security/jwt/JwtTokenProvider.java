@@ -1,109 +1,74 @@
 package com.eazylearn.security.jwt;
 
-import com.eazylearn.entity.Role;
-import com.eazylearn.enums.UserRole;
-import com.eazylearn.exception.JwtAuthenticationException;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import lombok.RequiredArgsConstructor;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDateTime;
-import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
-import static io.jsonwebtoken.SignatureAlgorithm.HS256;
-import static java.sql.Timestamp.valueOf;
-import static java.time.LocalDateTime.now;
+import static com.eazylearn.util.Constants.AUTHORITIES_CLAIM;
+import static com.eazylearn.util.Constants.USER_ID_CLAIM;
+import static java.lang.System.currentTimeMillis;
 import static java.util.stream.Collectors.toList;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class JwtTokenProvider {
 
     @Value("${jwt.token.secret}")
-    private String secret;
-    @Value("${jwt.token.expired}")
-    private long validityInSeconds;
+    private String JWT_SECRET;
+    @Value("${jwt.token.access.expiration}")
+    private long ACCESS_TOKEN_EXPIRATION_IN_MILLISECONDS;
+    @Value("${jwt.token.refresh.expiration}")
+    private long REFRESH_TOKEN_EXPIRATION_IN_MILLISECONDS;
 
-    private final UserDetailsService userDetailsService;
+    private Algorithm algorithm;
 
     @PostConstruct
-    protected void init() {
-        secret = Base64.getEncoder().encodeToString(secret.getBytes());
+    private void postConstruct() {
+        algorithm = Algorithm.HMAC256(JWT_SECRET.getBytes());
     }
 
-    public String createToken(String email, List<Role> userRoles) {
-        Claims claims = Jwts.claims().setSubject(email);
-        claims.put("roles", getRolesNames(userRoles));
-
-        LocalDateTime now = now();
-        LocalDateTime validity = now.plusSeconds(validityInSeconds);
-
-        return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(mapToDate(now))
-                .setExpiration(mapToDate(validity))
-                .signWith(HS256, secret)
-                .compact();
-    }
-
-    public Authentication getAuthentication(String token) {
-        // todo: maybe fix and don't go to userDetails but just get Authentication from token
-        UserDetails userDetails = userDetailsService.loadUserByUsername(getEmailFromToken(token));
-
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
-    }
-
-    public String getEmailFromToken(String token) {
-        return Jwts.parser()
-                .setSigningKey(secret)
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
-    }
-
-    public String resolveToken(HttpServletRequest req) {
-        String bearerToken = req.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer_")) {
-            return bearerToken.substring(7);
-        }
-        return null;
-    }
-
-    public boolean validateToken(String token) {
-        try {
-            Jws<Claims> claims = Jwts.parser()
-                    .setSigningKey(secret)
-                    .parseClaimsJws(token);
-
-            return !claims.getBody().getExpiration()
-                    .before(mapToDate(now()));
-        } catch (JwtException | IllegalArgumentException ex) {
-            throw new JwtAuthenticationException("JWT token is expired or invalid");
-        }
-    }
-
-    private List<String> getRolesNames(List<Role> userRoles) {
-        return userRoles.stream()
-                .map(Role::getName)
-                .map(UserRole::name)
+    public String generateAccessToken(JwtUser jwtUser, HttpServletRequest request) {
+        final List<String> authorities = jwtUser.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
                 .collect(toList());
+
+        return JWT.create()
+                .withSubject(jwtUser.getUsername())
+                .withExpiresAt(new Date(currentTimeMillis() + ACCESS_TOKEN_EXPIRATION_IN_MILLISECONDS))
+                .withIssuer(request.getRequestURL().toString())
+                .withClaim(USER_ID_CLAIM, jwtUser.getId().toString())
+                .withClaim(AUTHORITIES_CLAIM, authorities)
+                .sign(algorithm);
     }
 
-    private Date mapToDate(LocalDateTime dateToConvert) {
-        return valueOf(dateToConvert);
+    public String generateRefreshToken(JwtUser jwtUser, HttpServletRequest request) {
+        return JWT.create()
+                .withSubject(jwtUser.getUsername())
+                .withExpiresAt(new Date(currentTimeMillis() + REFRESH_TOKEN_EXPIRATION_IN_MILLISECONDS))
+                .withIssuer(request.getRequestURL().toString())
+                .sign(algorithm);
+    }
+
+    public DecodedJWT verifyToken(String token) {
+        Algorithm algorithm = Algorithm.HMAC256(JWT_SECRET.getBytes());
+        JWTVerifier verifier = JWT.require(algorithm).build();
+        return verifier.verify(token);
+    }
+
+    public static List<SimpleGrantedAuthority> mapStringAuthoritiesToSimpleGrantedAuthorities(List<String> authorities) {
+        return authorities.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(toList());
     }
 }

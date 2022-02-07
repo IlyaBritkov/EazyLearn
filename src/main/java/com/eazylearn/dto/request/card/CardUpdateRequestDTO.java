@@ -6,13 +6,12 @@ import org.hibernate.validator.constraints.Length;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.UUID;
 
 @Data
 public class CardUpdateRequestDTO implements CardRequest {
 
     @Nullable
-    private UUID cardId; // can be null while dto creation, but injected from path variable
+    private String cardId; // can be null while dto creation, but injected from path variable
 
     @Nullable
     @Length(min = 1, max = 100)
@@ -31,6 +30,6 @@ public class CardUpdateRequestDTO implements CardRequest {
 
     // todo: handle mapping with null value
     @Nullable
-    private List<UUID> linkedCardSetsIds;
+    private List<String> linkedCardSetsIds;
 
 }

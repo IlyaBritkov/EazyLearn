@@ -15,7 +15,6 @@ import org.mapstruct.Named;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
-import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;
 import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
@@ -25,13 +24,11 @@ import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
         imports = {SecurityContextHolder.class, JwtUser.class})
 public abstract class CardMapper {
 
-    @Mapping(source = "linkedCardSets", target = "linkedCardSetsIds",
-            qualifiedByName = "linkedCardSetsToLinkedCardSetsIds")
+    @Mapping(source = "linkedCardSets", target = "linkedCardSetsIds", qualifiedByName = "linkedCardSetsToLinkedCardSetsIds")
     @Mapping(source = "isFavourite", target = "isFavourite")
     public abstract CardResponseDTO toResponseDTO(Card card);
 
-    @Mapping(source = "proficiencyLevel", target = "proficiencyLevel",
-            qualifiedByName = "proficiencyLevelToProficiencyDouble")
+    @Mapping(source = "proficiencyLevel", target = "proficiencyLevel", qualifiedByName = "proficiencyLevelToProficiencyDouble")
     // todo: ADD CardSet mapping
     @Mapping(target = "userId",
             expression =
@@ -44,23 +41,21 @@ public abstract class CardMapper {
             qualifiedByName = "proficiencyLevelToProficiencyDouble")
     public abstract void updateEntity(CardUpdateRequestDTO cardDto, @MappingTarget Card card);
 
-    @Named("proficiencyLevelToProficiencyDouble")
     // TODO maybe make it protected
     // ? should it be static?
+    @Named("proficiencyLevelToProficiencyDouble")
     public static double proficiencyLevelToProficiencyDouble(ProficiencyLevel proficiencyLevel) {
         return proficiencyLevel.getLevelPoints();
     }
 
     @Named("linkedCardSetsToLinkedCardSetsIds")
-    public static List<UUID> linkedCardSetsToLinkedCardSetsIds(List<CardSet> linkedCardSets) {
-
+    public static List<String> linkedCardSetsToLinkedCardSetsIds(List<CardSet> linkedCardSets) {
         return linkedCardSets.stream()
                 .map(BaseEntity::getId)
                 .collect(toList());
     }
 
     public List<CardResponseDTO> mapCardListToCardResponseDTOList(List<Card> cardList) {
-
         return cardList.stream()
                 .map(this::toResponseDTO)
                 .collect(toList());

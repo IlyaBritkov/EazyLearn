@@ -7,7 +7,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.UUID;
 
 @Data
 public class CardCreateRequestDTO implements CardRequest { // todo: add validation
@@ -23,6 +22,6 @@ public class CardCreateRequestDTO implements CardRequest { // todo: add validati
 
     // todo: handle mapping with null value
     @Nullable
-    private List<UUID> linkedCardSetsIds;
+    private List<String> linkedCardSetsIds;
 
 }

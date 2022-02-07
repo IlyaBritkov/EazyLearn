@@ -14,16 +14,16 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface CardRepository extends CrudRepository<Card, UUID> { // todo refactor it
+public interface CardRepository extends CrudRepository<Card, String> { // todo refactor it
 
     @Override
     <S extends Card> @NotNull List<S> saveAll(@NotNull Iterable<S> entities);
 
-    List<Card> findAlByUserId(UUID userId);
+    List<Card> findAlByUserId(String userId);
 
-    Optional<Card> findByIdAndUserId(UUID cardId, UUID userId);
+    Optional<Card> findByIdAndUserId(String cardId, String userId);
 
-    List<Card> findAllByIsFavouriteAndUserId(boolean favourite, UUID userId);
+    List<Card> findAllByIsFavouriteAndUserId(boolean favourite, String userId);
 
     @Query(value = "SELECT *"
             + "FROM card"
@@ -32,8 +32,8 @@ public interface CardRepository extends CrudRepository<Card, UUID> { // todo ref
             + "AND card.user_id = :userId"
             + ";",
             nativeQuery = true)
-    List<Card> findAllByCardSetIdAndUserId(@Param("cardSetId") UUID cardSetId,
-                                           @Param("userId") UUID userId);
+    List<Card> findAllByCardSetIdAndUserId(@Param("cardSetId") String cardSetId,
+                                           @Param("userId") String userId);
 
     @Query(value = "SELECT *"
             + "FROM card"
@@ -44,15 +44,15 @@ public interface CardRepository extends CrudRepository<Card, UUID> { // todo ref
             + ";",
             nativeQuery = true)
     List<Card> findAllByIsFavouriteAndCardSetIdAndUserId(@Param("isFavourite") boolean isFavourite,
-                                                         @Param("cardSetId") UUID cardSetId,
-                                                         @Param("userId") UUID userId);
+                                                         @Param("cardSetId") String cardSetId,
+                                                         @Param("userId") String userId);
 
 
 //    List<Card> findAllByUserIdAndCardSetId(UUID userId, UUID cardSetId); todo
 
-    boolean existsByIdAndUserId(UUID cardId, UUID userId);
+    boolean existsByIdAndUserId(String cardId, String userId);
 
-    long countByIdIn(@NonNull Collection<UUID> ids);
+    long countByIdIn(@NonNull Collection<String> ids);
 
 //    void deleteCardByCardSetIdAndUserId(UUID cardSetId, UUID userId); todo
 }

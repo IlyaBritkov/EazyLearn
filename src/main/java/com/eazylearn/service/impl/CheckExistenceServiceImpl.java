@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 
@@ -18,14 +17,14 @@ public class CheckExistenceServiceImpl implements CheckExistenceService {
     private final CardRepository cardRepository;
 
     @Override
-    public boolean areCardSetByIdsExist(Collection<UUID> cardSetIds) {
+    public boolean areCardSetByIdsExist(Collection<String> cardSetIds) {
         long countByIds = cardSetRepository.countByIds(cardSetIds);
 
         return cardSetIds.size() == countByIds;
     }
 
     @Override
-    public boolean areCardsByIdsExist(Collection<UUID> cardIds) {
+    public boolean areCardsByIdsExist(Collection<String> cardIds) {
         return cardIds.size() == cardRepository.countByIdIn(cardIds);
     }
 

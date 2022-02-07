@@ -20,9 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
-import static com.eazylearn.enums.UserRole.USER;
+import static com.eazylearn.enums.UserRole.ROLE_USER;
 import static com.eazylearn.enums.UserStatus.ACTIVE;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
@@ -51,7 +50,7 @@ public class UserServiceImpl implements UserService { // todo: add current user
 
     @Override
     @Transactional(readOnly = true)
-    public UserResponseDTO findUserById(UUID id) throws UsernameNotFoundException {
+    public UserResponseDTO findUserById(String id) throws UsernameNotFoundException {
 
         User userById = userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format("User with id = %s doesn't exist", id)));
@@ -79,8 +78,8 @@ public class UserServiceImpl implements UserService { // todo: add current user
             newUser.setPassword(passwordEncoder.encode(registryRequest.getPassword()));
 
             // todo: ADD CACHE for Roles and Authorities
-            final Role userRole = roleRepository.findByName(USER)
-                    .orElseGet(() -> new Role(USER));
+            final Role userRole = roleRepository.findByName(ROLE_USER)
+                    .orElseGet(() -> new Role(ROLE_USER));
 
             newUser.setStatus(ACTIVE);
             newUser.setRoles(new ArrayList<>(List.of(userRole)));
@@ -97,7 +96,7 @@ public class UserServiceImpl implements UserService { // todo: add current user
 
     @Override
     @Transactional(isolation = SERIALIZABLE)
-    public UserResponseDTO updateUserById(UUID id, UserUpdateRequestDTO updateRequest)
+    public UserResponseDTO updateUserById(String id, UserUpdateRequestDTO updateRequest)
             throws UsernameNotFoundException, UserAlreadyExistAuthenticationException {
 
         // todo: 6/8/2021 add check right for update
@@ -117,7 +116,7 @@ public class UserServiceImpl implements UserService { // todo: add current user
 
     @Override
     @Transactional
-    public void deleteUserById(UUID id) {
+    public void deleteUserById(String id) {
         // todo: 6/8/2021 add check right for update
 
         userRepository.deleteById(id);

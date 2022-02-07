@@ -26,7 +26,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -50,7 +49,7 @@ public class CardServiceImpl implements CardService { // TODO refactor
             .getAuthentication()
             .getPrincipal();
 
-    private final UUID currentUserId = currentUser.getId();
+    private final String currentUserId = currentUser.getId();
 
 //    private final JwtUser currentUser;
 //
@@ -73,7 +72,7 @@ public class CardServiceImpl implements CardService { // TODO refactor
 
     @Override
     @Transactional(readOnly = true)
-    public Card findCardById(@NotNull UUID cardId) {
+    public Card findCardById(@NotNull String cardId) {
         Optional<Card> optionalCard = cardRepository.findByIdAndUserId(cardId, currentUserId);
 
         return optionalCard.
@@ -89,13 +88,13 @@ public class CardServiceImpl implements CardService { // TODO refactor
 
     @Override
     @Transactional(readOnly = true)
-    public List<Card> findAllCardsBySetId(UUID cardSetId) {
+    public List<Card> findAllCardsBySetId(String cardSetId) {
         return cardRepository.findAllByCardSetIdAndUserId(cardSetId, currentUserId);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Card> findAllFavouriteCardsBySetId(UUID cardSetId) {
+    public List<Card> findAllFavouriteCardsBySetId(String cardSetId) {
         return cardRepository.findAllByIsFavouriteAndCardSetIdAndUserId(true, cardSetId, currentUserId);
     }
 
@@ -114,7 +113,7 @@ public class CardServiceImpl implements CardService { // TODO refactor
     @Transactional(isolation = SERIALIZABLE)
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     public Card updateCard(CardUpdateRequestDTO updateDto) throws EntityDoesNotExistException {
-        final UUID cardId = updateDto.getCardId();
+        final String cardId = updateDto.getCardId();
         checkCardExistenceById(cardId);
 
         Card cardToUpdate = cardRepository.findByIdAndUserId(cardId, currentUserId).get();
@@ -144,7 +143,7 @@ public class CardServiceImpl implements CardService { // TODO refactor
      * @throws IllegalArgumentException if at least one Card doesn't exist by ID
      */
     private void checkCardsExistenceById(@NotNull final List<CardUpdateRequestDTO> updateDTOList) {
-        Set<UUID> cardIds = updateDTOList.stream()
+        Set<String> cardIds = updateDTOList.stream()
                 .map(CardUpdateRequestDTO::getCardId)
                 .collect(toSet());
 
@@ -160,14 +159,14 @@ public class CardServiceImpl implements CardService { // TODO refactor
 
     @Override
     @Transactional
-    public void deleteCardById(UUID cardId) throws EntityDoesNotExistException {
+    public void deleteCardById(String cardId) throws EntityDoesNotExistException {
         checkCardExistenceById(cardId);
 
         cardRepository.deleteById(cardId);
     }
 
     @Override
-    public void deleteCardByCardSetId(UUID cardSetId) throws EntityDoesNotExistException {
+    public void deleteCardByCardSetId(String cardSetId) throws EntityDoesNotExistException {
         checkCategoryExistenceById(cardSetId);
 
 //        cardRepository.deleteCardByCardSetIdAndUserId(cardSetId, currentUserId); TODO
@@ -186,7 +185,7 @@ public class CardServiceImpl implements CardService { // TODO refactor
      * @throws EntityDoesNotExistException if at least one CardSet doesn't exist the exception is thrown
      **/
     protected void checkAssignedCardSetsExistence(List<? extends CardRequest> cardRequestList) {
-        Set<UUID> assignedCardSetIds = new HashSet<>();
+        Set<String> assignedCardSetIds = new HashSet<>();
 
         cardRequestList.stream()
                 .map(CardRequest::getLinkedCardSetsIds)
@@ -198,13 +197,13 @@ public class CardServiceImpl implements CardService { // TODO refactor
             throw new EntityDoesNotExistException(String.format(
                     "%s with some of the following IDs %s doesnt exist",
                     CardSet.class.getName(),
-                    assignedCardSetIds.toString())); // TODO check if toString call is needed
+                    assignedCardSetIds)); // TODO check if toString call is needed
         }
 
     }
 
     // TODO is needed?
-    protected void checkCategoryExistenceById(@Nullable UUID cardSetId) throws EntityDoesNotExistException {
+    protected void checkCategoryExistenceById(@Nullable String cardSetId) throws EntityDoesNotExistException {
         if (cardSetId != null) {
             boolean isCategoryExists = cardSetService.existsById(cardSetId);
             if (isCategoryExists) {
@@ -215,7 +214,7 @@ public class CardServiceImpl implements CardService { // TODO refactor
     }
 
     // TODO is needed?
-    protected void checkCardExistenceById(@Nullable UUID cardId) throws EntityDoesNotExistException {
+    protected void checkCardExistenceById(@Nullable String cardId) throws EntityDoesNotExistException {
         if (cardId != null) {
             boolean isCardExists = cardRepository.existsByIdAndUserId(cardId, currentUserId);
             if (isCardExists) {

@@ -11,7 +11,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @SuppressWarnings({"com.haulmont.jpb.LombokDataInspection", "com.haulmont.jpb.LombokEqualsAndHashCodeInspection"})
 @MappedSuperclass
@@ -20,13 +19,11 @@ import java.util.UUID;
 public class BaseEntity {
 
     @Id
-    @Column(name = "id")
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "id", length = 36)
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @EqualsAndHashCode.Include
-    private UUID id;
+    private String id;
 
     @Column(name = "created_datetime", updatable = false)
     @CreationTimestamp

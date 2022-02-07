@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.UUID;
 
+import static com.eazylearn.util.Convertor.uuidToString;
+
 @RestController
 @RequestMapping(value = "/api/v1/sets")
 @RequiredArgsConstructor
@@ -43,7 +45,7 @@ public class CardSetRestController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CardSetResponseDTO> findCategoryById(@PathVariable("id") UUID categoryId) {
-        CardSetResponseDTO cardSetResponseDTO = cardSetService.findCategoryById(categoryId);
+        CardSetResponseDTO cardSetResponseDTO = cardSetService.findCategoryById(uuidToString(categoryId));
         return ResponseEntity.ok(cardSetResponseDTO);
     }
 
@@ -57,7 +59,7 @@ public class CardSetRestController {
     @PatchMapping("/{id}")
     public ResponseEntity<CardSetResponseDTO> updateCategoryById(@PathVariable("id") UUID categoryId,
                                                                  @RequestBody CardSetUpdateRequestDTO updateDto) {
-        CardSetResponseDTO cardSetResponseDTO = cardSetService.updateCategoryById(categoryId, updateDto);
+        CardSetResponseDTO cardSetResponseDTO = cardSetService.updateCategoryById(uuidToString(categoryId), updateDto);
 
         return ResponseEntity.ok(cardSetResponseDTO);
     }
@@ -65,7 +67,7 @@ public class CardSetRestController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCategoryById(@PathVariable("id") UUID categoryId,
                                                 @RequestParam boolean isDeleteAllCardsInCategory) {
-        cardSetService.deleteCategoryById(categoryId, isDeleteAllCardsInCategory);
+        cardSetService.deleteCategoryById(uuidToString(categoryId), isDeleteAllCardsInCategory);
 
         return ResponseEntity.noContent().build();
     }

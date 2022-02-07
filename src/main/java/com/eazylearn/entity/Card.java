@@ -15,7 +15,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import static javax.persistence.CascadeType.DETACH;
 import static javax.persistence.CascadeType.MERGE;
@@ -50,7 +49,7 @@ public class Card extends BaseEntity {
     @NotNull
     @ToString.Exclude
     @Column(name = "user_id")
-    private UUID userId;
+    private String userId;
 
     @ManyToMany(cascade = {
             PERSIST,

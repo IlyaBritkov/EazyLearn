@@ -10,20 +10,19 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 public interface UserService { // todo: refactor
 
     List<UserResponseDTO> findAllUsers();
 
-    UserResponseDTO findUserById(UUID id) throws EntityDoesNotExistException;
+    UserResponseDTO findUserById(String id) throws EntityDoesNotExistException;
 
     Optional<User> findUserByEmail(String email) throws UsernameNotFoundException;
 
     User createUser(UserRegistryRequestDTO registryRequest) throws UserAlreadyExistAuthenticationException;
 
-    UserResponseDTO updateUserById(UUID id, UserUpdateRequestDTO updateRequest)
+    UserResponseDTO updateUserById(String id, UserUpdateRequestDTO updateRequest)
             throws UsernameNotFoundException, UserAlreadyExistAuthenticationException;
 
-    void deleteUserById(UUID id);
+    void deleteUserById(String id);
 }

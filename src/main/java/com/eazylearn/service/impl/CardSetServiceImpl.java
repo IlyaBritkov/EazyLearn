@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;
 import static org.springframework.context.annotation.ScopedProxyMode.INTERFACES;
@@ -40,7 +39,7 @@ public class CardSetServiceImpl implements CardSetService {
     private final CardService cardService;
 
     private final JwtUser currentUser = (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    private final UUID currentUserId = currentUser.getId();
+    private final String currentUserId = currentUser.getId();
 
     @Override
     @Transactional(readOnly = true)
@@ -56,7 +55,7 @@ public class CardSetServiceImpl implements CardSetService {
     @Override
     @Transactional(readOnly = true)
     @SuppressWarnings("OptionalGetWithoutIsPresent")
-    public CardSetResponseDTO findCategoryById(UUID categoryId) throws EntityDoesNotExistException {
+    public CardSetResponseDTO findCategoryById(String categoryId) throws EntityDoesNotExistException {
 
         checkCategoryExistenceById(categoryId);
 
@@ -66,7 +65,7 @@ public class CardSetServiceImpl implements CardSetService {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean existsById(UUID categoryId) {
+    public boolean existsById(String categoryId) {
         return cardSetRepository.existsByIdAndUserId(categoryId, currentUserId);
     }
 
@@ -91,7 +90,7 @@ public class CardSetServiceImpl implements CardSetService {
     @Override
     @Transactional(isolation = SERIALIZABLE)
     @SuppressWarnings("OptionalGetWithoutIsPresent")
-    public CardSetResponseDTO updateCategoryById(UUID categoryId, CardSetUpdateRequestDTO updateDTO)
+    public CardSetResponseDTO updateCategoryById(String categoryId, CardSetUpdateRequestDTO updateDTO)
             throws EntityDoesNotExistException {
 
         checkCategoryExistenceById(categoryId);
@@ -106,7 +105,7 @@ public class CardSetServiceImpl implements CardSetService {
     @Transactional(isolation = SERIALIZABLE)
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     // todo refactor it
-    public void deleteCategoryById(UUID setId, boolean isDeleteAllCardsInCategory)
+    public void deleteCategoryById(String setId, boolean isDeleteAllCardsInCategory)
             throws EntityDoesNotExistException {
         checkCategoryExistenceById(setId);
 
@@ -123,7 +122,7 @@ public class CardSetServiceImpl implements CardSetService {
         cardSetRepository.delete(cardSet);
     }
 
-    protected void checkCategoryExistenceById(@Nullable UUID categoryId) throws EntityDoesNotExistException {
+    protected void checkCategoryExistenceById(@Nullable String categoryId) throws EntityDoesNotExistException {
         if (categoryId != null) {
             boolean isCategoryExists = existsById(categoryId);
             if (isCategoryExists) {

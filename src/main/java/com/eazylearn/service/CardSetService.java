@@ -7,21 +7,20 @@ import com.eazylearn.exception.EntityAlreadyExistsException;
 import com.eazylearn.exception.EntityDoesNotExistException;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface CardSetService {
 
     List<CardSetResponseDTO> findAllCategories();
 
-    CardSetResponseDTO findCategoryById(UUID categoryId) throws EntityDoesNotExistException;
+    CardSetResponseDTO findCategoryById(String categoryId) throws EntityDoesNotExistException;
 
-    boolean existsById(UUID categoryId);
+    boolean existsById(String categoryId);
 
     CardSetResponseDTO createCategory(CardSetCreateRequestDTO cardSetCreateRequestDTO)
             throws EntityAlreadyExistsException;
 
-    CardSetResponseDTO updateCategoryById(UUID categoryId, CardSetUpdateRequestDTO cardSetUpdateRequestDTO)
+    CardSetResponseDTO updateCategoryById(String categoryId, CardSetUpdateRequestDTO cardSetUpdateRequestDTO)
             throws EntityDoesNotExistException;
 
-    void deleteCategoryById(UUID categoryId, boolean isDeleteAllCardsInCategory) throws EntityDoesNotExistException;
+    void deleteCategoryById(String categoryId, boolean isDeleteAllCardsInCategory) throws EntityDoesNotExistException;
 }

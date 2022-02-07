@@ -17,13 +17,12 @@ import static lombok.AccessLevel.PRIVATE;
 public final class JwtUserFactory {
 
     public static JwtUser create(User user) {
-
         return JwtUser.builder()
                 .id(user.getId())
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .password(user.getPassword())
-                .authorities(mapUserRolesToAuthorities(user.getRoles()))
+                .authorities(mapUserRolesAndAuthoritiesToAuthorities(user.getRoles()))
                 .isAccountNonExpired(true)
                 .isAccountNonLocked(true)
                 .isCredentialsNonExpired(true)
@@ -31,7 +30,7 @@ public final class JwtUserFactory {
                 .build();
     }
 
-    private static List<GrantedAuthority> mapUserRolesToAuthorities(List<Role> userRoles) {
+    private static List<GrantedAuthority> mapUserRolesAndAuthoritiesToAuthorities(List<Role> userRoles) {
         final List<GrantedAuthority> authorities = userRoles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName().name()))
                 .collect(toList());

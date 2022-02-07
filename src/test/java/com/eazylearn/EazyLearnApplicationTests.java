@@ -12,7 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
-import static com.eazylearn.enums.UserRole.ADMIN;
+import static com.eazylearn.enums.UserRole.ROLE_ADMIN;
 import static com.eazylearn.enums.UserStatus.ACTIVE;
 
 @SpringBootTest
@@ -42,7 +42,7 @@ public class EazyLearnApplicationTests {
                 .email("admin@gmail.com")
                 .password(passwordEncoder.encode("admin"))
                 .status(ACTIVE)
-                .roles(List.of(new Role(ADMIN)))
+                .roles(List.of(new Role(ROLE_ADMIN)))
                 .build();
 
         System.out.println(userRepository);

@@ -20,6 +20,7 @@ import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
         nullValuePropertyMappingStrategy = IGNORE)
 public abstract class UserMapper {
 
+//    @Mapping(source = "id", target = "id", qualifiedByName = "uuidToString")
     @Mapping(source = "roles", target = "roles", qualifiedByName = "rolesToUserRoles")
     public abstract UserResponseDTO toResponseDTO(User user);
 

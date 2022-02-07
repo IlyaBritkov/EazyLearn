@@ -8,7 +8,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,7 +17,7 @@ import java.util.UUID;
 public class CardResponseDTO {
 
     @EqualsAndHashCode.Include
-    private UUID id;
+    private String id;
 
     private String term;
 
@@ -34,6 +33,6 @@ public class CardResponseDTO {
 
     //todo: check whether a list is always returned or null value is possible
     @Nullable
-    private List<UUID> linkedCardSetsIds;
+    private List<String> linkedCardSetsIds;
 
 }
