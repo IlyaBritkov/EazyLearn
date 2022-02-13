@@ -14,7 +14,7 @@ public interface CardSetService {
 
     CardSetResponseDTO findCategoryById(String categoryId) throws EntityDoesNotExistException;
 
-    boolean existsById(String categoryId);
+    boolean isExistById(String categoryId);
 
     CardSetResponseDTO createCategory(CardSetCreateRequestDTO cardSetCreateRequestDTO)
             throws EntityAlreadyExistsException;
@@ -22,5 +22,5 @@ public interface CardSetService {
     CardSetResponseDTO updateCategoryById(String categoryId, CardSetUpdateRequestDTO cardSetUpdateRequestDTO)
             throws EntityDoesNotExistException;
 
-    void deleteCategoryById(String categoryId, boolean isDeleteAllCardsInCategory) throws EntityDoesNotExistException;
+    void deleteCardSetById(String categoryId, boolean isDeleteAllCardsInCategory) throws EntityDoesNotExistException;
 }

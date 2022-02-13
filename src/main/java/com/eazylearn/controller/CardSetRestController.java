@@ -67,7 +67,7 @@ public class CardSetRestController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCategoryById(@PathVariable("id") UUID categoryId,
                                                 @RequestParam boolean isDeleteAllCardsInCategory) {
-        cardSetService.deleteCategoryById(uuidToString(categoryId), isDeleteAllCardsInCategory);
+        cardSetService.deleteCardSetById(uuidToString(categoryId), isDeleteAllCardsInCategory);
 
         return ResponseEntity.noContent().build();
     }

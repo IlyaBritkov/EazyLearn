@@ -21,14 +21,15 @@ public interface CardService {
 
     List<Card> createCards(List<CardCreateRequestDTO> cardCreateRequestList);
 
-    Card updateCard(CardUpdateRequestDTO updateDto);
+    Card createCard(CardCreateRequestDTO createDto);
 
     List<Card> updateCards(List<CardUpdateRequestDTO> updateDTOList);
 
+    Card updateCard(CardUpdateRequestDTO updateDto);
+
     void deleteCardById(String cardId);
 
-    void deleteCardByCardSetId(String categoryId);
+    void deleteCardsByCardSetId(String categoryId);
 
     List<Card> updateCardsProficiencyLevel(List<UpdateCardProficiencyLevelDTO> updateProficiencyDTOList);
-
 }

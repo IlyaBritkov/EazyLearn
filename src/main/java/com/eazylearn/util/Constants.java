@@ -7,17 +7,18 @@ import static lombok.AccessLevel.PRIVATE;
 @NoArgsConstructor(access = PRIVATE)
 public class Constants {
     /**
-     * Security constants
+     * Endpoints
      **/
     // Swagger
     public static final String SWAGGER2_UI_ENDPOINT = "/**";
     public static final String SWAGGER2_DOCS_ENDPOINT = "/v2/api-docs/**";
     // Auth
-    public static final String REGISTRY_ENDPOINT = "/api/v1/auth/registry";
-    public static final String LOGIN_ENDPOINT = "/api/v1/auth/login";
-    public final static String REFRESH_TOKEN_ENDPOINT = "/api/v1/token/refresh";
+    public static final String LOGIN_ENDPOINT_PATH = "/api/v1/auth/login";
+    public final static String REFRESH_TOKEN_ENDPOINT_PATH = "/api/v1/auth/token/refresh";
+    public final static String REFRESH_TOKEN_ENDPOINT = "/token/refresh";
     // Business logic
-    public static final String ADMIN_ENDPOINT = "/api/v1/admin/**";
+    public static final String USERS_ENDPOINT_PATH = "/api/v1/users";
+
     public final static String ANY_FINAL_ENDPOINT = "/**";
 
     // JWT

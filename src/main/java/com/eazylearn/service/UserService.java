@@ -2,27 +2,22 @@ package com.eazylearn.service;
 
 import com.eazylearn.dto.request.user.UserRegistryRequestDTO;
 import com.eazylearn.dto.request.user.UserUpdateRequestDTO;
-import com.eazylearn.dto.response.UserResponseDTO;
 import com.eazylearn.entity.User;
 import com.eazylearn.exception.EntityDoesNotExistException;
-import com.eazylearn.exception.UserAlreadyExistAuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface UserService { // todo: refactor
+public interface UserService {
 
-    List<UserResponseDTO> findAllUsers();
+    List<User> findAllUsers();
 
-    UserResponseDTO findUserById(String id) throws EntityDoesNotExistException;
+    User findUserById(String id) throws EntityDoesNotExistException;
 
-    Optional<User> findUserByEmail(String email) throws UsernameNotFoundException;
+    User findUserByEmail(String email);
 
-    User createUser(UserRegistryRequestDTO registryRequest) throws UserAlreadyExistAuthenticationException;
+    User createUser(UserRegistryRequestDTO registryRequest);
 
-    UserResponseDTO updateUserById(String id, UserUpdateRequestDTO updateRequest)
-            throws UsernameNotFoundException, UserAlreadyExistAuthenticationException;
+    User updateUserById(String id, UserUpdateRequestDTO updateRequest);
 
     void deleteUserById(String id);
 }

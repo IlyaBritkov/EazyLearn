@@ -25,4 +25,6 @@ public interface CardSetRepository extends CrudRepository<CardSet, String> {
             + "FROM CardSet cardSet "
             + "WHERE cardSet.id IN (:ids)")
     long countByIds(@Param("ids") Collection<String> ids);
+
+    long countById(String cardSetId);
 }

@@ -14,12 +14,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static com.eazylearn.enums.UserRole.ROLE_ADMIN;
-import static com.eazylearn.util.Constants.ADMIN_ENDPOINT;
 import static com.eazylearn.util.Constants.ANY_FINAL_ENDPOINT;
-import static com.eazylearn.util.Constants.LOGIN_ENDPOINT;
-import static com.eazylearn.util.Constants.REFRESH_TOKEN_ENDPOINT;
-import static com.eazylearn.util.Constants.REGISTRY_ENDPOINT;
+import static com.eazylearn.util.Constants.LOGIN_ENDPOINT_PATH;
+import static com.eazylearn.util.Constants.REFRESH_TOKEN_ENDPOINT_PATH;
+import static com.eazylearn.util.Constants.USERS_ENDPOINT_PATH;
+import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 /**
@@ -44,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         final JwtAuthenticationFilter jwtAuthenticationFilter =
                 new JwtAuthenticationFilter(authenticationManagerBean(), jwtTokenProvider);
-        jwtAuthenticationFilter.setFilterProcessesUrl(LOGIN_ENDPOINT);
+        jwtAuthenticationFilter.setFilterProcessesUrl(LOGIN_ENDPOINT_PATH);
 
         http
                 .httpBasic().disable()
@@ -52,10 +51,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers(REGISTRY_ENDPOINT,
-                        LOGIN_ENDPOINT,
-                        REFRESH_TOKEN_ENDPOINT + ANY_FINAL_ENDPOINT).permitAll()
-                .antMatchers(ADMIN_ENDPOINT).hasRole(ROLE_ADMIN.toString())
+                .antMatchers(LOGIN_ENDPOINT_PATH,
+                        REFRESH_TOKEN_ENDPOINT_PATH + ANY_FINAL_ENDPOINT).permitAll()
+                .antMatchers(POST, USERS_ENDPOINT_PATH).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(jwtAuthenticationFilter)

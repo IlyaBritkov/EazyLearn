@@ -38,12 +38,11 @@ public class CardRestController {
     private final CardMapper cardMapper;
 
     /**
-     * Returns all cards created by authorized user
-     * or only cards associated with cardSetId.
+     * Returns ALL cards OR cards ASSOCIATED with <b>cardSetId</b> for authorized user.
      *
-     * @param cardSetId - optional request parameter.
-     *                  If passed only cards that belong to cardSet will be returned.
-     *                  Otherwise, will be returned all cards.
+     * @param cardSetId optional request parameter.
+     *                  If passed only cards that belong to that cardSet will be returned.
+     *                  Otherwise, all cards will be returned.
      **/
     @GetMapping
     public ResponseEntity<List<CardResponseDTO>> findAllCards(
@@ -56,23 +55,22 @@ public class CardRestController {
             allCards = cardService.findAllCardsBySetId(uuidToString(cardSetId));
         }
 
-        List<CardResponseDTO> cardResponseDTOList = cardMapper.mapCardListToCardResponseDTOList(allCards);
-        return ok(cardResponseDTOList);
+        return ok(cardMapper.mapCardListToCardResponseDTOList(allCards));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CardResponseDTO> findCardById(@PathVariable("id") UUID cardId) {
-        Card card = cardService.findCardById(uuidToString(cardId));
+        final Card card = cardService.findCardById(uuidToString(cardId));
 
         return ok(cardMapper.toResponseDTO(card));
     }
 
     /**
-     * Returns all cards with the field value isFavourite = true and created by authorized user
-     * or only cards associated with cardSetId.
+     * Returns ALL cards or ONLY cards associated with <b>cardSetId</b> for which <b>{@link Card#getIsFavourite()} = true</b>
+     * and created by authorized user.
      *
-     * @param cardSetId - optional request parameter.
-     *                  If passed only cards that are favourite and belong to cardSet will be returned.
+     * @param cardSetId optional request parameter.
+     *                  If passed only favourite cards that belong to cardSet will be returned.
      *                  Otherwise, will be returned all favourite cards.
      **/
     @GetMapping("/favourite")
@@ -86,36 +84,30 @@ public class CardRestController {
             allCards = cardService.findAllFavouriteCardsBySetId(uuidToString(cardSetId));
         }
 
-        List<CardResponseDTO> cardResponseDTOList = cardMapper.mapCardListToCardResponseDTOList(allCards);
-        return ok(cardResponseDTOList);
+        return ok(cardMapper.mapCardListToCardResponseDTOList(allCards));
     }
 
     @PostMapping
-    public ResponseEntity<List<CardResponseDTO>> createCards(
-            @RequestBody List<CardCreateRequestDTO> cardCreateDTOList) {
+    public ResponseEntity<List<CardResponseDTO>> createCards(@RequestBody List<CardCreateRequestDTO> cardCreateDTOList) {
+        final List<Card> cardList = cardService.createCards(cardCreateDTOList);
 
-        List<Card> cardList = cardService.createCards(cardCreateDTOList);
-
-        List<CardResponseDTO> cardResponseDTOList = cardMapper.mapCardListToCardResponseDTOList(cardList);
-        return ok(cardResponseDTOList);
+        return ok(cardMapper.mapCardListToCardResponseDTOList(cardList));
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<CardResponseDTO> updateCardById(@PathVariable("id") UUID cardId,
                                                           @RequestBody CardUpdateRequestDTO updateDto) {
-
         updateDto.setCardId(uuidToString(cardId));
-        Card card = cardService.updateCard(updateDto);
+        final Card card = cardService.updateCard(updateDto);
 
         return ok(cardMapper.toResponseDTO(card));
     }
 
     @PatchMapping
     public ResponseEntity<List<CardResponseDTO>> updateCards(@RequestBody List<CardUpdateRequestDTO> updateDTOList) {
-        List<Card> cardList = cardService.updateCards(updateDTOList);
+        final List<Card> cardList = cardService.updateCards(updateDTOList);
 
-        List<CardResponseDTO> cardResponseDTOList = cardMapper.mapCardListToCardResponseDTOList(cardList);
-        return ok(cardResponseDTOList);
+        return ok(cardMapper.mapCardListToCardResponseDTOList(cardList));
     }
 
     /**
@@ -123,13 +115,10 @@ public class CardRestController {
      * new proficiencyLevel passed in {@link UpdateCardProficiencyLevelDTO}
      **/
     @PatchMapping(value = "/proficiencyLevel")
-    public ResponseEntity<List<CardResponseDTO>> updateCardsProficiencyLevel(
-            @RequestBody List<UpdateCardProficiencyLevelDTO> updateProficiencyDTOList) {
+    public ResponseEntity<List<CardResponseDTO>> updateCardsProficiencyLevel(@RequestBody List<UpdateCardProficiencyLevelDTO> updateProficiencyDTOList) {
+        final List<Card> cardList = cardService.updateCardsProficiencyLevel(updateProficiencyDTOList);
 
-        List<Card> cardList = cardService.updateCardsProficiencyLevel(updateProficiencyDTOList);
-
-        List<CardResponseDTO> cardResponseDTOList = cardMapper.mapCardListToCardResponseDTOList(cardList);
-        return ok(cardResponseDTOList);
+        return ok(cardMapper.mapCardListToCardResponseDTOList(cardList));
     }
 
     @DeleteMapping("/{id}")

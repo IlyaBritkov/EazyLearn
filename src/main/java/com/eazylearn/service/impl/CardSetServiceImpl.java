@@ -14,7 +14,6 @@ import com.eazylearn.service.CardService;
 import com.eazylearn.service.CardSetService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -24,11 +23,11 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 import static org.springframework.context.annotation.ScopedProxyMode.INTERFACES;
-import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.web.context.WebApplicationContext.SCOPE_REQUEST;
 
 @Service
-@Scope(value = SCOPE_REQUEST, proxyMode = INTERFACES)
+@Transactional
+@Scope(value = SCOPE_REQUEST, proxyMode = INTERFACES) // todo: extract JWT from SpringContext
 @RequiredArgsConstructor
 @Slf4j
 public class CardSetServiceImpl implements CardSetService {
@@ -57,7 +56,7 @@ public class CardSetServiceImpl implements CardSetService {
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     public CardSetResponseDTO findCategoryById(String categoryId) throws EntityDoesNotExistException {
 
-        checkCategoryExistenceById(categoryId);
+        checkCardSetExistenceById(categoryId);
 
         CardSet cardSetById = cardSetRepository.findByIdAndUserId(categoryId, currentUserId).get();
         return cardSetMapper.toResponseDTO(cardSetById);
@@ -65,12 +64,11 @@ public class CardSetServiceImpl implements CardSetService {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean existsById(String categoryId) {
+    public boolean isExistById(String categoryId) {
         return cardSetRepository.existsByIdAndUserId(categoryId, currentUserId);
     }
 
     @Override
-    @Transactional(isolation = SERIALIZABLE)
     public CardSetResponseDTO createCategory(CardSetCreateRequestDTO cardSetCreateRequestDTO)
             throws EntityAlreadyExistsException {
 
@@ -88,12 +86,11 @@ public class CardSetServiceImpl implements CardSetService {
     }
 
     @Override
-    @Transactional(isolation = SERIALIZABLE)
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     public CardSetResponseDTO updateCategoryById(String categoryId, CardSetUpdateRequestDTO updateDTO)
             throws EntityDoesNotExistException {
 
-        checkCategoryExistenceById(categoryId);
+        checkCardSetExistenceById(categoryId);
 
         CardSet updatedCardSet = cardSetRepository.findByIdAndUserId(categoryId, currentUserId).get();
         cardSetMapper.updateEntity(updateDTO, updatedCardSet);
@@ -102,17 +99,15 @@ public class CardSetServiceImpl implements CardSetService {
     }
 
     @Override
-    @Transactional(isolation = SERIALIZABLE)
     @SuppressWarnings("OptionalGetWithoutIsPresent")
-    // todo refactor it
-    public void deleteCategoryById(String setId, boolean isDeleteAllCardsInCategory)
+    public void deleteCardSetById(String setId, boolean isDeleteAllCardsInCategory)
             throws EntityDoesNotExistException {
-        checkCategoryExistenceById(setId);
+        checkCardSetExistenceById(setId);
 
         CardSet cardSet = cardSetRepository.findByIdAndUserId(setId, currentUserId).get();
 
         if (isDeleteAllCardsInCategory) {
-            cardService.deleteCardByCardSetId(setId);
+            cardService.deleteCardsByCardSetId(setId);
         } else {
             List<Card> allCardsByCategory = cardService.findAllCardsBySetId(setId);
 //            allCardsByCategory
@@ -122,13 +117,10 @@ public class CardSetServiceImpl implements CardSetService {
         cardSetRepository.delete(cardSet);
     }
 
-    protected void checkCategoryExistenceById(@Nullable String categoryId) throws EntityDoesNotExistException {
-        if (categoryId != null) {
-            boolean isCategoryExists = existsById(categoryId);
-            if (isCategoryExists) {
-                return;
-            }
+    private void checkCardSetExistenceById(String categoryId) throws EntityDoesNotExistException {
+        boolean isCategoryExists = isExistById(categoryId);
+        if (isCategoryExists) {
+            throw new EntityDoesNotExistException(String.format("CardSet with id:%d doesn't exist", categoryId));
         }
-        throw new EntityDoesNotExistException(String.format("CardSet with id:%d doesn't exist", categoryId));
     }
 }

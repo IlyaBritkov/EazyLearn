@@ -2,7 +2,6 @@ package com.eazylearn.service.impl;
 
 import com.eazylearn.dto.request.user.UserRegistryRequestDTO;
 import com.eazylearn.dto.request.user.UserUpdateRequestDTO;
-import com.eazylearn.dto.response.UserResponseDTO;
 import com.eazylearn.entity.Role;
 import com.eazylearn.entity.User;
 import com.eazylearn.exception.UserAlreadyExistAuthenticationException;
@@ -19,11 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static com.eazylearn.enums.UserRole.ROLE_USER;
 import static com.eazylearn.enums.UserStatus.ACTIVE;
-import static java.util.stream.Collectors.toList;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 
 @Service
@@ -39,38 +36,27 @@ public class UserServiceImpl implements UserService { // todo: add current user
 
     @Override
     @Transactional(readOnly = true)
-    public List<UserResponseDTO> findAllUsers() {
-
-        List<User> allUsers = userRepository.findAll();
-
-        return allUsers.stream()
-                .map(userMapper::toResponseDTO)
-                .collect(toList());
+    public List<User> findAllUsers() {
+        return userRepository.findAll();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public UserResponseDTO findUserById(String id) throws UsernameNotFoundException {
-
-        User userById = userRepository.findById(id)
+    public User findUserById(String id) throws UsernameNotFoundException {
+        return userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format("User with id = %s doesn't exist", id)));
-
-        return userMapper.toResponseDTO(userById);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<User> findUserByEmail(String email) {
-
-        return userRepository.findByEmail(email);
+    public User findUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(
+                String.format("User with email = %s doesn't exist", email)));
     }
 
-    // todo: maybe perform login here
     @Override
     @Transactional(isolation = SERIALIZABLE)
-    public User createUser(UserRegistryRequestDTO registryRequest)
-            throws UserAlreadyExistAuthenticationException {
-
+    public User createUser(UserRegistryRequestDTO registryRequest) {
         final String email = registryRequest.getEmail();
 
         if (!userRepository.existsByEmail(email)) {
@@ -96,7 +82,7 @@ public class UserServiceImpl implements UserService { // todo: add current user
 
     @Override
     @Transactional(isolation = SERIALIZABLE)
-    public UserResponseDTO updateUserById(String id, UserUpdateRequestDTO updateRequest)
+    public User updateUserById(String id, UserUpdateRequestDTO updateRequest)
             throws UsernameNotFoundException, UserAlreadyExistAuthenticationException {
 
         // todo: 6/8/2021 add check right for update
@@ -111,7 +97,7 @@ public class UserServiceImpl implements UserService { // todo: add current user
 
         userMapper.updateEntity(updateRequest, persistedUser);
 
-        return userMapper.toResponseDTO(persistedUser);
+        return persistedUser;
     }
 
     @Override

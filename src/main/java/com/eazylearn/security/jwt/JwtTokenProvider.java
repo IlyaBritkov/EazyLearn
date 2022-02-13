@@ -44,17 +44,17 @@ public class JwtTokenProvider {
                 .collect(toList());
 
         return JWT.create()
-                .withSubject(jwtUser.getUsername())
+                .withSubject(jwtUser.getEmail())
                 .withExpiresAt(new Date(currentTimeMillis() + ACCESS_TOKEN_EXPIRATION_IN_MILLISECONDS))
                 .withIssuer(request.getRequestURL().toString())
-                .withClaim(USER_ID_CLAIM, jwtUser.getId().toString())
+                .withClaim(USER_ID_CLAIM, jwtUser.getId())
                 .withClaim(AUTHORITIES_CLAIM, authorities)
                 .sign(algorithm);
     }
 
     public String generateRefreshToken(JwtUser jwtUser, HttpServletRequest request) {
         return JWT.create()
-                .withSubject(jwtUser.getUsername())
+                .withSubject(jwtUser.getEmail())
                 .withExpiresAt(new Date(currentTimeMillis() + REFRESH_TOKEN_EXPIRATION_IN_MILLISECONDS))
                 .withIssuer(request.getRequestURL().toString())
                 .sign(algorithm);
@@ -64,6 +64,10 @@ public class JwtTokenProvider {
         Algorithm algorithm = Algorithm.HMAC256(JWT_SECRET.getBytes());
         JWTVerifier verifier = JWT.require(algorithm).build();
         return verifier.verify(token);
+    }
+
+    public DecodedJWT decode(String token) {
+        return JWT.decode(token);
     }
 
     public static List<SimpleGrantedAuthority> mapStringAuthoritiesToSimpleGrantedAuthorities(List<String> authorities) {

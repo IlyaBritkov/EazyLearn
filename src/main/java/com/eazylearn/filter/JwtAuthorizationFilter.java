@@ -23,8 +23,8 @@ import java.util.Map;
 import static com.eazylearn.security.jwt.JwtTokenProvider.mapStringAuthoritiesToSimpleGrantedAuthorities;
 import static com.eazylearn.util.Constants.AUTHORITIES_CLAIM;
 import static com.eazylearn.util.Constants.BEARER_PREFIX;
-import static com.eazylearn.util.Constants.LOGIN_ENDPOINT;
-import static com.eazylearn.util.Constants.REFRESH_TOKEN_ENDPOINT;
+import static com.eazylearn.util.Constants.LOGIN_ENDPOINT_PATH;
+import static com.eazylearn.util.Constants.REFRESH_TOKEN_ENDPOINT_PATH;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -37,7 +37,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
-        if (!request.getServletPath().equals(LOGIN_ENDPOINT) && !request.getServletPath().equals(REFRESH_TOKEN_ENDPOINT)) {
+        if (!request.getServletPath().equals(LOGIN_ENDPOINT_PATH) && !request.getServletPath().equals(REFRESH_TOKEN_ENDPOINT_PATH)) {
             String authorizationHeader = request.getHeader(AUTHORIZATION);
             if (authorizationHeader != null && authorizationHeader.startsWith(BEARER_PREFIX)) {
                 try {

@@ -22,11 +22,10 @@ import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.CascadeType.REFRESH;
 import static javax.persistence.FetchType.EAGER;
 
-@SuppressWarnings({"LombokDataInspection", "LombokEqualsAndHashCodeInspection"})
+@SuppressWarnings({"LombokDataInspection", "LombokEqualsAndHashCodeInspection", "com.haulmont.jpb.LombokEqualsAndHashCodeInspection", "com.haulmont.jpb.LombokDataInspection"})
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-
 @Entity
 @Table(name = "card")
 public class Card extends BaseEntity {
@@ -51,12 +50,11 @@ public class Card extends BaseEntity {
     @Column(name = "user_id")
     private String userId;
 
-    @ManyToMany(cascade = {
+    @ManyToMany(fetch = EAGER, cascade = {
             PERSIST,
             MERGE,
             REFRESH,
-            DETACH},
-            fetch = EAGER)
+            DETACH})
     @JoinTable(
             name = "set_card",
             joinColumns = {@JoinColumn(name = "card_id")},
