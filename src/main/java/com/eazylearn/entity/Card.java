@@ -43,7 +43,7 @@ public class Card extends BaseEntity {
     private Double proficiencyLevel;
 
     @Column(name = "is_favourite")
-    private Boolean isFavourite;
+    private boolean isFavourite;
 
     @NotNull
     @ToString.Exclude

@@ -1,13 +1,12 @@
 package com.eazylearn.filter;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.eazylearn.security.jwt.JwtTokenProvider;
+import com.eazylearn.security.jwt.JwtUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -17,11 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import static com.eazylearn.security.jwt.JwtTokenProvider.mapStringAuthoritiesToSimpleGrantedAuthorities;
-import static com.eazylearn.util.Constants.AUTHORITIES_CLAIM;
 import static com.eazylearn.util.Constants.BEARER_PREFIX;
 import static com.eazylearn.util.Constants.LOGIN_ENDPOINT_PATH;
 import static com.eazylearn.util.Constants.REFRESH_TOKEN_ENDPOINT_PATH;
@@ -41,15 +37,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             String authorizationHeader = request.getHeader(AUTHORIZATION);
             if (authorizationHeader != null && authorizationHeader.startsWith(BEARER_PREFIX)) {
                 try {
-                    String token = authorizationHeader.substring(BEARER_PREFIX.length());
-                    DecodedJWT decodedToken = jwtTokenProvider.verifyToken(token);
+                    final String token = authorizationHeader.substring(BEARER_PREFIX.length());
+                    jwtTokenProvider.verifyToken(token);
 
-                    String username = decodedToken.getSubject();
-                    List<String> authorities = decodedToken.getClaim(AUTHORITIES_CLAIM).asList(String.class);
-                    List<SimpleGrantedAuthority> grantedAuthorities = mapStringAuthoritiesToSimpleGrantedAuthorities(authorities);
+                    final JwtUser jwtUserFromToken = jwtTokenProvider.getJwtUserFromToken(token);
 
                     UsernamePasswordAuthenticationToken authenticationToken =
-                            new UsernamePasswordAuthenticationToken(username, null, grantedAuthorities);
+                            new UsernamePasswordAuthenticationToken(jwtUserFromToken, null, jwtUserFromToken.getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 } catch (Exception ex) {
                     String exMessage = ex.getMessage();

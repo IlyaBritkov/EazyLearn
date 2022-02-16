@@ -22,7 +22,7 @@ import javax.ws.rs.ForbiddenException;
 import java.util.List;
 import java.util.UUID;
 
-import static com.eazylearn.enums.UserRole.ROLE_ADMIN;
+import static com.eazylearn.enums.UserRole.ADMIN;
 import static com.eazylearn.util.Constants.USERS_ENDPOINT_PATH;
 import static com.eazylearn.util.Convertor.uuidToString;
 import static java.util.stream.Collectors.toList;
@@ -56,7 +56,7 @@ public class UserRestController {
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable("id") UUID userId) {
         final JwtUser currentUser = jwtAuthenticationFacade.getJwtPrincipal();
         if (currentUser.getId().equals(userId.toString())
-                || jwtUserDetailsService.isUserHasAuthority(currentUser, ROLE_ADMIN.name())) {
+                || jwtUserDetailsService.isUserHasAuthority(currentUser, ADMIN.name())) {
             final User user = userService.findUserById(uuidToString(userId));
 
             return ok(userMapper.toResponseDTO(user));

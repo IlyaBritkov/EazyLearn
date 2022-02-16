@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.eazylearn.enums.UserRole.ROLE_USER;
+import static com.eazylearn.enums.UserRole.USER;
 import static com.eazylearn.enums.UserStatus.ACTIVE;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 
@@ -64,8 +64,8 @@ public class UserServiceImpl implements UserService { // todo: add current user
             newUser.setPassword(passwordEncoder.encode(registryRequest.getPassword()));
 
             // todo: ADD CACHE for Roles and Authorities
-            final Role userRole = roleRepository.findByName(ROLE_USER)
-                    .orElseGet(() -> new Role(ROLE_USER));
+            final Role userRole = roleRepository.findByName(USER)
+                    .orElseGet(() -> new Role(USER));
 
             newUser.setStatus(ACTIVE);
             newUser.setRoles(new ArrayList<>(List.of(userRole)));

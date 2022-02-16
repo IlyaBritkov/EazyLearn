@@ -2,25 +2,21 @@ package com.eazylearn.service;
 
 import com.eazylearn.dto.request.cardset.CardSetCreateRequestDTO;
 import com.eazylearn.dto.request.cardset.CardSetUpdateRequestDTO;
-import com.eazylearn.dto.response.CardSetResponseDTO;
-import com.eazylearn.exception.EntityAlreadyExistsException;
-import com.eazylearn.exception.EntityDoesNotExistException;
+import com.eazylearn.entity.CardSet;
 
 import java.util.List;
 
 public interface CardSetService {
 
-    List<CardSetResponseDTO> findAllCategories();
+    List<CardSet> findAllCardSets();
 
-    CardSetResponseDTO findCategoryById(String categoryId) throws EntityDoesNotExistException;
+    List<CardSet> findAllFavouriteCardSets();
 
-    boolean isExistById(String categoryId);
+    CardSet findCardSetById(String cardSetId);
 
-    CardSetResponseDTO createCategory(CardSetCreateRequestDTO cardSetCreateRequestDTO)
-            throws EntityAlreadyExistsException;
+    CardSet createCardSet(CardSetCreateRequestDTO cardSetCreateRequestDTO);
 
-    CardSetResponseDTO updateCategoryById(String categoryId, CardSetUpdateRequestDTO cardSetUpdateRequestDTO)
-            throws EntityDoesNotExistException;
+    CardSet updateCardSetById(String cardSetId, CardSetUpdateRequestDTO cardSetUpdateRequestDTO);
 
-    void deleteCardSetById(String categoryId, boolean isDeleteAllCardsInCategory) throws EntityDoesNotExistException;
+    void deleteCardSetById(String cardSetId, boolean isDeleteAllLinkedCards);
 }

@@ -1,6 +1,8 @@
 package com.eazylearn.dto.request.card;
 
 import com.eazylearn.enums.ProficiencyLevel;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import io.vavr.control.Option;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
@@ -19,8 +21,15 @@ public class CardCreateRequestDTO implements CardRequest { // todo: add validati
     @NotBlank
     private String definition;
 
+    private boolean isFavourite;
+
     @NotNull
     private ProficiencyLevel proficiencyLevel;
 
-    private List<String> linkedCardSetsIds = new ArrayList<>();
+    private List<String> linkedCardSetsIds;
+
+    @JsonSetter("linkedCardSetsIds")
+    public void setLinkedCardSetsIds(List<String> linkedCardSetsIds) {
+        this.linkedCardSetsIds = Option.of(linkedCardSetsIds).getOrElse(new ArrayList<>());
+    }
 }

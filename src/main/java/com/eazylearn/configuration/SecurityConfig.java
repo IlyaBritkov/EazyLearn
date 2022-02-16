@@ -24,7 +24,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 /**
  * Security configuration class for JWT based Spring Security application.
  **/
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -34,7 +34,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(bcryptPasswordEncoder);
+        auth.userDetailsService(userDetailsService)
+                .passwordEncoder(bcryptPasswordEncoder);
     }
 
     // todo: add swagger
@@ -53,7 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(LOGIN_ENDPOINT_PATH,
                         REFRESH_TOKEN_ENDPOINT_PATH + ANY_FINAL_ENDPOINT).permitAll()
-                .antMatchers(POST, USERS_ENDPOINT_PATH).permitAll()
+                .antMatchers(POST, USERS_ENDPOINT_PATH + ANY_FINAL_ENDPOINT).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(jwtAuthenticationFilter)

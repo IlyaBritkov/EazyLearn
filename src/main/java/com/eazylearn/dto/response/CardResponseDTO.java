@@ -1,21 +1,22 @@
 package com.eazylearn.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-
-@Data
+@Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class CardResponseDTO {
-
     @EqualsAndHashCode.Include
     private String id;
 
@@ -23,16 +24,20 @@ public class CardResponseDTO {
 
     private String definition;
 
+    @JsonProperty("isFavourite")
+    private boolean isFavourite;
+
     private Double proficiencyLevel;
 
-    private Boolean isFavourite;
-
+    @JsonFormat(
+            shape = JsonFormat.Shape.STRING,
+            pattern = "dd-MM-yyyy hh:mm:ss")
     private LocalDateTime createdDateTime;
 
+    @JsonFormat(
+            shape = JsonFormat.Shape.STRING,
+            pattern = "dd-MM-yyyy hh:mm:ss")
     private LocalDateTime updatedDateTime;
 
-    //todo: check whether a list is always returned or null value is possible
-    @Nullable
     private List<String> linkedCardSetsIds;
-
 }

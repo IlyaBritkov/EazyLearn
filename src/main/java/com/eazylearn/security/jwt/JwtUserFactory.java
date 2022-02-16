@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.eazylearn.enums.UserStatus.ACTIVE;
+import static com.eazylearn.util.Constants.ROLE_PREFIX;
 import static java.util.stream.Collectors.toList;
 import static lombok.AccessLevel.PRIVATE;
 
@@ -30,9 +31,13 @@ public final class JwtUserFactory {
                 .build();
     }
 
+    static JwtUser.JwtUserBuilder jwtUserBuilder() {
+        return JwtUser.builder();
+    }
+
     private static List<GrantedAuthority> mapUserRolesAndAuthoritiesToAuthorities(List<Role> userRoles) {
         final List<GrantedAuthority> authorities = userRoles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName().name()))
+                .map(role -> new SimpleGrantedAuthority(ROLE_PREFIX + role.getName().name()))
                 .collect(toList());
 
         userRoles.stream()

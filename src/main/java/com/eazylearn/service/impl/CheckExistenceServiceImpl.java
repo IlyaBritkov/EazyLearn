@@ -31,6 +31,11 @@ public class CheckExistenceServiceImpl implements CheckExistenceService {
     }
 
     @Override
+    public boolean isCardSetByNameExist(String cardSetName, String userId) {
+        return cardSetRepository.existsByNameAndUserId(cardSetName, userId);
+    }
+
+    @Override
     public boolean areCardsByIdsExist(Collection<String> cardIds) {
         return cardIds.size() == cardRepository.countByIdIn(cardIds);
     }

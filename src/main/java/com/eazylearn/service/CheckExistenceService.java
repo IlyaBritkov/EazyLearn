@@ -8,6 +8,8 @@ public interface CheckExistenceService {
 
     boolean isCardSetsByIdExist(String cardSetId);
 
+    boolean isCardSetByNameExist(String cardSetName, String userId);
+
     boolean areCardsByIdsExist(Collection<String> cardIds);
 
     boolean isCardByIdExist(String cardId);

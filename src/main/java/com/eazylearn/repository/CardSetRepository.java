@@ -15,6 +15,8 @@ public interface CardSetRepository extends CrudRepository<CardSet, String> {
 
     List<CardSet> findAllByUserId(String userId);
 
+    List<CardSet> findAllByIsFavouriteAndUserId(boolean favourite, String userId);
+
     Optional<CardSet> findByIdAndUserId(String id, String userId);
 
     boolean existsByIdAndUserId(String cardSetId, String userId);

@@ -13,7 +13,7 @@ import java.util.List;
 
 @SuppressWarnings({"com.haulmont.jpb.LombokDataInspection", "com.haulmont.jpb.LombokEqualsAndHashCodeInspection"})
 @Entity
-@Table(name = "cardSet")
+@Table(name = "cardset")
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
@@ -30,5 +30,4 @@ public class CardSet extends BaseEntity { // todo: add validation
 
     @ManyToMany(mappedBy = "linkedCardSets")
     private List<Card> linkedCards = new ArrayList<>();
-
 }

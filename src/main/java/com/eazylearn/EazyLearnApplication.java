@@ -7,7 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 @RequiredArgsConstructor
-public class EazyLearnApplication { // todo: add ErrorController, add indexes to database
+public class EazyLearnApplication { // todo: add indexes to the database
 
     private final PasswordEncoder passwordEncoder;
 
@@ -28,6 +28,5 @@ public class EazyLearnApplication { // todo: add ErrorController, add indexes to
 //            userRepository.save(newUser);
 //        };
 //    }
-
 
 }
