@@ -26,5 +26,5 @@ public class CardSetResponseDTO {
             pattern = "dd-MM-yyyy hh:mm:ss")
     private LocalDateTime updatedDateTime;
 
-    private int linkedCardsAmount;
+    private int amountOfLinkedCards; // todo: add logic in controller
 }

@@ -32,7 +32,7 @@ import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequestMapping(value = "/api/v1/cards")
-public class CardRestController {
+public class CardRestController { // todo: add pagination
 
     private final CardService cardService;
     private final CardMapper cardMapper;
@@ -66,7 +66,7 @@ public class CardRestController {
     }
 
     /**
-     * Returns ALL cards or ONLY cards associated with <b>cardSetId</b> for which <b>{@link Card#getIsFavourite()} = true</b>
+     * Returns ALL cards or ONLY cards associated with <b>cardSetId</b> for which <b>{@link Card#isFavourite()} = true</b>
      * and created by authorized user.
      *
      * @param cardSetId optional request parameter.

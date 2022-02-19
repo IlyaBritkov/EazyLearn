@@ -11,7 +11,6 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class CardUpdateRequestDTO implements CardRequest {
-
     @EqualsAndHashCode.Include
     private String cardId; // can be null during dto creation, but injected in controller from path variable
 

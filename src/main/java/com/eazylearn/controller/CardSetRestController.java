@@ -32,7 +32,7 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequestMapping(value = CARDSETS_ENDPOINT_PATH)
 @RequiredArgsConstructor
 @Slf4j
-public class CardSetRestController {
+public class CardSetRestController { // todo: add pagination
 
     private final CardSetService cardSetService;
     private final CardSetMapper cardSetMapper;

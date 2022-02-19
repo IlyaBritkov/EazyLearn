@@ -7,7 +7,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 @RequiredArgsConstructor
-public class EazyLearnApplication { // todo: add indexes to the database
+public class EazyLearnApplication { // todo: add indexes to the database.
+    // todo: Send proper message for 404
 
     private final PasswordEncoder passwordEncoder;
 
