@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.UUID;
 
+import static com.eazylearn.util.Constants.CARDS_ENDPOINT_PATH;
 import static com.eazylearn.util.Convertor.uuidToString;
 import static org.springframework.http.ResponseEntity.noContent;
 import static org.springframework.http.ResponseEntity.ok;
@@ -31,7 +32,7 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequiredArgsConstructor
 
 @RestController
-@RequestMapping(value = "/api/v1/cards")
+@RequestMapping(value = CARDS_ENDPOINT_PATH)
 public class CardRestController { // todo: add pagination
 
     private final CardService cardService;
