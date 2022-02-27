@@ -6,12 +6,11 @@ import static lombok.AccessLevel.PRIVATE;
 
 @NoArgsConstructor(access = PRIVATE)
 public class Constants {
-    /**
-     * Endpoints
-     **/
     // Swagger
-    public static final String SWAGGER2_UI_ENDPOINT = "/**";
-    public static final String SWAGGER2_DOCS_ENDPOINT = "/v2/api-docs/**";
+    public static final String SWAGGER2_UI_ENDPOINT = "/swagger-ui";
+    public static final String SWAGGER2_RESOURCES_ENDPOINT = "/swagger-resources";
+    public static final String SWAGGER2_UI_HTML_ENDPOINT = "/swagger-ui/index.html";
+    public static final String SWAGGER2_API_DOCS_ENDPOINT = "/v2/api-docs";
     // Auth
     public static final String LOGIN_ENDPOINT_PATH = "/api/v1/auth/login";
     public final static String REFRESH_TOKEN_ENDPOINT_PATH = "/api/v1/auth/token/refresh";
@@ -20,7 +19,6 @@ public class Constants {
     public static final String USERS_ENDPOINT_PATH = "/api/v1/users";
     public static final String CARDS_ENDPOINT_PATH = "/api/v1/cards";
     public static final String CARDSETS_ENDPOINT_PATH = "/api/v1/cardSets";
-
     public final static String ANY_FINAL_ENDPOINT = "/**";
 
     // JWT
