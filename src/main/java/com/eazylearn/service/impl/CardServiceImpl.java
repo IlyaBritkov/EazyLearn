@@ -18,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -116,7 +115,7 @@ public class CardServiceImpl implements CardService {
                 .orElseThrow(() -> new EntityDoesNotExistException(String.format("Card with id:%s doesn't exist", cardId)));
 
         final List<String> linkedCardSetsIds = updateDto.getLinkedCardSetsIds();
-        List<CardSet> linkedCardSets = new ArrayList<>();
+        List<CardSet> linkedCardSets = cardToUpdate.getLinkedCardSets();
         if (!isNull(linkedCardSetsIds)) {
             linkedCardSets = cardSetRepository.findAllByIdInAndUserId(linkedCardSetsIds, jwtAuthenticationFacade.getJwtPrincipalId());
             checkLinkedCardSetsExistence(linkedCardSetsIds, linkedCardSets);

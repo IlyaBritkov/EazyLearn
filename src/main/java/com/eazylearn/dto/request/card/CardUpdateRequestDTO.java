@@ -24,14 +24,12 @@ public class CardUpdateRequestDTO implements CardRequest {
     @Nullable
     private String definition;
 
-    // todo: check that mapping from this string value to double equivalent works right
     @Nullable
     private ProficiencyLevel proficiencyLevel;
 
     @Nullable
     private Boolean isFavourite;
 
-    // todo: handle mapping with null value
     @Nullable
     private List<String> linkedCardSetsIds;
 }
