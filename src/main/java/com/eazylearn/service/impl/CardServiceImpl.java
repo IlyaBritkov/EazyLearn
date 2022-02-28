@@ -8,6 +8,7 @@ import com.eazylearn.entity.CardSet;
 import com.eazylearn.exception.EntityDoesNotExistException;
 import com.eazylearn.mapper.CardMapper;
 import com.eazylearn.repository.CardRepository;
+import com.eazylearn.repository.CardSetRepository;
 import com.eazylearn.security.jwt.JwtAuthenticationFacadeImpl;
 import com.eazylearn.service.CardService;
 import com.eazylearn.service.CheckExistenceService;
@@ -17,10 +18,13 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
@@ -31,6 +35,7 @@ import static java.util.stream.Collectors.toSet;
 public class CardServiceImpl implements CardService {
 
     private final CardRepository cardRepository;
+    private final CardSetRepository cardSetRepository;
     private final CheckExistenceService checkExistenceService;
     private final CardMapper cardMapper;
     private final JwtAuthenticationFacadeImpl jwtAuthenticationFacade;
@@ -97,7 +102,14 @@ public class CardServiceImpl implements CardService {
         final Card cardToUpdate = cardRepository.findByIdAndUserId(cardId, jwtAuthenticationFacade.getJwtPrincipalId())
                 .orElseThrow(() -> new EntityDoesNotExistException(String.format("Card with id:%s doesn't exist", cardId)));
 
+        final List<String> linkedCardSetsIds = updateDto.getLinkedCardSetsIds();
+        List<CardSet> linkedCardSets = new ArrayList<>();
+        if (!isNull(linkedCardSetsIds)) {
+            linkedCardSets = cardSetRepository.findAllByIdInAndUserId(linkedCardSetsIds, jwtAuthenticationFacade.getJwtPrincipalId());
+            checkLinkedCardSetsExistence(linkedCardSetsIds, linkedCardSets);
+        }
         cardMapper.updateEntity(updateDto, cardToUpdate);
+        cardToUpdate.setLinkedCardSets(linkedCardSets);
 
         return cardToUpdate;
     }
@@ -172,8 +184,25 @@ public class CardServiceImpl implements CardService {
         boolean allCardSetExist = checkExistenceService.areCardSetsByIdsExist(linkedCardSetsIds);
         if (!allCardSetExist) {
             throw new EntityDoesNotExistException(String.format(
-                    "%s with some of the following IDs %s doesnt exist", CardSet.class.getName(), linkedCardSetsIds));
+                    "%s by some of the following IDs %s doesnt exist", CardSet.class.getName(), linkedCardSetsIds));
         }
+    }
+
+    /**
+     * Checks that all CardSets, that are linked with the Card,
+     * exist by comparing ids from {@param linkedCardSetsIds} with ids of {@param linkedCardSets}.<br>
+     * If at least one CardSet doesn't exist exception is thrown.
+     * <br>
+     *
+     * @throws EntityDoesNotExistException if at least one CardSet doesn't exist.
+     **/
+    private void checkLinkedCardSetsExistence(List<String> linkedCardSetsIds, List<CardSet> linkedCardSets) {
+        linkedCardSetsIds.forEach(id -> {
+            linkedCardSets.stream()
+                    .filter(cardSet -> Objects.equals(id, cardSet.getId()))
+                    .findAny()
+                    .orElseThrow(() -> new EntityDoesNotExistException(String.format("CardSet by id=%s doesn't exist", id)));
+        });
     }
 
     /**

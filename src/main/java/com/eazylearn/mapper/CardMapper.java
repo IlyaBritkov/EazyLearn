@@ -34,7 +34,7 @@ public abstract class CardMapper {
     @Mapping(source = "linkedCardSets", target = "linkedCardSetsIds", qualifiedByName = "linkedCardSetsToLinkedCardSetsIds")
     public abstract CardResponseDTO toResponseDTO(Card card);
 
-    @Mapping(target = "card.id", ignore = true)
+    @Mapping(target = "card.id", ignore = true) // TODO check if ignore is needed
     @Mapping(target = "card.userId", ignore = true) // TODO check if ignore is needed
     @Mapping(source = "proficiencyLevel", target = "proficiencyLevel",
             qualifiedByName = "proficiencyLevelToProficiencyDouble")

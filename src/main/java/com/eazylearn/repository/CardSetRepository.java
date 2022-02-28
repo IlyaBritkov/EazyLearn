@@ -19,6 +19,8 @@ public interface CardSetRepository extends CrudRepository<CardSet, String> {
 
     Optional<CardSet> findByIdAndUserId(String id, String userId);
 
+    List<CardSet> findAllByIdInAndUserId(List<String> ids, String userId);
+
     boolean existsByIdAndUserId(String cardSetId, String userId);
 
     boolean existsByNameAndUserId(String name, String userId);
