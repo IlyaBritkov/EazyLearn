@@ -62,4 +62,7 @@ public class Card extends BaseEntity {
     )
     private List<CardSet> linkedCardSets = new ArrayList<>();
 
+    public boolean addLinkedCardSet(CardSet cardSet) {
+        return linkedCardSets.add(cardSet);
+    }
 }

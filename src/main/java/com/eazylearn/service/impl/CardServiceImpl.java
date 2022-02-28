@@ -79,10 +79,23 @@ public class CardServiceImpl implements CardService {
         final List<String> linkedCardSetsIds = cardCreateRequestList.stream()
                 .flatMap(createRequest -> createRequest.getLinkedCardSetsIds().stream())
                 .collect(toList());
-        checkLinkedCardSetsExistence(linkedCardSetsIds);
 
-        List<Card> newCardsList = cardCreateRequestList.stream()
-                .map(cardMapper::toEntity)
+        final List<CardSet> linkedCardSets = cardSetRepository.findAllByIdInAndUserId(linkedCardSetsIds, jwtAuthenticationFacade.getJwtPrincipalId());
+        checkLinkedCardSetsExistence(linkedCardSetsIds, linkedCardSets);
+
+        final List<Card> newCardsList = cardCreateRequestList.stream()
+                .map(cardDto -> {
+                    final Card newCard = cardMapper.toEntity(cardDto);
+                    // noinspection because existence are checked above
+                    //noinspection OptionalGetWithoutIsPresent
+                    final CardSet correspondingCardSet = linkedCardSets.stream()
+                            .filter(set -> cardDto.getLinkedCardSetsIds().contains(set.getId()))
+                            .findAny()
+                            .get();
+                    newCard.addLinkedCardSet(correspondingCardSet);
+
+                    return newCard;
+                })
                 .collect(toList());
 
         return cardRepository.saveAll(newCardsList);

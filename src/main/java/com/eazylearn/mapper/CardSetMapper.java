@@ -19,7 +19,7 @@ public abstract class CardSetMapper { // todo: update mapping
 
     public abstract CardSetResponseDTO toResponseDTO(CardSet cardSet);
 
-    // todo: add facade pattern
+    // todo: fix with jwt-facade
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "linkedCards", ignore = true)
     @Mapping(target = "userId", expression = "java(((JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal() ).getId())")

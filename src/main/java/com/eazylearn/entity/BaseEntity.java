@@ -27,9 +27,9 @@ public class BaseEntity {
 
     @Column(name = "created_datetime", updatable = false)
     @CreationTimestamp
-    private LocalDateTime createdDateTime; // todo: FIX. Now saved as null
+    private LocalDateTime createdDateTime;
 
     @Column(name = "last_update_datetime")
     @UpdateTimestamp
-    private LocalDateTime updatedDateTime; // todo: FIX. Now saved as null
+    private LocalDateTime updatedDateTime;
 }

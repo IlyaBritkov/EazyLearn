@@ -6,6 +6,19 @@ email=user1&password=user1
 
 > {% client.global.set("auth_token", response.body.access_token); %}
 
+###
+POST http://localhost:8080/api/v1/cards
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+[
+  {
+    "term": "Translate",
+    "definition": "Перевод",
+    "proficiencyLevel": "AVERAGE",
+    "linkedCardSetsIds": ["21513d9e-7866-4683-a703-5a9802fd9c67"]
+  }
+]
 
 ###
 PATCH http://localhost:8080/api/v1/cards/f484e21c-1710-4f19-9f6b-2a31f05f9f07
@@ -13,7 +26,10 @@ Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 
 {
-  "linkedCardSetsIds": ["ee1399a0-4958-4280-b3bd-9d9772c3adef", "21513d9e-7866-4683-a703-5a9802fd9c67"]
+  "linkedCardSetsIds": [
+    "ee1399a0-4958-4280-b3bd-9d9772c3adef",
+    "21513d9e-7866-4683-a703-5a9802fd9c67"
+  ]
 }
 
 ###
