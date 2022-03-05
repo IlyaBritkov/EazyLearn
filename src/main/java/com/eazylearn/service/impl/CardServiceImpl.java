@@ -19,13 +19,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
 
 @Service
 @Transactional
@@ -80,18 +77,16 @@ public class CardServiceImpl implements CardService {
                 .collect(toList());
 
         final List<CardSet> linkedCardSets = cardSetRepository.findAllByIdInAndUserId(linkedCardSetsIds, jwtAuthenticationFacade.getJwtPrincipalId());
-        checkLinkedCardSetsExistence(linkedCardSetsIds, linkedCardSets);
+        checkExistenceService.checkCardSetsExistence(linkedCardSetsIds, linkedCardSets);
 
         final List<Card> newCardsList = cardCreateRequestList.stream()
                 .map(cardDto -> {
                     final Card newCard = cardMapper.toEntity(cardDto);
                     // noinspection because existence are checked above
-                    //noinspection OptionalGetWithoutIsPresent
-                    final CardSet correspondingCardSet = linkedCardSets.stream()
+                    linkedCardSets.stream()
                             .filter(set -> cardDto.getLinkedCardSetsIds().contains(set.getId()))
                             .findAny()
-                            .get();
-                    newCard.addLinkedCardSet(correspondingCardSet);
+                            .ifPresent(newCard::addLinkedCardSet);
 
                     return newCard;
                 })
@@ -102,7 +97,7 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public Card createCard(CardCreateRequestDTO createDto) {
-        checkLinkedCardSetsExistence(createDto.getLinkedCardSetsIds());
+        checkExistenceService.checkCardsExistenceByIds(createDto.getLinkedCardSetsIds());
 
         return cardRepository.save(cardMapper.toEntity(createDto));
     }
@@ -118,7 +113,7 @@ public class CardServiceImpl implements CardService {
         List<CardSet> linkedCardSets = cardToUpdate.getLinkedCardSets();
         if (!isNull(linkedCardSetsIds)) {
             linkedCardSets = cardSetRepository.findAllByIdInAndUserId(linkedCardSetsIds, jwtAuthenticationFacade.getJwtPrincipalId());
-            checkLinkedCardSetsExistence(linkedCardSetsIds, linkedCardSets);
+            checkExistenceService.checkCardSetsExistence(linkedCardSetsIds, linkedCardSets);
         }
         cardMapper.updateEntity(updateDto, cardToUpdate);
         cardToUpdate.setLinkedCardSets(linkedCardSets);
@@ -182,66 +177,5 @@ public class CardServiceImpl implements CardService {
 
     private boolean isCorresponding(String updateDTO, String card) {
         return updateDTO.equals(card);
-    }
-
-    /**
-     * Checks that all CardSets that are linked with the Card exist.<br>
-     * If at least one CardSet doesn't exist exception is thrown.
-     * <br>
-     *
-     * @throws EntityDoesNotExistException if at least one CardSet doesn't exist.
-     **/
-    private void checkLinkedCardSetsExistence(List<String> linkedCardSetsIds) {
-
-        boolean allCardSetExist = checkExistenceService.areCardSetsByIdsExist(linkedCardSetsIds);
-        if (!allCardSetExist) {
-            throw new EntityDoesNotExistException(String.format(
-                    "%s by some of the following IDs %s doesnt exist", CardSet.class.getName(), linkedCardSetsIds));
-        }
-    }
-
-    /**
-     * Checks that all CardSets, that are linked with the Card,
-     * exist by comparing ids from {@param linkedCardSetsIds} with ids of {@param linkedCardSets}.<br>
-     * If at least one CardSet doesn't exist exception is thrown.
-     * <br>
-     *
-     * @throws EntityDoesNotExistException if at least one CardSet doesn't exist.
-     **/
-    private void checkLinkedCardSetsExistence(List<String> linkedCardSetsIds, List<CardSet> linkedCardSets) {
-        linkedCardSetsIds.forEach(id -> {
-            linkedCardSets.stream()
-                    .filter(cardSet -> Objects.equals(id, cardSet.getId()))
-                    .findAny()
-                    .orElseThrow(() -> new EntityDoesNotExistException(String.format("CardSet by id=%s doesn't exist", id)));
-        });
-    }
-
-    /**
-     * Checks that all entities exist according passed updateDTOList
-     *
-     * @throws IllegalArgumentException if at least one DTO object doesn't contain ID value
-     * @throws IllegalArgumentException if at least one Card doesn't exist by ID
-     */
-    private void checkCardsExistenceById(@NotNull final List<CardUpdateRequestDTO> updateDTOList) {
-        Set<String> cardIds = updateDTOList.stream()
-                .map(CardUpdateRequestDTO::getCardId)
-                .collect(toSet());
-
-        if (updateDTOList.size() != cardIds.size()) {
-            throw new IllegalArgumentException("Some CardDTO doesn't have CardId in the payload");
-        }
-
-        boolean areAllCardsExist = checkExistenceService.areCardsByIdsExist(cardIds);
-        if (!areAllCardsExist) {
-            throw new IllegalArgumentException("Some Card or Cards doesn't exist and cannot be updated");
-        }
-    }
-
-    private void checkCardExistenceById(String cardId) {
-        boolean isCardExists = checkExistenceService.isCardByIdExist(cardId);
-        if (!isCardExists) {
-            throw new EntityDoesNotExistException(String.format("Card with id:%s doesn't exist", cardId));
-        }
     }
 }

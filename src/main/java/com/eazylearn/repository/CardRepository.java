@@ -31,10 +31,8 @@ public interface CardRepository extends CrudRepository<Card, String> { // todo r
             "INNER JOIN set_card on card.id = set_card.card_id "
             + "INNER JOIN cardSet on cardSet.id = set_card.set_id "
             + "WHERE cardSet.id = :cardSetId "
-            + "AND card.user_id = :userId"
-            + ";",
+            + "AND card.user_id = :userId",
             nativeQuery = true)
-        // todo: try method without explicit query
     List<Card> findAllByCardSetIdAndUserId(@Param("cardSetId") String cardSetId,
                                            @Param("userId") String userId);
 

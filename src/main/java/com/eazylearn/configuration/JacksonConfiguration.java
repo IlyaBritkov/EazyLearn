@@ -10,15 +10,12 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class JacksonConfiguration {
-
     @Bean
     public ObjectMapper objectMapper() {
-        ObjectMapper mapper = JsonMapper.builder()
+        return JsonMapper.builder()
                 .addModule(new ParameterNamesModule())
                 .addModule(new Jdk8Module())
                 .addModule(new JavaTimeModule())
                 .build();
-
-        return mapper;
     }
 }

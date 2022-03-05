@@ -2,10 +2,14 @@ package com.eazylearn.service.impl;
 
 import com.eazylearn.dto.request.cardset.CardSetCreateRequestDTO;
 import com.eazylearn.dto.request.cardset.CardSetUpdateRequestDTO;
+import com.eazylearn.dto.request.cardset.NestedCardCreateDTO;
+import com.eazylearn.entity.Card;
 import com.eazylearn.entity.CardSet;
 import com.eazylearn.exception.EntityAlreadyExistsException;
 import com.eazylearn.exception.EntityDoesNotExistException;
+import com.eazylearn.mapper.CardMapper;
 import com.eazylearn.mapper.CardSetMapper;
+import com.eazylearn.repository.CardRepository;
 import com.eazylearn.repository.CardSetRepository;
 import com.eazylearn.security.jwt.JwtAuthenticationFacadeImpl;
 import com.eazylearn.service.CardService;
@@ -17,6 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @Transactional
@@ -24,11 +31,13 @@ import java.util.List;
 @Slf4j
 public class CardSetServiceImpl implements CardSetService {
 
-    private final CardSetRepository cardSetRepository;
-    private final CardSetMapper cardSetMapper;
-    private final CheckExistenceService checkExistenceService;
     private final CardService cardService;
+    private final CheckExistenceService checkExistenceService;
     private final JwtAuthenticationFacadeImpl jwtAuthenticationFacade;
+    private final CardSetMapper cardSetMapper;
+    private final CardMapper cardMapper;
+    private final CardSetRepository cardSetRepository;
+    private final CardRepository cardRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -50,15 +59,28 @@ public class CardSetServiceImpl implements CardSetService {
 
     @Override
     public CardSet createCardSet(CardSetCreateRequestDTO cardSetCreateRequestDTO) {
+        // TODO: TEST THAT IT WORKS PROPERLY
         final String newCardSetName = cardSetCreateRequestDTO.getName();
-        final boolean isAlreadyExist = checkExistenceService.isCardSetByNameExist(newCardSetName, jwtAuthenticationFacade.getJwtPrincipalId());
+        checkCardSetExistence(newCardSetName);
 
-        if (!isAlreadyExist) {
-            CardSet newCardSet = cardSetMapper.toEntity(cardSetCreateRequestDTO);
-            return cardSetRepository.save(newCardSet);
-        } else {
-            throw new EntityAlreadyExistsException(String.format("CardSet with name = %s already exists", newCardSetName));
-        }
+        final CardSet newCardSet = cardSetMapper.toEntity(cardSetCreateRequestDTO);
+
+        // linked cards by IDs from DTO
+        final List<String> linkedCardsIds = cardSetCreateRequestDTO.getLinkedCardsIds();
+        final List<Card> existingCards = cardRepository.findAllByIdInAndUserId(linkedCardsIds, jwtAuthenticationFacade.getJwtPrincipalId());
+        checkExistenceService.checkCardsExistence(linkedCardsIds, existingCards);
+
+        // linked nested cards from DTO
+        final List<NestedCardCreateDTO> linkedNewCardDTOs = cardSetCreateRequestDTO.getLinkedNewCards();
+        final List<Card> nestedCards = linkedNewCardDTOs.stream()
+                .map(cardMapper::toEntity)
+                .collect(toList());
+
+        existingCards.addAll(nestedCards);
+        // todo: test that it works
+        newCardSet.setLinkedCards(existingCards);
+
+        return cardSetRepository.save(newCardSet);
     }
 
     @Override
@@ -74,7 +96,19 @@ public class CardSetServiceImpl implements CardSetService {
     public void deleteCardSetById(String cardSetId, boolean deleteAllLinkedCards) {
         if (deleteAllLinkedCards) {
             cardService.deleteCardsByCardSetId(cardSetId);
+        } else {
+            // remove associations between Cards and CardSet
+            final List<Card> allCardsBySetId = cardService.findAllCardsBySetId(cardSetId);
+            allCardsBySetId.forEach(card -> card.getLinkedCardSets().removeIf(cardSet -> Objects.equals(cardSet.getId(), cardSetId)));
         }
         cardSetRepository.deleteById(cardSetId);
+    }
+
+    private void checkCardSetExistence(String newCardSetName) {
+        final boolean isAlreadyExist = checkExistenceService.isCardSetByNameExist(newCardSetName, jwtAuthenticationFacade.getJwtPrincipalId());
+
+        if (isAlreadyExist) {
+            throw new EntityAlreadyExistsException(String.format("CardSet with name = %s already exists", newCardSetName));
+        }
     }
 }

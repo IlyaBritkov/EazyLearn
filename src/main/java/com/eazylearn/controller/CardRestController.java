@@ -56,7 +56,7 @@ public class CardRestController { // todo: add pagination
             allCards = cardService.findAllCardsBySetId(uuidToString(cardSetId));
         }
 
-        return ok(cardMapper.mapCardListToCardResponseDTOList(allCards));
+        return ok(cardMapper.toCardResponseDTOList(allCards));
     }
 
     @GetMapping("/{id}")
@@ -85,14 +85,14 @@ public class CardRestController { // todo: add pagination
             allCards = cardService.findAllFavouriteCardsBySetId(uuidToString(cardSetId));
         }
 
-        return ok(cardMapper.mapCardListToCardResponseDTOList(allCards));
+        return ok(cardMapper.toCardResponseDTOList(allCards));
     }
 
     @PostMapping
     public ResponseEntity<List<CardResponseDTO>> createCards(@RequestBody List<CardCreateRequestDTO> cardCreateDTOList) {
         final List<Card> cardList = cardService.createCards(cardCreateDTOList);
 
-        return ok(cardMapper.mapCardListToCardResponseDTOList(cardList));
+        return ok(cardMapper.toCardResponseDTOList(cardList));
     }
 
     @PatchMapping("/{id}")
@@ -108,7 +108,7 @@ public class CardRestController { // todo: add pagination
     public ResponseEntity<List<CardResponseDTO>> updateCards(@RequestBody List<CardUpdateRequestDTO> updateDTOList) {
         final List<Card> cardList = cardService.updateCards(updateDTOList);
 
-        return ok(cardMapper.mapCardListToCardResponseDTOList(cardList));
+        return ok(cardMapper.toCardResponseDTOList(cardList));
     }
 
     /**
@@ -119,7 +119,7 @@ public class CardRestController { // todo: add pagination
     public ResponseEntity<List<CardResponseDTO>> updateCardsProficiencyLevel(@RequestBody List<UpdateCardProficiencyLevelDTO> updateProficiencyDTOList) {
         final List<Card> cardList = cardService.updateCardsProficiencyLevel(updateProficiencyDTOList);
 
-        return ok(cardMapper.mapCardListToCardResponseDTOList(cardList));
+        return ok(cardMapper.toCardResponseDTOList(cardList));
     }
 
     @DeleteMapping("/{id}")

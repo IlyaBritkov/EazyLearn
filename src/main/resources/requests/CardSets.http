@@ -1,0 +1,67 @@
+### JWT Authorization. Retrieve and save token.
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/x-www-form-urlencoded
+
+email=user1&password=user1
+
+> {% client.global.set("auth_token", response.body.access_token); %}
+
+### Create only CardSet without linkedCardsIds and linkedNewCards
+POST http://localhost:8080/api/v1/cardSets
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "name": "Chemistry",
+  "proficiencyLevel": "LOW",
+  "linkedCardsIds": [],
+  "linkedNewCards": []
+}
+
+
+### Create CardSet with linkedCardsIds
+POST http://localhost:8080/api/v1/cardSets
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "name": "Chemistry",
+  "proficiencyLevel": "LOW",
+  "linkedCardsIds": [
+    "f6f9313d-d6c0-4b5e-9d71-b7fdde3986a8"
+  ]
+}
+
+
+### Create CardSet with linkedNewCards
+POST http://localhost:8080/api/v1/cardSets
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "name": "Техника",
+  "proficiencyLevel": "LOW",
+  "linkedCardsIds": [],
+  "linkedNewCards": [
+    {
+      "term": "Ноутбук",
+      "definition": "Macbook",
+      "proficiencyLevel": "LOW"
+    }
+  ]
+}
+
+
+###
+PATCH http://localhost:8080/api/v1/cardSets/f484e21c-1710-4f19-9f6b-2a31f05f9f07
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+}
+
+
+###
+DELETE http://localhost:8080/api/v1/cardSets/707b80d5-1aab-4de1-b201-c176372742df
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}

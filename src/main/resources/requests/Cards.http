@@ -6,6 +6,20 @@ email=user1&password=user1
 
 > {% client.global.set("auth_token", response.body.access_token); %}
 
+### Create Card without linkedCardSetsIds
+POST http://localhost:8080/api/v1/cards
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+[
+  {
+    "term": "Вода",
+    "definition": "H2O",
+    "proficiencyLevel": "AVERAGE",
+    "linkedCardSetsIds": []
+  }
+]
+
 ###
 POST http://localhost:8080/api/v1/cards
 Content-Type: application/json
@@ -16,7 +30,9 @@ Authorization: Bearer {{auth_token}}
     "term": "Translate",
     "definition": "Перевод",
     "proficiencyLevel": "AVERAGE",
-    "linkedCardSetsIds": ["21513d9e-7866-4683-a703-5a9802fd9c67"]
+    "linkedCardSetsIds": [
+      "21513d9e-7866-4683-a703-5a9802fd9c67"
+    ]
   }
 ]
 
@@ -32,7 +48,7 @@ Authorization: Bearer {{auth_token}}
   ]
 }
 
-###
+
 ###
 PATCH http://localhost:8080/api/v1/cards/f484e21c-1710-4f19-9f6b-2a31f05f9f07
 Content-Type: application/json
@@ -42,3 +58,8 @@ Authorization: Bearer {{auth_token}}
   "definition": "Слово",
   "proficiencyLevel": "HIGH"
 }
+
+### Delete Card by id
+DELETE http://localhost:8080/api/v1/cards/277cbadd-a310-4f7d-b12e-4f68628f4dd8
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}

@@ -2,6 +2,7 @@ package com.eazylearn.mapper;
 
 import com.eazylearn.dto.request.card.CardCreateRequestDTO;
 import com.eazylearn.dto.request.card.CardUpdateRequestDTO;
+import com.eazylearn.dto.request.cardset.NestedCardCreateDTO;
 import com.eazylearn.dto.response.CardResponseDTO;
 import com.eazylearn.entity.BaseEntity;
 import com.eazylearn.entity.Card;
@@ -31,6 +32,12 @@ public abstract class CardMapper {
                     "java( ((com.eazylearn.security.jwt.JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId() )")
     public abstract Card toEntity(CardCreateRequestDTO cardDto);
 
+    @Mapping(source = "proficiencyLevel", target = "proficiencyLevel", qualifiedByName = "proficiencyLevelToProficiencyDouble")
+    @Mapping(target = "userId",
+            expression =
+                    "java( ((com.eazylearn.security.jwt.JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId() )")
+    public abstract Card toEntity(NestedCardCreateDTO cardDto);
+
     @Mapping(source = "linkedCardSets", target = "linkedCardSetsIds", qualifiedByName = "linkedCardSetsToLinkedCardSetsIds")
     public abstract CardResponseDTO toResponseDTO(Card card);
 
@@ -48,16 +55,15 @@ public abstract class CardMapper {
     }
 
     @Named("linkedCardSetsToLinkedCardSetsIds")
-    public static List<String> linkedCardSetsToLinkedCardSetsIds(List<CardSet> linkedCardSets) {
+    public static List<String> toLinkedCardSetsIds(List<CardSet> linkedCardSets) {
         return linkedCardSets.stream()
                 .map(BaseEntity::getId)
                 .collect(toList());
     }
 
-    public List<CardResponseDTO> mapCardListToCardResponseDTOList(List<Card> cardList) {
+    public List<CardResponseDTO> toCardResponseDTOList(List<Card> cardList) {
         return cardList.stream()
                 .map(this::toResponseDTO)
                 .collect(toList());
     }
-
 }
