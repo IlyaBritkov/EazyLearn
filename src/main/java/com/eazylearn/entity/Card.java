@@ -43,7 +43,7 @@ public class Card extends BaseEntity {
     private Double proficiencyLevel;
 
     @Column(name = "is_favourite")
-    private boolean isFavourite;
+    private Boolean isFavourite = false;
 
     @NotNull
     @ToString.Exclude
@@ -63,6 +63,9 @@ public class Card extends BaseEntity {
     private List<CardSet> linkedCardSets = new ArrayList<>();
 
     public boolean addLinkedCardSet(CardSet cardSet) {
-        return linkedCardSets.add(cardSet);
+        if (!linkedCardSets.contains(cardSet)) {
+            return linkedCardSets.add(cardSet);
+        }
+        return false;
     }
 }

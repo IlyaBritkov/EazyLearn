@@ -25,6 +25,11 @@ import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
         imports = {SecurityContextHolder.class, JwtUser.class})
 public abstract class CardMapper {
 
+    @Mapping(source = "isFavourite", target = "favourite")
+    @Mapping(source = "linkedCardSets", target = "linkedCardSetsIds",
+            qualifiedByName = "linkedCardSetsToLinkedCardSetsIds")
+    public abstract CardResponseDTO toResponseDTO(Card card);
+
     // todo: ADD CardSet mapping
     @Mapping(source = "proficiencyLevel", target = "proficiencyLevel", qualifiedByName = "proficiencyLevelToProficiencyDouble")
     @Mapping(target = "userId",
@@ -37,9 +42,6 @@ public abstract class CardMapper {
             expression =
                     "java( ((com.eazylearn.security.jwt.JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId() )")
     public abstract Card toEntity(NestedCardCreateDTO cardDto);
-
-    @Mapping(source = "linkedCardSets", target = "linkedCardSetsIds", qualifiedByName = "linkedCardSetsToLinkedCardSetsIds")
-    public abstract CardResponseDTO toResponseDTO(Card card);
 
     @Mapping(target = "card.id", ignore = true) // TODO check if ignore is needed
     @Mapping(target = "card.userId", ignore = true) // TODO check if ignore is needed

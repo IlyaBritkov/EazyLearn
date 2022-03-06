@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Objects;
 
+import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -59,7 +60,6 @@ public class CardSetServiceImpl implements CardSetService {
 
     @Override
     public CardSet createCardSet(CardSetCreateRequestDTO cardSetCreateRequestDTO) {
-        // TODO: TEST THAT IT WORKS PROPERLY
         final String newCardSetName = cardSetCreateRequestDTO.getName();
         checkCardSetExistence(newCardSetName);
 
@@ -67,7 +67,7 @@ public class CardSetServiceImpl implements CardSetService {
 
         // linked cards by IDs from DTO
         final List<String> linkedCardsIds = cardSetCreateRequestDTO.getLinkedCardsIds();
-        final List<Card> existingCards = cardRepository.findAllByIdInAndUserId(linkedCardsIds, jwtAuthenticationFacade.getJwtPrincipalId());
+        final List<Card> existingCards = cardRepository.findAllById(linkedCardsIds);
         checkExistenceService.checkCardsExistence(linkedCardsIds, existingCards);
 
         // linked nested cards from DTO
@@ -77,8 +77,9 @@ public class CardSetServiceImpl implements CardSetService {
                 .collect(toList());
 
         existingCards.addAll(nestedCards);
-        // todo: test that it works
         newCardSet.setLinkedCards(existingCards);
+
+        existingCards.forEach(card -> card.addLinkedCardSet(newCardSet));
 
         return cardSetRepository.save(newCardSet);
     }
@@ -89,7 +90,23 @@ public class CardSetServiceImpl implements CardSetService {
                 .orElseThrow(() -> new EntityDoesNotExistException(String.format("CardSet with id = %s doesn't exist", cardSetId)));
 
         cardSetMapper.updateEntity(updateDTO, cardSetToUpdate);
-        return cardSetToUpdate;
+
+        final List<String> linkedCardsIds = updateDTO.getLinkedCardsIds();
+        if (!isNull(linkedCardsIds)) {
+            cardSetToUpdate.setLinkedCards(cardRepository.findAllById(linkedCardsIds));
+        }
+
+        final List<NestedCardCreateDTO> linkedNewCards = updateDTO.getLinkedNewCards();
+        if (!isNull(linkedNewCards)) {
+            final List<Card> newCards = linkedNewCards.stream()
+                    .map(cardMapper::toEntity)
+                    .collect(toList());
+            newCards.forEach(card -> card.getLinkedCardSets().add(cardSetToUpdate));
+
+            cardSetToUpdate.getLinkedCards().addAll(newCards);
+        }
+
+        return cardSetRepository.save(cardSetToUpdate);
     }
 
     @Override

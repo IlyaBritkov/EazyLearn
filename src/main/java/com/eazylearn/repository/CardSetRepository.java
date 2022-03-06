@@ -1,6 +1,7 @@
 package com.eazylearn.repository;
 
 import com.eazylearn.entity.CardSet;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -13,15 +14,18 @@ import java.util.Optional;
 @Repository
 public interface CardSetRepository extends CrudRepository<CardSet, String> {
 
+    @Override
+    @NotNull
+    List<CardSet> findAllById(@NotNull Iterable<String> ids);
+
     List<CardSet> findAllByUserId(String userId);
 
     List<CardSet> findAllByIsFavouriteAndUserId(boolean favourite, String userId);
 
     Optional<CardSet> findByIdAndUserId(String id, String userId);
 
-    List<CardSet> findAllByIdInAndUserId(List<String> ids, String userId);
-
-    boolean existsByIdAndUserId(String cardSetId, String userId);
+    @Override
+    boolean existsById(@NotNull String cardSetId);
 
     boolean existsByNameAndUserId(String name, String userId);
 

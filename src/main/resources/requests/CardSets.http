@@ -52,14 +52,44 @@ Authorization: Bearer {{auth_token}}
 }
 
 
-###
-PATCH http://localhost:8080/api/v1/cardSets/f484e21c-1710-4f19-9f6b-2a31f05f9f07
+### Update CardSet without linkedCardsIds and linkedNewCards
+PATCH http://localhost:8080/api/v1/cardSets/21513d9e-7866-4683-a703-5a9802fd9c67
 Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 
 {
+  "isFavourite": true
 }
 
+
+### Update CardSet with linkedCardsIds
+PATCH http://localhost:8080/api/v1/cardSets/0ec31b21-5b6b-4963-b583-a83f256621c9
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "isFavourite": false,
+  "linkedCardsIds": [
+    ""
+  ]
+}
+
+
+### Update CardSet with linkedNewCards
+PATCH http://localhost:8080/api/v1/cardSets/707b80d5-1aab-4de1-b201-c176372742df
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "isFavourite": false,
+  "linkedNewCards": [
+    {
+      "term": "H20",
+      "definition": "Вода",
+      "proficiencyLevel": "HIGH"
+    }
+  ]
+}
 
 ###
 DELETE http://localhost:8080/api/v1/cardSets/707b80d5-1aab-4de1-b201-c176372742df

@@ -1,10 +1,12 @@
 package com.eazylearn.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -14,6 +16,7 @@ public class CardSetResponseDTO {
 
     private String name;
 
+    @JsonProperty("isFavourite")
     private boolean isFavourite;
 
     @JsonFormat(
@@ -26,5 +29,5 @@ public class CardSetResponseDTO {
             pattern = "dd-MM-yyyy hh:mm:ss")
     private LocalDateTime updatedDateTime;
 
-    private int amountOfLinkedCards; // todo: add logic in controller
+    private List<String> linkedCardsIds;
 }

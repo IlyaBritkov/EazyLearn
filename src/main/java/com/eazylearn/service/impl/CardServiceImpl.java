@@ -45,7 +45,7 @@ public class CardServiceImpl implements CardService {
     @Override
     @Transactional(readOnly = true)
     public Card findCardById(@NotNull String cardId) {
-        Optional<Card> optionalCard = cardRepository.findByIdAndUserId(cardId, jwtAuthenticationFacade.getJwtPrincipalId());
+        Optional<Card> optionalCard = cardRepository.findById(cardId);
 
         return optionalCard.
                 orElseThrow(() ->
@@ -61,7 +61,7 @@ public class CardServiceImpl implements CardService {
     @Override
     @Transactional(readOnly = true)
     public List<Card> findAllCardsBySetId(String cardSetId) {
-        return cardRepository.findAllByCardSetIdAndUserId(cardSetId, jwtAuthenticationFacade.getJwtPrincipalId());
+        return cardRepository.findAllByCardSetId(cardSetId);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class CardServiceImpl implements CardService {
                 .flatMap(createRequest -> createRequest.getLinkedCardSetsIds().stream())
                 .collect(toList());
 
-        final List<CardSet> linkedCardSets = cardSetRepository.findAllByIdInAndUserId(linkedCardSetsIds, jwtAuthenticationFacade.getJwtPrincipalId());
+        final List<CardSet> linkedCardSets = cardSetRepository.findAllById(linkedCardSetsIds);
         checkExistenceService.checkCardSetsExistence(linkedCardSetsIds, linkedCardSets);
 
         final List<Card> newCardsList = cardCreateRequestList.stream()
@@ -106,13 +106,13 @@ public class CardServiceImpl implements CardService {
     public Card updateCard(CardUpdateRequestDTO updateDto) throws EntityDoesNotExistException {
         final String cardId = updateDto.getCardId();
 
-        final Card cardToUpdate = cardRepository.findByIdAndUserId(cardId, jwtAuthenticationFacade.getJwtPrincipalId())
+        final Card cardToUpdate = cardRepository.findById(cardId)
                 .orElseThrow(() -> new EntityDoesNotExistException(String.format("Card with id:%s doesn't exist", cardId)));
 
         final List<String> linkedCardSetsIds = updateDto.getLinkedCardSetsIds();
         List<CardSet> linkedCardSets = cardToUpdate.getLinkedCardSets();
         if (!isNull(linkedCardSetsIds)) {
-            linkedCardSets = cardSetRepository.findAllByIdInAndUserId(linkedCardSetsIds, jwtAuthenticationFacade.getJwtPrincipalId());
+            linkedCardSets = cardSetRepository.findAllById(linkedCardSetsIds);
             checkExistenceService.checkCardSetsExistence(linkedCardSetsIds, linkedCardSets);
         }
         cardMapper.updateEntity(updateDto, cardToUpdate);
@@ -127,7 +127,7 @@ public class CardServiceImpl implements CardService {
                 .map(CardUpdateRequestDTO::getCardId)
                 .collect(toList());
 
-        final List<Card> cards = cardRepository.findAllByIdInAndUserId(cardsIds, jwtAuthenticationFacade.getJwtPrincipalId());
+        final List<Card> cards = cardRepository.findAllById(cardsIds);
 
         updateDTOList.forEach(updateDTO -> cards.forEach(card -> {
             if (isCorresponding(updateDTO.getCardId(), card.getId())) {
@@ -145,7 +145,7 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public void deleteCardsByCardSetId(String cardSetId) {
-        final List<Card> cardsByCardSetId = cardRepository.findAllByCardSetIdAndUserId(cardSetId, jwtAuthenticationFacade.getJwtPrincipalId());
+        final List<Card> cardsByCardSetId = cardRepository.findAllByCardSetId(cardSetId);
 
         // filter for cards that belong only to the given cardSet
         final List<Card> cardsToDelete = cardsByCardSetId.stream()
@@ -164,7 +164,7 @@ public class CardServiceImpl implements CardService {
                 .map(UpdateCardProficiencyLevelDTO::getCardId)
                 .collect(toList());
 
-        final List<Card> cardsToUpdate = cardRepository.findAllByIdInAndUserId(cardsIds, jwtAuthenticationFacade.getJwtPrincipalId());
+        final List<Card> cardsToUpdate = cardRepository.findAllById(cardsIds);
 
         updateProficiencyDTOList.forEach(updateDTO -> cardsToUpdate.forEach(card -> {
             if (isCorresponding(updateDTO.getCardId(), card.getId())) {

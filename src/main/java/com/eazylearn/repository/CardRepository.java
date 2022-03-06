@@ -10,19 +10,18 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface CardRepository extends CrudRepository<Card, String> { // todo refactor it
 
     @Override
+    @NotNull
+    List<Card> findAllById(@NotNull Iterable<String> ids);
+
+    @Override
     <S extends Card> @NotNull List<S> saveAll(@NotNull Iterable<S> entities);
 
-    List<Card> findAllByIdInAndUserId(List<String> ids, String userId);
-
     List<Card> findAlByUserId(String userId);
-
-    Optional<Card> findByIdAndUserId(String cardId, String userId);
 
     List<Card> findAllByIsFavouriteAndUserId(boolean favourite, String userId);
 
@@ -30,11 +29,9 @@ public interface CardRepository extends CrudRepository<Card, String> { // todo r
             + "FROM card " +
             "INNER JOIN set_card on card.id = set_card.card_id "
             + "INNER JOIN cardSet on cardSet.id = set_card.set_id "
-            + "WHERE cardSet.id = :cardSetId "
-            + "AND card.user_id = :userId",
+            + "WHERE cardSet.id = :cardSetId",
             nativeQuery = true)
-    List<Card> findAllByCardSetIdAndUserId(@Param("cardSetId") String cardSetId,
-                                           @Param("userId") String userId);
+    List<Card> findAllByCardSetId(@Param("cardSetId") String cardSetId);
 
     @Query(value = "SELECT * "
             + "FROM card " +
