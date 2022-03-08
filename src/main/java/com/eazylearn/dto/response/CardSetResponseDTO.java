@@ -1,7 +1,8 @@
 package com.eazylearn.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.eazylearn.configuration.CustomLocalDateTimeSerializer;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -19,14 +20,10 @@ public class CardSetResponseDTO {
     @JsonProperty("isFavourite")
     private boolean isFavourite;
 
-    @JsonFormat(
-            shape = JsonFormat.Shape.STRING,
-            pattern = "dd-MM-yyyy hh:mm:ss")
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
     private LocalDateTime createdDateTime;
 
-    @JsonFormat(
-            shape = JsonFormat.Shape.STRING,
-            pattern = "dd-MM-yyyy hh:mm:ss")
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
     private LocalDateTime updatedDateTime;
 
     private List<String> linkedCardsIds;

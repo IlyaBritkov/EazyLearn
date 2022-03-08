@@ -20,9 +20,11 @@ public class CardSetCreateRequestDTO {
     @NotNull
     private ProficiencyLevel proficiencyLevel;
 
-    @ApiModelProperty(required = true, position = 2)
+    @ApiModelProperty(required = true, allowEmptyValue = true, position = 2)
+    @NotNull
     private List<String> linkedCardsIds;
 
-    @ApiModelProperty(required = true, position = 3)
+    @ApiModelProperty(required = true, allowEmptyValue = true, position = 3)
+    @NotNull
     private List<NestedCardCreateDTO> linkedNewCards;
 }

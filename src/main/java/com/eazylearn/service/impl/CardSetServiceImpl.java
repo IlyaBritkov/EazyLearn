@@ -54,7 +54,7 @@ public class CardSetServiceImpl implements CardSetService {
     @Override
     @Transactional(readOnly = true)
     public CardSet findCardSetById(String cardSetId) {
-        return cardSetRepository.findByIdAndUserId(cardSetId, jwtAuthenticationFacade.getJwtPrincipalId())
+        return cardSetRepository.findById(cardSetId)
                 .orElseThrow(() -> new EntityDoesNotExistException(String.format("CardSet with id = %s doesn't exist", cardSetId)));
     }
 
@@ -76,21 +76,22 @@ public class CardSetServiceImpl implements CardSetService {
                 .map(cardMapper::toEntity)
                 .collect(toList());
 
-        existingCards.addAll(nestedCards);
-        newCardSet.setLinkedCards(existingCards);
+        nestedCards.addAll(existingCards);
+        nestedCards.forEach(card -> card.addLinkedCardSet(newCardSet));
 
-        existingCards.forEach(card -> card.addLinkedCardSet(newCardSet));
+        newCardSet.setLinkedCards(nestedCards);
 
         return cardSetRepository.save(newCardSet);
     }
 
     @Override
     public CardSet updateCardSetById(String cardSetId, CardSetUpdateRequestDTO updateDTO) {
-        final CardSet cardSetToUpdate = cardSetRepository.findByIdAndUserId(cardSetId, jwtAuthenticationFacade.getJwtPrincipalId())
+        final CardSet cardSetToUpdate = cardSetRepository.findById(cardSetId)
                 .orElseThrow(() -> new EntityDoesNotExistException(String.format("CardSet with id = %s doesn't exist", cardSetId)));
 
         cardSetMapper.updateEntity(updateDTO, cardSetToUpdate);
 
+        // todo: fix bug: Cards that aren't present in 'linkedCardsIds' should be removed from CardSet
         final List<String> linkedCardsIds = updateDTO.getLinkedCardsIds();
         if (!isNull(linkedCardsIds)) {
             cardSetToUpdate.setLinkedCards(cardRepository.findAllById(linkedCardsIds));

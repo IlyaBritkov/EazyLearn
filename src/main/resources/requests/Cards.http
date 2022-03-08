@@ -6,6 +6,32 @@ email=user1&password=user1
 
 > {% client.global.set("auth_token", response.body.access_token); %}
 
+
+### Find all Cards
+GET http://localhost:8080/api/v1/cards
+Accept: application/json
+Authorization: Bearer {{auth_token}}
+
+### Find all Cards by cardSetId
+GET http://localhost:8080/api/v1/cards?cardSetId=
+Accept: application/json
+Authorization: Bearer {{auth_token}}
+
+### Find Card by id
+GET http://localhost:8080/api/v1/cards/
+Accept: application/json
+Authorization: Bearer {{auth_token}}
+
+### Find all favourite Cards
+GET http://localhost:8080/api/v1/cards/favourite
+Accept: application/json
+Authorization: Bearer {{auth_token}}
+
+### Find all favourite Cards by cardSetId
+GET http://localhost:8080/api/v1/cards/favourite?cardSetId=
+Accept: application/json
+Authorization: Bearer {{auth_token}}
+
 ### Create Card without linkedCardSetsIds
 POST http://localhost:8080/api/v1/cards
 Content-Type: application/json
@@ -20,7 +46,7 @@ Authorization: Bearer {{auth_token}}
   }
 ]
 
-###
+### Create Card with linkedCardSetsIds
 POST http://localhost:8080/api/v1/cards
 Content-Type: application/json
 Authorization: Bearer {{auth_token}}
@@ -36,7 +62,7 @@ Authorization: Bearer {{auth_token}}
   }
 ]
 
-###
+### Update Card by id with linkedCardSetsIds
 PATCH http://localhost:8080/api/v1/cards/f484e21c-1710-4f19-9f6b-2a31f05f9f07
 Content-Type: application/json
 Authorization: Bearer {{auth_token}}
@@ -48,14 +74,47 @@ Authorization: Bearer {{auth_token}}
   ]
 }
 
-
-###
+### Update Card by id
 PATCH http://localhost:8080/api/v1/cards/99502830-b97a-4dd9-a971-d0057e56f5de
 Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 
 {
   "isFavourite": false
+}
+
+### Update Cards
+PATCH http://localhost:8080/api/v1/cards
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+[
+  {
+    "cardId": "",
+    "term": "",
+    "definition": "",
+    "proficiencyLevel": "LOW",
+    "isFavourite": false,
+    "linkedCardSetsIds": [
+      ""
+    ]
+  },
+  {
+    "cardId": "",
+    "term": "",
+    "definition": "",
+    "proficiencyLevel": "LOW",
+    "isFavourite": false
+  }
+]
+
+### Update Card's ProficiencyLevel
+PATCH http://localhost:8080/api/v1/cards/99502830-b97a-4dd9-a971-d0057e56f5de
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "proficiencyLevelValue": 0.45
 }
 
 ### Delete Card by id

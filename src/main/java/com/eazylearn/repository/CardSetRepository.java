@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface CardSetRepository extends CrudRepository<CardSet, String> {
@@ -21,8 +20,6 @@ public interface CardSetRepository extends CrudRepository<CardSet, String> {
     List<CardSet> findAllByUserId(String userId);
 
     List<CardSet> findAllByIsFavouriteAndUserId(boolean favourite, String userId);
-
-    Optional<CardSet> findByIdAndUserId(String id, String userId);
 
     @Override
     boolean existsById(@NotNull String cardSetId);

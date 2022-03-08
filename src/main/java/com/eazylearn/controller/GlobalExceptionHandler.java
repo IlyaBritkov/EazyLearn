@@ -21,42 +21,48 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<ExceptionResponseDTO> handleException(EntityAlreadyExistsException ex) {
-        ExceptionResponseDTO exceptionResponse = new ExceptionResponseDTO(ex.getMessage());
+        final ExceptionResponseDTO exceptionResponse = new ExceptionResponseDTO(ex.getMessage());
+        log.warn("Exception was thrown: {}", ex.toString());
 
         return new ResponseEntity<>(exceptionResponse, BAD_REQUEST);
     }
 
     @ExceptionHandler
     public ResponseEntity<ExceptionResponseDTO> handleException(EntityDoesNotExistException ex) {
-        ExceptionResponseDTO exceptionResponse = new ExceptionResponseDTO(ex.getMessage());
+        final ExceptionResponseDTO exceptionResponse = new ExceptionResponseDTO(ex.getMessage());
+        log.error("Exception was thrown: {}", ex.toString());
 
         return new ResponseEntity<>(exceptionResponse, NOT_FOUND);
     }
 
     @ExceptionHandler
     public ResponseEntity<ExceptionResponseDTO> handleException(BadCredentialsException ex) {
-        ExceptionResponseDTO exceptionResponse = new ExceptionResponseDTO(ex.getMessage());
+        final ExceptionResponseDTO exceptionResponse = new ExceptionResponseDTO(ex.getMessage());
+        log.error("Exception was thrown: {}", ex.toString());
 
         return new ResponseEntity<>(exceptionResponse, BAD_REQUEST);
     }
 
     @ExceptionHandler
     public ResponseEntity<ExceptionResponseDTO> handleException(JwtAuthenticationException ex) {
-        ExceptionResponseDTO exceptionResponse = new ExceptionResponseDTO(ex.getMessage());
+        final ExceptionResponseDTO exceptionResponse = new ExceptionResponseDTO(ex.getMessage());
+        log.error("Exception was thrown: {}", ex.toString());
 
         return new ResponseEntity<>(exceptionResponse, FORBIDDEN);
     }
 
     @ExceptionHandler
     public ResponseEntity<ExceptionResponseDTO> handleException(UserAlreadyExistAuthenticationException ex) {
-        ExceptionResponseDTO exceptionResponse = new ExceptionResponseDTO(ex.getMessage());
+        final ExceptionResponseDTO exceptionResponse = new ExceptionResponseDTO(ex.getMessage());
+        log.warn("Exception was thrown: {}", ex.toString());
 
         return new ResponseEntity<>(exceptionResponse, BAD_REQUEST);
     }
 
     @ExceptionHandler
     public ResponseEntity<ExceptionResponseDTO> handleException(Exception ex) {
-        ExceptionResponseDTO exceptionResponse = new ExceptionResponseDTO("Sorry!Try again later");
+        final ExceptionResponseDTO exceptionResponse = new ExceptionResponseDTO("Sorry!Try again later");
+        log.error("Exception was thrown: {}, {}, {}", ex.toString(), ex.getCause(), ex.getStackTrace());
 
         return new ResponseEntity<>(exceptionResponse, NOT_FOUND);
     }

@@ -11,7 +11,7 @@ public class UpdateCardProficiencyLevelDTO {
     @NotNull
     private String cardId;
 
-    @ApiModelProperty(required = true, example = "0.15", dataType = "Double", position = 1)
+    @ApiModelProperty(required = true, notes = "Double value in range of 0.00 and 1.00", dataType = "double", example = "0.15", position = 1)
     @NotNull
     private Double proficiencyLevelValue;
 }

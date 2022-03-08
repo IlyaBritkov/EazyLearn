@@ -13,7 +13,6 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class UserResponseDTO { // todo: maybe add more fields (createdDateTime, updatedDateTime)
-
     @EqualsAndHashCode.Include
     private String id;
 

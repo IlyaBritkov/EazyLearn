@@ -15,17 +15,19 @@ public class CardSetUpdateRequestDTO {
     @Length(min = 1, max = 50)
     private String name;
 
-    @ApiModelProperty(allowableValues = "true false", dataType = "boolean")
+    @ApiModelProperty(dataType = "boolean", position = 1)
     @Nullable
     private Boolean isFavourite;
 
-    @ApiModelProperty(allowableValues = "LOW AVERAGE HIGH")
+    @ApiModelProperty(allowableValues = "LOW AVERAGE HIGH", position = 2)
     @Nullable
     private ProficiencyLevel proficiencyLevel;
 
+    @ApiModelProperty(allowEmptyValue = true, position = 3)
     @Nullable
     private List<String> linkedCardsIds;
 
+    @ApiModelProperty(allowEmptyValue = true, position = 4)
     @Nullable
     private List<NestedCardCreateDTO> linkedNewCards;
 }

@@ -6,6 +6,25 @@ email=user1&password=user1
 
 > {% client.global.set("auth_token", response.body.access_token); %}
 
+
+### Find all CardSets
+GET http://localhost:8080/api/v1/cardSets
+Accept: application/json
+Authorization: Bearer {{auth_token}}
+
+
+### Find all favourite CardSets
+GET http://localhost:8080/api/v1/cardSets/favourite
+Accept: application/json
+Authorization: Bearer {{auth_token}}
+
+
+### Find CardSets by id
+GET http://localhost:8080/api/v1/cardSets/0ec31b21-5b6b-4963-b583-a83f256621c9
+Accept: application/json
+Authorization: Bearer {{auth_token}}
+
+
 ### Create only CardSet without linkedCardsIds and linkedNewCards
 POST http://localhost:8080/api/v1/cardSets
 Content-Type: application/json
@@ -28,8 +47,9 @@ Authorization: Bearer {{auth_token}}
   "name": "Chemistry",
   "proficiencyLevel": "LOW",
   "linkedCardsIds": [
-    "f6f9313d-d6c0-4b5e-9d71-b7fdde3986a8"
-  ]
+    "8d3e401e-60b9-4e42-a869-9e809d7236b3"
+  ],
+  "linkedNewCards": []
 }
 
 
@@ -53,7 +73,7 @@ Authorization: Bearer {{auth_token}}
 
 
 ### Update CardSet without linkedCardsIds and linkedNewCards
-PATCH http://localhost:8080/api/v1/cardSets/21513d9e-7866-4683-a703-5a9802fd9c67
+PATCH http://localhost:8080/api/v1/cardSets/02c0273f-b2a3-4e39-992d-8e70604c9fc0
 Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 
@@ -63,7 +83,7 @@ Authorization: Bearer {{auth_token}}
 
 
 ### Update CardSet with linkedCardsIds
-PATCH http://localhost:8080/api/v1/cardSets/0ec31b21-5b6b-4963-b583-a83f256621c9
+PATCH http://localhost:8080/api/v1/cardSets/02c0273f-b2a3-4e39-992d-8e70604c9fc0
 Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 
@@ -91,7 +111,8 @@ Authorization: Bearer {{auth_token}}
   ]
 }
 
-###
-DELETE http://localhost:8080/api/v1/cardSets/707b80d5-1aab-4de1-b201-c176372742df
+
+### Delete CardSet by id
+DELETE http://localhost:8080/api/v1/cardSets/f1c068ab-c53c-470e-96c7-8e3e1f783a5a
 Content-Type: application/json
 Authorization: Bearer {{auth_token}}

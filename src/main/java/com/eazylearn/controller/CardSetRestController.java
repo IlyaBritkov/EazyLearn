@@ -82,7 +82,6 @@ public class CardSetRestController { // todo: add pagination
     public ResponseEntity<?> deleteCategoryById(@PathVariable("id") UUID categoryId,
                                                 @RequestParam(required = false) boolean isDeleteAllCardsInCategory) {
         cardSetService.deleteCardSetById(uuidToString(categoryId), isDeleteAllCardsInCategory);
-
         return ResponseEntity.noContent().build();
     }
 }

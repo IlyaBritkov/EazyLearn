@@ -11,12 +11,12 @@ import java.util.List;
 
 @Data
 public class CardCreateRequestDTO implements CardRequest {
-    @ApiModelProperty(example = "word", required = true)
+    @ApiModelProperty(required = true, example = "word")
     @Length(min = 1, max = 100)
     @NotBlank
     private String term;
 
-    @ApiModelProperty(example = "слово", required = true, position = 1)
+    @ApiModelProperty(required = true, example = "слово", position = 1)
     @Length(min = 1, max = 1000)
     @NotBlank
     private String definition;
@@ -24,10 +24,11 @@ public class CardCreateRequestDTO implements CardRequest {
     @ApiModelProperty(position = 2)
     private boolean isFavourite;
 
-    @ApiModelProperty(allowableValues = "LOW, AVERAGE, HIGH", required = true, position = 3)
+    @ApiModelProperty(required = true, allowableValues = "LOW, AVERAGE, HIGH", position = 3)
     @NotNull
     private ProficiencyLevel proficiencyLevel;
 
     @ApiModelProperty(required = true, position = 4)
+    @NotNull
     private List<String> linkedCardSetsIds;
 }
