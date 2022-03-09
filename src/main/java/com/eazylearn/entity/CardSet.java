@@ -9,7 +9,9 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static javax.persistence.CascadeType.DETACH;
 import static javax.persistence.CascadeType.MERGE;
@@ -40,4 +42,24 @@ public class CardSet extends BaseEntity { // todo: add validation
                     REFRESH,
                     DETACH})
     private List<Card> linkedCards = new ArrayList<>();
+
+    public boolean addLinkedCard(Card linkedCard) {
+        if (!linkedCards.contains(linkedCard)) {
+            linkedCard.addLinkedCardSet(this);
+            return linkedCards.add(linkedCard);
+        }
+        return false;
+    }
+
+    public boolean removeLinkedCard(Card linkedCard) {
+        linkedCard.removeLinkedCardSet(this);
+        return linkedCards.remove(linkedCard);
+    }
+
+    public void retainAllLinkedCards(Collection<Card> cards) {
+        linkedCards.stream()
+                .filter(linkedCard -> !cards.contains(linkedCard))
+                .collect(Collectors.toList())
+                .forEach(this::removeLinkedCard);
+    }
 }

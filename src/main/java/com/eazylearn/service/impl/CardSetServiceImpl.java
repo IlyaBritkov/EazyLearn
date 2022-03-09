@@ -91,10 +91,10 @@ public class CardSetServiceImpl implements CardSetService {
 
         cardSetMapper.updateEntity(updateDTO, cardSetToUpdate);
 
-        // todo: fix bug: Cards that aren't present in 'linkedCardsIds' should be removed from CardSet
         final List<String> linkedCardsIds = updateDTO.getLinkedCardsIds();
         if (!isNull(linkedCardsIds)) {
-            cardSetToUpdate.setLinkedCards(cardRepository.findAllById(linkedCardsIds));
+            final List<Card> cardsByIds = cardRepository.findAllById(linkedCardsIds);
+            cardSetToUpdate.retainAllLinkedCards(cardsByIds);
         }
 
         final List<NestedCardCreateDTO> linkedNewCards = updateDTO.getLinkedNewCards();
@@ -102,9 +102,8 @@ public class CardSetServiceImpl implements CardSetService {
             final List<Card> newCards = linkedNewCards.stream()
                     .map(cardMapper::toEntity)
                     .collect(toList());
-            newCards.forEach(card -> card.getLinkedCardSets().add(cardSetToUpdate));
 
-            cardSetToUpdate.getLinkedCards().addAll(newCards);
+            newCards.forEach(cardSetToUpdate::addLinkedCard);
         }
 
         return cardSetRepository.save(cardSetToUpdate);

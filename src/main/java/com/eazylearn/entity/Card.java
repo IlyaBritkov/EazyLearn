@@ -16,10 +16,6 @@ import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import static javax.persistence.CascadeType.DETACH;
-import static javax.persistence.CascadeType.MERGE;
-import static javax.persistence.CascadeType.PERSIST;
-import static javax.persistence.CascadeType.REFRESH;
 import static javax.persistence.FetchType.EAGER;
 
 @SuppressWarnings({"LombokDataInspection", "LombokEqualsAndHashCodeInspection", "com.haulmont.jpb.LombokEqualsAndHashCodeInspection", "com.haulmont.jpb.LombokDataInspection"})
@@ -50,22 +46,21 @@ public class Card extends BaseEntity {
     @Column(name = "user_id")
     private String userId;
 
-    @ManyToMany(fetch = EAGER, cascade = {
-            PERSIST,
-            MERGE,
-            REFRESH,
-            DETACH})
-    @JoinTable(
-            name = "set_card",
+    @ManyToMany(fetch = EAGER)
+    @JoinTable(name = "set_card",
             joinColumns = {@JoinColumn(name = "card_id")},
             inverseJoinColumns = {@JoinColumn(name = "set_id")}
     )
     private List<CardSet> linkedCardSets = new ArrayList<>();
 
-    public boolean addLinkedCardSet(CardSet cardSet) {
-        if (!linkedCardSets.contains(cardSet)) {
-            return linkedCardSets.add(cardSet);
+    public boolean addLinkedCardSet(CardSet linkedCardSet) {
+        if (!linkedCardSets.contains(linkedCardSet)) {
+            return linkedCardSets.add(linkedCardSet);
         }
         return false;
+    }
+
+    public boolean removeLinkedCardSet(CardSet linkedCardSet){
+        return linkedCardSets.remove(linkedCardSet);
     }
 }

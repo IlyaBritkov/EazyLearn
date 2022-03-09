@@ -63,6 +63,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionResponseDTO> handleException(Exception ex) {
         final ExceptionResponseDTO exceptionResponse = new ExceptionResponseDTO("Sorry!Try again later");
         log.error("Exception was thrown: {}, {}, {}", ex.toString(), ex.getCause(), ex.getStackTrace());
+        ex.printStackTrace();
 
         return new ResponseEntity<>(exceptionResponse, NOT_FOUND);
     }
