@@ -4,6 +4,7 @@ import com.eazylearn.filter.JwtAuthenticationFilter;
 import com.eazylearn.filter.JwtAuthorizationFilter;
 import com.eazylearn.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -13,6 +14,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import static com.eazylearn.util.Constants.ANY_FINAL_ENDPOINT;
 import static com.eazylearn.util.Constants.LOGIN_ENDPOINT_PATH;
@@ -79,5 +82,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(@NotNull CorsRegistry registry) {
+                registry.addMapping(LOGIN_ENDPOINT_PATH)
+                        .allowedOriginPatterns("*");
+            }
+        };
     }
 }
