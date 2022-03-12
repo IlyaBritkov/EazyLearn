@@ -10,6 +10,7 @@ import com.eazylearn.service.CardSetService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -30,6 +31,7 @@ import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequestMapping(value = CARDSETS_ENDPOINT_PATH)
+@CrossOrigin
 @RequiredArgsConstructor
 @Slf4j
 public class CardSetRestController { // todo: add pagination

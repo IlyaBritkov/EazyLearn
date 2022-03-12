@@ -10,6 +10,7 @@ import com.eazylearn.service.CardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -28,11 +29,11 @@ import static com.eazylearn.util.Convertor.uuidToString;
 import static org.springframework.http.ResponseEntity.noContent;
 import static org.springframework.http.ResponseEntity.ok;
 
-@Slf4j
-@RequiredArgsConstructor
-
 @RestController
 @RequestMapping(value = CARDS_ENDPOINT_PATH)
+@CrossOrigin
+@Slf4j
+@RequiredArgsConstructor
 public class CardRestController { // todo: add pagination
 
     private final CardService cardService;

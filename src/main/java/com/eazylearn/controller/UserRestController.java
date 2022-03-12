@@ -1,6 +1,7 @@
 package com.eazylearn.controller;
 
 import com.eazylearn.dto.request.user.UserRegistryRequestDTO;
+import com.eazylearn.dto.request.user.UserUpdateRequestDTO;
 import com.eazylearn.dto.response.UserResponseDTO;
 import com.eazylearn.entity.User;
 import com.eazylearn.mapper.UserMapper;
@@ -11,7 +12,9 @@ import com.eazylearn.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,6 +33,7 @@ import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequestMapping(value = USERS_ENDPOINT_PATH)
+@CrossOrigin
 @RequiredArgsConstructor
 public class UserRestController {
 
@@ -70,6 +74,13 @@ public class UserRestController {
     public ResponseEntity<UserResponseDTO> registry(@RequestBody UserRegistryRequestDTO requestDTO) {
         final User createdUser = userService.createUser(requestDTO);
         return ok(userMapper.toResponseDTO(createdUser));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<UserResponseDTO> updateUserById(@PathVariable("id") UUID userId,
+                                                          @RequestBody UserUpdateRequestDTO requestDTO) {
+        final User updatedUser = userService.updateUserById(uuidToString(userId), requestDTO);
+        return ok(userMapper.toResponseDTO(updatedUser));
     }
 
     // todo: update user info

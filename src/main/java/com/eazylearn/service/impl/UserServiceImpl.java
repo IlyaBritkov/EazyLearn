@@ -26,7 +26,7 @@ import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserServiceImpl implements UserService { // todo: add current user
+public class UserServiceImpl implements UserService {
 
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
@@ -86,6 +86,8 @@ public class UserServiceImpl implements UserService { // todo: add current user
             throws UsernameNotFoundException, UserAlreadyExistAuthenticationException {
 
         // todo: 6/8/2021 add check right for update
+//        паisActionAllowedAccordingUserRights();
+
         User persistedUser = userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format("User with id = %s doesn't exist", id)));
 

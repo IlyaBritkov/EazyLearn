@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.eazylearn.util.Constants.AUTH_ENDPOINT_PATH;
 import static com.eazylearn.util.Constants.BEARER_PREFIX;
 import static com.eazylearn.util.Constants.REFRESH_TOKEN_ENDPOINT;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -24,7 +26,8 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
-@RequestMapping(value = "/api/v1/auth/")
+@RequestMapping(value = AUTH_ENDPOINT_PATH)
+@CrossOrigin
 @RequiredArgsConstructor
 @Slf4j
 public class AuthenticationRestController {

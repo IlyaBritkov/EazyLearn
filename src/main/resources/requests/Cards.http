@@ -2,7 +2,7 @@
 POST http://localhost:8080/api/v1/auth/login
 Content-Type: application/x-www-form-urlencoded
 
-email=user1&password=user1
+email=ilya500514@gmail.com&password=ilya500514
 
 > {% client.global.set("auth_token", response.body.access_token); %}
 
@@ -63,14 +63,13 @@ Authorization: Bearer {{auth_token}}
 ]
 
 ### Update Card by id with linkedCardSetsIds
-PATCH http://localhost:8080/api/v1/cards/f484e21c-1710-4f19-9f6b-2a31f05f9f07
+PATCH http://localhost:8080/api/v1/cards/2105b3c6-917a-4a8f-aca9-fd4dbcaef585
 Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 
 {
   "linkedCardSetsIds": [
-    "ee1399a0-4958-4280-b3bd-9d9772c3adef",
-    "21513d9e-7866-4683-a703-5a9802fd9c67"
+    "686d0e55-2d9f-4c56-a1ad-7d009ed9e39f"
   ]
 }
 

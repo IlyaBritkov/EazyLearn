@@ -16,6 +16,7 @@ public class Constants {
     public final static String REFRESH_TOKEN_ENDPOINT_PATH = "/api/v1/auth/token/refresh";
     public final static String REFRESH_TOKEN_ENDPOINT = "/token/refresh";
     // Business logic
+    public static final String AUTH_ENDPOINT_PATH = "/api/v1/auth/";
     public static final String USERS_ENDPOINT_PATH = "/api/v1/users";
     public static final String CARDS_ENDPOINT_PATH = "/api/v1/cards";
     public static final String CARDSETS_ENDPOINT_PATH = "/api/v1/cardSets";

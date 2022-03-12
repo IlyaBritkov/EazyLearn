@@ -8,7 +8,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Data
-public class UserAuthenticationRequestDTO { // todo add proper validation for password
+public class UserAuthenticationRequestDTO {
     @ApiModelProperty(required = true, example = "user@gmail.com")
     @NotBlank
     @Email
