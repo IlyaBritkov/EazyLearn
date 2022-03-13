@@ -27,7 +27,7 @@ public class JwtUserDetailsService implements UserDetailsService {
         return jwtUser;
     }
 
-    public boolean isUserHasAuthority(JwtUser jwtUser, String authority) {
+    public static boolean isUserHasAuthority(JwtUser jwtUser, String authority) {
         return jwtUser.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .anyMatch(name -> name.equals(authority));

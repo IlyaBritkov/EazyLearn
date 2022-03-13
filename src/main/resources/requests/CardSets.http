@@ -2,7 +2,7 @@
 POST http://localhost:8080/api/v1/auth/login
 Content-Type: application/x-www-form-urlencoded
 
-email=ilya500514@gmail.com&password=ilya500514
+email=ilya500514@gmail&password=ilya500514
 
 > {% client.global.set("auth_token", response.body.access_token); %}
 
@@ -47,7 +47,7 @@ Authorization: Bearer {{auth_token}}
   "name": "Chemistry",
   "proficiencyLevel": "LOW",
   "linkedCardsIds": [
-    "8d3e401e-60b9-4e42-a869-9e809d7236b3"
+    "95732082-b5d4-4db5-aa94-fc8e47ff8a47"
   ],
   "linkedNewCards": []
 }
@@ -66,6 +66,26 @@ Authorization: Bearer {{auth_token}}
     {
       "term": "Ноутбук",
       "definition": "Macbook",
+      "proficiencyLevel": "LOW"
+    }
+  ]
+}
+
+###
+POST http://localhost:8080/api/v1/cardSets
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "name": "Chemistry",
+  "proficiencyLevel": "LOW",
+  "isFavourite": true,
+  "linkedCardsIds": ["95732082-b5d4-4db5-aa94-fc8e47ff8a47"],
+  "linkedNewCards": [
+    {
+      "term": "Кислород",
+      "definition": "Oxygen",
+      "isFavourite": true,
       "proficiencyLevel": "LOW"
     }
   ]

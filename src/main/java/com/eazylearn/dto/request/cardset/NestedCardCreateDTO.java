@@ -23,4 +23,7 @@ public class NestedCardCreateDTO {
     @ApiModelProperty(required = true, allowableValues = "LOW AVERAGE HIGH")
     @NotNull
     private ProficiencyLevel proficiencyLevel;
+
+    @ApiModelProperty(dataType = "boolean")
+    private Boolean isFavourite;
 }

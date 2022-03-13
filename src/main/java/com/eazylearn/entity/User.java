@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.eclipse.persistence.annotations.CascadeOnDelete;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,6 +14,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.List;
 
@@ -23,6 +25,7 @@ import static javax.persistence.FetchType.EAGER;
 @SuppressWarnings({"com.haulmont.jpb.LombokDataInspection", "com.haulmont.jpb.LombokEqualsAndHashCodeInspection"})
 @Entity
 @Table(name = "users")
+@CascadeOnDelete // todo: check if is neccesary
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -50,7 +53,15 @@ public class User extends BaseEntity { // todo: add validation
     @JoinTable(
             name = "user_role",
             joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "role_name")}
+            inverseJoinColumns = {@JoinColumn(name = "role_id")}
     )
     private List<Role> roles;
+
+    @OneToMany(cascade = ALL, orphanRemoval = true)
+    @JoinColumn(name = "user_id")
+    private List<Card> cards;
+
+    @OneToMany(cascade = ALL, orphanRemoval = true)
+    @JoinColumn(name = "user_id")
+    private List<CardSet> cardSets;
 }

@@ -11,8 +11,10 @@ import com.eazylearn.security.jwt.JwtUserDetailsService;
 import com.eazylearn.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity.HeadersBuilder;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,13 +31,14 @@ import static com.eazylearn.enums.UserRole.ADMIN;
 import static com.eazylearn.util.Constants.USERS_ENDPOINT_PATH;
 import static com.eazylearn.util.Convertor.uuidToString;
 import static java.util.stream.Collectors.toList;
+import static org.springframework.http.ResponseEntity.noContent;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequestMapping(value = USERS_ENDPOINT_PATH)
 @CrossOrigin
 @RequiredArgsConstructor
-public class UserRestController {
+public class UserRestController { // todo: maybe endpoint reset password?
 
     private final UserService userService;
     private final UserMapper userMapper;
@@ -83,7 +86,9 @@ public class UserRestController {
         return ok(userMapper.toResponseDTO(updatedUser));
     }
 
-    // todo: update user info
-    // todo: delete user
-    // todo: reset password
+    @DeleteMapping("/{id}")
+    public HeadersBuilder<?> deleteUserById(@PathVariable("id") UUID userId) {
+        userService.deleteUserById(uuidToString(userId));
+        return noContent();
+    }
 }

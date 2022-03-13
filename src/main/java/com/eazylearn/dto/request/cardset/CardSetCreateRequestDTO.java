@@ -20,6 +20,9 @@ public class CardSetCreateRequestDTO {
     @NotNull
     private ProficiencyLevel proficiencyLevel;
 
+    @ApiModelProperty(dataType = "boolean")
+    private Boolean isFavourite;
+
     @ApiModelProperty(required = true, allowEmptyValue = true, position = 2)
     @NotNull
     private List<String> linkedCardsIds;

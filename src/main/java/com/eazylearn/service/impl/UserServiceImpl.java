@@ -8,9 +8,12 @@ import com.eazylearn.exception.UserAlreadyExistAuthenticationException;
 import com.eazylearn.mapper.UserMapper;
 import com.eazylearn.repository.RoleRepository;
 import com.eazylearn.repository.UserRepository;
+import com.eazylearn.security.jwt.JwtAuthenticationFacadeImpl;
+import com.eazylearn.security.jwt.JwtUser;
 import com.eazylearn.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,9 +21,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+import static com.eazylearn.enums.UserRole.ADMIN;
 import static com.eazylearn.enums.UserRole.USER;
 import static com.eazylearn.enums.UserStatus.ACTIVE;
+import static com.eazylearn.security.jwt.JwtUserDetailsService.isUserHasAuthority;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 
 @Service
@@ -28,10 +35,10 @@ import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 @Slf4j
 public class UserServiceImpl implements UserService {
 
+    private final JwtAuthenticationFacadeImpl jwtAuthenticationFacade;
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-
     private final BCryptPasswordEncoder passwordEncoder;
 
     @Override
@@ -58,55 +65,65 @@ public class UserServiceImpl implements UserService {
     @Transactional(isolation = SERIALIZABLE)
     public User createUser(UserRegistryRequestDTO registryRequest) {
         final String email = registryRequest.getEmail();
+        checkUserExistenceByEmail(email);
 
-        if (!userRepository.existsByEmail(email)) {
-            User newUser = userMapper.toEntity(registryRequest);
-            newUser.setPassword(passwordEncoder.encode(registryRequest.getPassword()));
+        final User newUser = userMapper.toEntity(registryRequest);
+        newUser.setPassword(passwordEncoder.encode(registryRequest.getPassword()));
 
-            // todo: ADD CACHE for Roles and Authorities
-            final Role userRole = roleRepository.findByName(USER)
-                    .orElseGet(() -> new Role(USER));
+        newUser.setStatus(ACTIVE);
+        newUser.setRoles(new ArrayList<>(List.of(new Role(USER))));
+        final User savedUser = userRepository.save(newUser);
 
-            newUser.setStatus(ACTIVE);
-            newUser.setRoles(new ArrayList<>(List.of(userRole)));
-
-            User savedUser = userRepository.save(newUser);
-            log.debug(String.format("User with email = %s was created", email));
-            return savedUser;
-        } else {
-            log.error(String.format("User with email = %s already exists", email));
-            throw new UserAlreadyExistAuthenticationException(
-                    String.format("User with email = %s already exists", email));
-        }
+        log.debug(String.format("User with email = %s was created", email));
+        return savedUser;
     }
 
     @Override
     @Transactional(isolation = SERIALIZABLE)
-    public User updateUserById(String id, UserUpdateRequestDTO updateRequest)
+    public User updateUserById(String id, UserUpdateRequestDTO updateDTO)
             throws UsernameNotFoundException, UserAlreadyExistAuthenticationException {
+        // check if operation is allowed for current user
+        checkIfCurrentUserIdOrCurrentUserIsAdmin(id);
 
-        // todo: 6/8/2021 add check right for update
-//        паisActionAllowedAccordingUserRights();
-
-        User persistedUser = userRepository.findById(id)
+        final User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format("User with id = %s doesn't exist", id)));
 
-        String newEmail = updateRequest.getEmail();
-        if (userRepository.existsByEmail(newEmail)) {
-            throw new UserAlreadyExistAuthenticationException(
-                    String.format("user with email = %s already exists", newEmail));
+        final String newEmail = updateDTO.getEmail();
+        checkUserExistenceByEmail(newEmail);
+
+        userMapper.updateEntity(updateDTO, existingUser);
+        final String newPassword = updateDTO.getPassword();
+        if (isNotBlank(newPassword)) {
+            existingUser.setPassword(passwordEncoder.encode(newPassword));
         }
 
-        userMapper.updateEntity(updateRequest, persistedUser);
-
-        return persistedUser;
+        return existingUser;
     }
 
     @Override
     @Transactional
     public void deleteUserById(String id) {
-        // todo: 6/8/2021 add check right for update
-
+        // todo: refactor role and authority -> add id field and make it PK
+        // check if operation is allowed for current user
+        checkIfCurrentUserIdOrCurrentUserIsAdmin(id);
         userRepository.deleteById(id);
+    }
+
+    private void checkIfCurrentUserIdOrCurrentUserIsAdmin(String userId) {
+        final JwtUser currentUser = jwtAuthenticationFacade.getJwtPrincipal();
+        if (!Objects.equals(userId, currentUser.getId())
+                && !isUserHasAuthority(currentUser, ADMIN.toString())) {
+            log.error("User with id={} cannot perform action because hasn't permission", currentUser.getId());
+            throw new AccessDeniedException(
+                    String.format("User with id=%s cannot perform action because hasn't permission", currentUser.getId()));
+        }
+    }
+
+    private void checkUserExistenceByEmail(String email) {
+        if (userRepository.existsByEmail(email)) {
+            log.error("User with email = {} already exists", email);
+            throw new UserAlreadyExistAuthenticationException(
+                    String.format("User with email = %s already exists", email));
+        }
     }
 }

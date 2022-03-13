@@ -2,7 +2,7 @@
 POST http://localhost:8080/api/v1/auth/login
 Content-Type: application/x-www-form-urlencoded
 
-email=ilya500514@gmail.com&password=ilya500514
+email=ilya500514@gmail&password=ilya500514
 
 > {% client.global.set("auth_token", response.body.access_token); %}
 
@@ -18,7 +18,7 @@ Accept: application/json
 Authorization: Bearer {{auth_token}}
 
 ### Find Card by id
-GET http://localhost:8080/api/v1/cards/
+GET http://localhost:8080/api/v1/cards/277cbadd-a310-4f7d-b12e-4f68628f4dd8
 Accept: application/json
 Authorization: Bearer {{auth_token}}
 
@@ -41,6 +41,7 @@ Authorization: Bearer {{auth_token}}
   {
     "term": "Вода",
     "definition": "H2O",
+    "isFavourite": true,
     "proficiencyLevel": "AVERAGE",
     "linkedCardSetsIds": []
   }

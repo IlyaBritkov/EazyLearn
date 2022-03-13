@@ -21,8 +21,8 @@ public class CardCreateRequestDTO implements CardRequest {
     @NotBlank
     private String definition;
 
-    @ApiModelProperty(position = 2)
-    private boolean isFavourite;
+    @ApiModelProperty(dataType = "boolean", position = 2)
+    private Boolean isFavourite;
 
     @ApiModelProperty(required = true, allowableValues = "LOW, AVERAGE, HIGH", position = 3)
     @NotNull

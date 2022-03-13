@@ -50,7 +50,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         final JwtAuthenticationFilter jwtAuthenticationFilter =
                 new JwtAuthenticationFilter(authenticationManagerBean(), jwtTokenProvider);
-
         jwtAuthenticationFilter.setFilterProcessesUrl(LOGIN_ENDPOINT_PATH);
 
         http
@@ -89,8 +88,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(@NotNull CorsRegistry registry) {
-                registry.addMapping(LOGIN_ENDPOINT_PATH)
-                        .allowedOriginPatterns("*");
+                registry.addMapping("/**");
             }
         };
     }

@@ -6,6 +6,7 @@ import com.eazylearn.exception.EntityDoesNotExistException;
 import com.eazylearn.exception.JwtAuthenticationException;
 import com.eazylearn.exception.UserAlreadyExistAuthenticationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -53,6 +54,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<ExceptionResponseDTO> handleException(UserAlreadyExistAuthenticationException ex) {
+        final ExceptionResponseDTO exceptionResponse = new ExceptionResponseDTO(ex.getMessage());
+        log.warn("Exception was thrown: {}", ex.toString());
+
+        return new ResponseEntity<>(exceptionResponse, BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ExceptionResponseDTO> handleException(EmptyResultDataAccessException ex) {
         final ExceptionResponseDTO exceptionResponse = new ExceptionResponseDTO(ex.getMessage());
         log.warn("Exception was thrown: {}", ex.toString());
 
