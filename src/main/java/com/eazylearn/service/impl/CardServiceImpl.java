@@ -72,21 +72,22 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public List<Card> createCards(List<CardCreateRequestDTO> cardCreateRequestList) {
-        final List<String> linkedCardSetsIds = cardCreateRequestList.stream()
+        final List<String> allLinkedCardSetsIds = cardCreateRequestList.stream()
                 .flatMap(createRequest -> createRequest.getLinkedCardSetsIds().stream())
                 .collect(toList());
 
-        final List<CardSet> linkedCardSets = cardSetRepository.findAllById(linkedCardSetsIds);
-        checkExistenceService.checkCardSetsExistence(linkedCardSetsIds, linkedCardSets);
+        final List<CardSet> allLinkedCardSets = cardSetRepository.findAllById(allLinkedCardSetsIds);
+        checkExistenceService.checkCardSetsExistence(allLinkedCardSetsIds, allLinkedCardSets);
 
+        // create new Cards and assign them to linked CardSets
         final List<Card> newCardsList = cardCreateRequestList.stream()
                 .map(cardDto -> {
                     final Card newCard = cardMapper.toEntity(cardDto);
                     // noinspection because existence are checked above
-                    linkedCardSets.stream()
+                    allLinkedCardSets.stream()
                             .filter(set -> cardDto.getLinkedCardSetsIds().contains(set.getId()))
                             .findAny()
-                            .ifPresent(newCard::addLinkedCardSet);
+                            .ifPresent(linkedCardSet -> linkedCardSet.addLinkedCard(newCard));
 
                     return newCard;
                 })

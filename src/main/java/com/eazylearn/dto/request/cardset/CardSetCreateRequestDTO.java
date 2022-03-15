@@ -16,12 +16,12 @@ public class CardSetCreateRequestDTO {
     @Length(min = 1, max = 50)
     private String name;
 
-    @ApiModelProperty(required = true, allowableValues = "LOW AVERAGE HIGH", position = 1)
+    @ApiModelProperty(required = true, allowableValues = "LOW, AVERAGE, HIGH", position = 1)
     @NotNull
     private ProficiencyLevel proficiencyLevel;
 
     @ApiModelProperty(dataType = "boolean")
-    private Boolean isFavourite;
+    private Boolean isFavourite = false;
 
     @ApiModelProperty(required = true, allowEmptyValue = true, position = 2)
     @NotNull

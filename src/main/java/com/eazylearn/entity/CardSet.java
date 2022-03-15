@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -28,6 +29,10 @@ public class CardSet extends BaseEntity { // todo: add validation
 
     @Column(name = "name")
     private String name;
+
+    @NotNull
+    @Column(name = "proficiency_level")
+    private Double proficiencyLevel;
 
     @Column(name = "is_favourite")
     private Boolean isFavourite = false;

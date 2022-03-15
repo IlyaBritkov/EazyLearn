@@ -6,6 +6,7 @@ import com.eazylearn.dto.response.CardSetResponseDTO;
 import com.eazylearn.entity.BaseEntity;
 import com.eazylearn.entity.Card;
 import com.eazylearn.entity.CardSet;
+import com.eazylearn.enums.ProficiencyLevel;
 import com.eazylearn.security.jwt.JwtUser;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -31,12 +32,14 @@ public abstract class CardSetMapper { // todo: update mapping
     // todo: fix with jwt-facade
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "linkedCards", ignore = true)
+    @Mapping(source = "proficiencyLevel", target = "proficiencyLevel", qualifiedByName = "proficiencyLevelToProficiencyDouble")
     @Mapping(target = "userId", expression = "java(((JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal() ).getId())")
     public abstract CardSet toEntity(CardSetCreateRequestDTO cardSetDto);
 
     @Mapping(target = "id", ignore = true) // TODO check if ignore is needed
     @Mapping(target = "createdDateTime", ignore = true) // TODO check if ignore is needed
     @Mapping(target = "userId", ignore = true) // TODO check if ignore is needed
+    @Mapping(source = "proficiencyLevel", target = "proficiencyLevel", qualifiedByName = "proficiencyLevelToProficiencyDouble")
     public abstract void updateEntity(CardSetUpdateRequestDTO cardSetDto, @MappingTarget CardSet cardSet);
 
     // TODO maybe make it protected
@@ -46,5 +49,12 @@ public abstract class CardSetMapper { // todo: update mapping
         return linkedCards.stream()
                 .map(BaseEntity::getId)
                 .collect(toList());
+    }
+
+    // TODO maybe make it protected
+    // ? should it be static?
+    @Named("proficiencyLevelToProficiencyDouble")
+    public static double proficiencyLevelToProficiencyDouble(ProficiencyLevel proficiencyLevel) {
+        return proficiencyLevel.getLevelPoints();
     }
 }

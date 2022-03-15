@@ -20,6 +20,8 @@ public class CardSetResponseDTO {
     @JsonProperty("isFavourite")
     private boolean isFavourite;
 
+    private Double proficiencyLevel;
+
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
     private LocalDateTime createdDateTime;
 
