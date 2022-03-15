@@ -56,6 +56,11 @@ public class CardSet extends BaseEntity { // todo: add validation
         return linkedCards.remove(linkedCard);
     }
 
+    public void removeAllLinkedCards() {
+        linkedCards.forEach(card -> card.removeLinkedCardSet(this));
+        linkedCards.clear();
+    }
+
     public void retainAllLinkedCards(Collection<Card> cards) {
         linkedCards.stream()
                 .filter(linkedCard -> !cards.contains(linkedCard))

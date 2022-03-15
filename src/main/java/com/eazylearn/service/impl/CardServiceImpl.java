@@ -144,16 +144,15 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public void deleteCardsByCardSetId(String cardSetId) {
-        final List<Card> cardsByCardSetId = cardRepository.findAllByCardSetId(cardSetId);
+    public void deleteCardsFromCardSet(CardSet cardSet) {
+        final List<Card> linkedCards = cardSet.getLinkedCards();
 
-        // filter for cards that belong only to the given cardSet
-        final List<Card> cardsToDelete = cardsByCardSetId.stream()
-                .filter(card -> {
-                    final List<CardSet> linkedCardSets = card.getLinkedCardSets();
-                    return linkedCardSets.size() == 1 && isCorresponding(linkedCardSets.get(0).getId(), cardSetId);
-                })
+        // filter for Cards that belong only to the given cardSet
+        final List<Card> cardsToDelete = linkedCards.stream()
+                .filter(card -> card.getLinkedCardSets().size() == 1)
                 .collect(toList());
+
+        cardSet.removeAllLinkedCards();
 
         cardRepository.deleteAll(cardsToDelete);
     }
@@ -175,6 +174,7 @@ public class CardServiceImpl implements CardService {
         return cardsToUpdate;
     }
 
+    // todo: add doc
     private boolean isCorresponding(String updateDTO, String card) {
         return updateDTO.equals(card);
     }

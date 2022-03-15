@@ -6,14 +6,11 @@ import com.eazylearn.entity.Role;
 import com.eazylearn.entity.User;
 import com.eazylearn.exception.UserAlreadyExistAuthenticationException;
 import com.eazylearn.mapper.UserMapper;
-import com.eazylearn.repository.RoleRepository;
 import com.eazylearn.repository.UserRepository;
 import com.eazylearn.security.jwt.JwtAuthenticationFacadeImpl;
-import com.eazylearn.security.jwt.JwtUser;
 import com.eazylearn.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,12 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-import static com.eazylearn.enums.UserRole.ADMIN;
 import static com.eazylearn.enums.UserRole.USER;
 import static com.eazylearn.enums.UserStatus.ACTIVE;
-import static com.eazylearn.security.jwt.JwtUserDetailsService.isUserHasAuthority;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 
@@ -36,7 +30,6 @@ import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 public class UserServiceImpl implements UserService {
 
     private final JwtAuthenticationFacadeImpl jwtAuthenticationFacade;
-    private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final BCryptPasswordEncoder passwordEncoder;
@@ -82,8 +75,6 @@ public class UserServiceImpl implements UserService {
     @Transactional(isolation = SERIALIZABLE)
     public User updateUserById(String id, UserUpdateRequestDTO updateDTO)
             throws UsernameNotFoundException, UserAlreadyExistAuthenticationException {
-        // check if operation is allowed for current user
-        checkIfCurrentUserIdOrCurrentUserIsAdmin(id);
 
         final User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format("User with id = %s doesn't exist", id)));
@@ -103,20 +94,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void deleteUserById(String id) {
-        // todo: refactor role and authority -> add id field and make it PK
-        // check if operation is allowed for current user
-        checkIfCurrentUserIdOrCurrentUserIsAdmin(id);
         userRepository.deleteById(id);
-    }
-
-    private void checkIfCurrentUserIdOrCurrentUserIsAdmin(String userId) {
-        final JwtUser currentUser = jwtAuthenticationFacade.getJwtPrincipal();
-        if (!Objects.equals(userId, currentUser.getId())
-                && !isUserHasAuthority(currentUser, ADMIN.toString())) {
-            log.error("User with id={} cannot perform action because hasn't permission", currentUser.getId());
-            throw new AccessDeniedException(
-                    String.format("User with id=%s cannot perform action because hasn't permission", currentUser.getId()));
-        }
     }
 
     private void checkUserExistenceByEmail(String email) {

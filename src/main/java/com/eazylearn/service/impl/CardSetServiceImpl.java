@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 
 import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
@@ -111,14 +110,16 @@ public class CardSetServiceImpl implements CardSetService {
 
     @Override
     public void deleteCardSetById(String cardSetId, boolean deleteAllLinkedCards) {
+        final CardSet cardSetToDelete = cardSetRepository.findById(cardSetId)
+                .orElseThrow(() -> new EntityDoesNotExistException(String.format("CardSet with id = %s doesn't exist", cardSetId)));
+
         if (deleteAllLinkedCards) {
-            cardService.deleteCardsByCardSetId(cardSetId);
+            cardService.deleteCardsFromCardSet(cardSetToDelete);
         } else {
             // remove associations between Cards and CardSet
-            final List<Card> allCardsBySetId = cardService.findAllCardsBySetId(cardSetId);
-            allCardsBySetId.forEach(card -> card.getLinkedCardSets().removeIf(cardSet -> Objects.equals(cardSet.getId(), cardSetId)));
+            cardSetToDelete.removeAllLinkedCards();
         }
-        cardSetRepository.deleteById(cardSetId);
+        cardSetRepository.delete(cardSetToDelete);
     }
 
     private void checkCardSetExistence(String newCardSetName) {

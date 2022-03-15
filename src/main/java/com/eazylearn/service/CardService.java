@@ -4,6 +4,7 @@ import com.eazylearn.dto.request.card.CardCreateRequestDTO;
 import com.eazylearn.dto.request.card.CardUpdateRequestDTO;
 import com.eazylearn.dto.request.card.UpdateCardProficiencyLevelDTO;
 import com.eazylearn.entity.Card;
+import com.eazylearn.entity.CardSet;
 
 import java.util.List;
 
@@ -29,7 +30,7 @@ public interface CardService {
 
     void deleteCardById(String cardId);
 
-    void deleteCardsByCardSetId(String categoryId);
+    void deleteCardsFromCardSet(CardSet cardSet);
 
     List<Card> updateCardsProficiencyLevel(List<UpdateCardProficiencyLevelDTO> updateProficiencyDTOList);
 }
