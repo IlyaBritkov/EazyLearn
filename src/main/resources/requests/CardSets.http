@@ -80,7 +80,9 @@ Authorization: Bearer {{auth_token}}
   "name": "Chemistry",
   "proficiencyLevel": "LOW",
   "isFavourite": true,
-  "linkedCardsIds": ["95732082-b5d4-4db5-aa94-fc8e47ff8a47"],
+  "linkedCardsIds": [
+    "95732082-b5d4-4db5-aa94-fc8e47ff8a47"
+  ],
   "linkedNewCards": [
     {
       "term": "Кислород",
@@ -103,17 +105,17 @@ Authorization: Bearer {{auth_token}}
 
 
 ### Update CardSet with linkedCardsIds
-PATCH http://localhost:8080/api/v1/cardSets/02c0273f-b2a3-4e39-992d-8e70604c9fc0
+PATCH http://localhost:8080/api/v1/cardSets/8aa985d9-cdc7-43eb-bb03-2c6f16c0ae69
 Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 
 {
   "isFavourite": true,
   "linkedCardsIds": [
-    ""
+    "cee5f4c7-bd44-48fa-9141-dde496c53992",
+    "786a31eb-3bb5-4e3b-8f2d-1eec46edccda"
   ]
 }
-
 
 ### Update CardSet with linkedNewCards
 PATCH http://localhost:8080/api/v1/cardSets/02c0273f-b2a3-4e39-992d-8e70604c9fc0

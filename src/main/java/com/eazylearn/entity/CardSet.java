@@ -48,12 +48,17 @@ public class CardSet extends BaseEntity { // todo: add validation
                     DETACH})
     private List<Card> linkedCards = new ArrayList<>();
 
+    // todo: fix: move checking if contains to the caller
     public boolean addLinkedCard(Card linkedCard) {
         if (!linkedCards.contains(linkedCard)) {
             linkedCard.addLinkedCardSet(this);
             return linkedCards.add(linkedCard);
         }
         return false;
+    }
+
+    public boolean addLinkedCard(List<Card> cards) {
+        return linkedCards.addAll(cards);
     }
 
     public boolean removeLinkedCard(Card linkedCard) {

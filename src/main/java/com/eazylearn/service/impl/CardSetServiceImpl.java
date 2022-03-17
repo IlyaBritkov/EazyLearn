@@ -93,7 +93,14 @@ public class CardSetServiceImpl implements CardSetService {
         final List<String> linkedCardsIds = updateDTO.getLinkedCardsIds();
         if (!isNull(linkedCardsIds)) {
             final List<Card> cardsByIds = cardRepository.findAllById(linkedCardsIds);
+            // retain all already linked Cards and remove not specified ones
             cardSetToUpdate.retainAllLinkedCards(cardsByIds);
+
+            // add not linked Cards
+            final List<Card> cardsToLink = cardsByIds.stream()
+                    .filter(card -> !card.getLinkedCardSets().contains(cardSetToUpdate))
+                    .collect(toList());
+            cardSetToUpdate.addLinkedCard(cardsToLink);
         }
 
         final List<NestedCardCreateDTO> linkedNewCards = updateDTO.getLinkedNewCards();

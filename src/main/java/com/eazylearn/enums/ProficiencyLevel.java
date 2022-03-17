@@ -2,17 +2,17 @@ package com.eazylearn.enums;
 
 public enum ProficiencyLevel { // todo: make table in the database
 
-    LOW(15),
-    AVERAGE(50),
-    HIGH(85);
+    LOW(0.15),
+    AVERAGE(0.50),
+    HIGH(0.85);
 
-    private final int levelPoints;
+    private final double levelPoints;
 
-    ProficiencyLevel(int levelPoints) {
+    ProficiencyLevel(double levelPoints) {
         this.levelPoints = levelPoints;
     }
 
-    public int getLevelPoints() {
+    public double getLevelPoints() {
         return levelPoints;
     }
 

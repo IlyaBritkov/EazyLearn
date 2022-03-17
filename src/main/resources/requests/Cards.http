@@ -118,6 +118,6 @@ Authorization: Bearer {{auth_token}}
 }
 
 ### Delete Card by id
-DELETE http://localhost:8080/api/v1/cards/277cbadd-a310-4f7d-b12e-4f68628f4dd8
+DELETE http://localhost:8080/api/v1/cards/69ebcbad-1951-48c8-aad0-9ab87e28f496
 Content-Type: application/json
 Authorization: Bearer {{auth_token}}
