@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.eazylearn.enums.UserRole.USER;
 import static com.eazylearn.enums.UserStatus.ACTIVE;
@@ -80,7 +81,9 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UsernameNotFoundException(String.format("User with id = %s doesn't exist", id)));
 
         final String newEmail = updateDTO.getEmail();
-        checkUserExistenceByEmail(newEmail);
+        if (!Objects.equals(existingUser.getEmail(), newEmail)) {
+            checkUserExistenceByEmail(newEmail);
+        }
 
         userMapper.updateEntity(updateDTO, existingUser);
         final String newPassword = updateDTO.getPassword();
