@@ -3,8 +3,9 @@ package com.eazylearn;
 import com.eazylearn.entity.Role;
 import com.eazylearn.entity.User;
 import com.eazylearn.repository.UserRepository;
-import org.junit.Test;
+import com.eazylearn.scheduling.CardScheduledTasks;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,8 +23,11 @@ import static com.eazylearn.enums.UserStatus.ACTIVE;
 //@SpringBootTest(classes = EazyLearnApplication.class)
 //@ContextConfiguration(classes = {BeansConfig.class, SecurityConfig.class, Swagger2Config.class})
 //@ExtendWith(MockitoExtension.class)
-//@Disabled // todo: active it
+//@Disabled
 public class EazyLearnApplicationTests {
+
+    @Autowired
+    CardScheduledTasks cardScheduledTasks;
 
     @Autowired
     UserRepository userRepository;
@@ -49,4 +53,9 @@ public class EazyLearnApplicationTests {
 //        userRepository.save(admin);
     }
 
+    @Test
+    @Disabled
+    void testCardScheduledDecrease() {
+        cardScheduledTasks.decreaseCardsProficiencyLevel();
+    }
 }

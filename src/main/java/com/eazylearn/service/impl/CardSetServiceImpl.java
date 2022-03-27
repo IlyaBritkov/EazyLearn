@@ -115,6 +115,7 @@ public class CardSetServiceImpl implements CardSetService {
         return cardSetRepository.save(cardSetToUpdate);
     }
 
+    // todo: test that works
     @Override
     public void deleteCardSetById(String cardSetId, boolean deleteAllLinkedCards) {
         final CardSet cardSetToDelete = cardSetRepository.findById(cardSetId)

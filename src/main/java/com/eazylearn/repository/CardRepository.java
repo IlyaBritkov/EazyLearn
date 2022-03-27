@@ -2,6 +2,7 @@ package com.eazylearn.repository;
 
 import com.eazylearn.entity.Card;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -48,4 +49,17 @@ public interface CardRepository extends CrudRepository<Card, String> { // todo r
 
 
     long countByIdIn(@NonNull Collection<String> ids);
+
+    @Modifying(clearAutomatically = true)
+    @Query(value = "UPDATE card "
+            + "SET proficiency_level = "
+            + "CASE "
+            + "WHEN proficiency_level <= 0.1 THEN 0.0 "
+            + "ELSE proficiency_level - :valueOfDecrease "
+            + "END, "
+            + "last_update_datetime = now() "
+            + "WHERE last_update_datetime < (now() - INTERVAL '7 day')"
+            + ";",
+            nativeQuery = true)
+    void decreaseProficiencyLevelIfLastUpdateDateLessThanWeek(@Param("valueOfDecrease") double valueOfDecrease);
 }
