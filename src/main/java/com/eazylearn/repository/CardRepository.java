@@ -54,12 +54,12 @@ public interface CardRepository extends CrudRepository<Card, String> { // todo r
     @Query(value = "UPDATE card "
             + "SET proficiency_level = "
             + "CASE "
-            + "WHEN proficiency_level <= 0.1 THEN 0.0 "
+            + "WHEN proficiency_level <= :valueOfDecrease THEN 0.0 "
             + "ELSE proficiency_level - :valueOfDecrease "
             + "END, "
             + "last_update_datetime = now() "
             + "WHERE last_update_datetime < (now() - INTERVAL '7 day')"
             + ";",
             nativeQuery = true)
-    void decreaseProficiencyLevelIfLastUpdateDateLessThanWeek(@Param("valueOfDecrease") double valueOfDecrease);
+    void decreaseProficiencyLevelIfLastUpdateDateMoreThanWeek(@Param("valueOfDecrease") double valueOfDecrease);
 }

@@ -12,11 +12,11 @@ public class CardScheduledTasks {
     private final CardRepository cardRepository;
 
     /**
-     * Lower ProficiencyLevel of not updated for long time (1 week) Cards.
+     * Lower ProficiencyLevel of not updated for long time (more than 1 week) Cards.
      **/
     @Scheduled(fixedDelay = 3_600_000) // 1 week
     @Transactional
     public void decreaseCardsProficiencyLevel() {
-        cardRepository.decreaseProficiencyLevelIfLastUpdateDateLessThanWeek(5);
+        cardRepository.decreaseProficiencyLevelIfLastUpdateDateMoreThanWeek(0.5);
     }
 }
