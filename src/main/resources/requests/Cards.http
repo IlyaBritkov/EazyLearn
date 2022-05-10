@@ -1,0 +1,123 @@
+### JWT Authorization. Retrieve and save token.
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/x-www-form-urlencoded
+
+email=ilya500514@gmail.com&password=ilya500514
+
+> {% client.global.set("auth_token", response.body.access_token); %}
+
+
+### Find all Cards
+GET http://localhost:8080/api/v1/cards
+Accept: application/json
+Authorization: Bearer {{auth_token}}
+
+### Find all Cards by cardSetId
+GET http://localhost:8080/api/v1/cards?cardSetId=
+Accept: application/json
+Authorization: Bearer {{auth_token}}
+
+### Find Card by id
+GET http://localhost:8080/api/v1/cards/277cbadd-a310-4f7d-b12e-4f68628f4dd8
+Accept: application/json
+Authorization: Bearer {{auth_token}}
+
+### Find all favourite Cards
+GET http://localhost:8080/api/v1/cards/favourite
+Accept: application/json
+Authorization: Bearer {{auth_token}}
+
+### Find all favourite Cards by cardSetId
+GET http://localhost:8080/api/v1/cards/favourite?cardSetId=
+Accept: application/json
+Authorization: Bearer {{auth_token}}
+
+### Create Card without linkedCardSetsIds
+POST http://localhost:8080/api/v1/cards
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+[
+  {
+    "term": "Вода",
+    "definition": "H2O",
+    "isFavourite": true,
+    "proficiencyLevel": "AVERAGE",
+    "linkedCardSetsIds": []
+  }
+]
+
+### Create Card with linkedCardSetsIds
+POST http://localhost:8080/api/v1/cards
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+[
+  {
+    "term": "Translate",
+    "definition": "Перевод",
+    "proficiencyLevel": "AVERAGE",
+    "linkedCardSetsIds": [
+      "21513d9e-7866-4683-a703-5a9802fd9c67"
+    ]
+  }
+]
+
+### Update Card by id with linkedCardSetsIds
+PATCH http://localhost:8080/api/v1/cards/2105b3c6-917a-4a8f-aca9-fd4dbcaef585
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "linkedCardSetsIds": [
+    "686d0e55-2d9f-4c56-a1ad-7d009ed9e39f"
+  ]
+}
+
+### Update Card by id
+PATCH http://localhost:8080/api/v1/cards/99502830-b97a-4dd9-a971-d0057e56f5de
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "isFavourite": false
+}
+
+### Update Cards
+PATCH http://localhost:8080/api/v1/cards
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+[
+  {
+    "cardId": "",
+    "term": "",
+    "definition": "",
+    "proficiencyLevel": "LOW",
+    "isFavourite": false,
+    "linkedCardSetsIds": [
+      ""
+    ]
+  },
+  {
+    "cardId": "",
+    "term": "",
+    "definition": "",
+    "proficiencyLevel": "LOW",
+    "isFavourite": false
+  }
+]
+
+### Update Card's ProficiencyLevel
+PATCH http://localhost:8080/api/v1/cards/99502830-b97a-4dd9-a971-d0057e56f5de
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "proficiencyLevelValue": 0.45
+}
+
+### Delete Card by id
+DELETE http://localhost:8080/api/v1/cards/69ebcbad-1951-48c8-aad0-9ab87e28f496
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}

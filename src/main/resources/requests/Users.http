@@ -1,0 +1,56 @@
+### JWT Authorization. Retrieve and save token.
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/x-www-form-urlencoded
+
+email=ilya500514@gmail.com&password=ilya500514
+
+> {% client.global.set("auth_token", response.body.access_token); %}
+
+
+### Find all Users
+GET http://localhost:8080/api/v1/users
+Accept: application/json
+Authorization: Bearer {{auth_token}}
+
+### Find User by id
+GET http://localhost:8080/api/v1/users/a3e7e6f6-4d7b-48fc-9229-5ddeee5d4402
+Accept: application/json
+Authorization: Bearer {{auth_token}}
+
+### Create User
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+  "username": "ilya500514",
+  "email": "ilya500514@gmail",
+  "password": "ilya500514"
+}
+
+
+### Update User by id
+PATCH http://localhost:8080/api/v1/users/a3e7e6f6-4d7b-48fc-9229-5ddeee5d4402
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "username": "ilya",
+  "email": "ilya500514@gmail.com",
+  "password": "ilya500514"
+}
+
+### Update User by id
+PATCH http://localhost:8080/api/v1/users/a3e7e6f6-4d7b-48fc-9229-5ddeee5d4402
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "username": "ilya500"
+}
+
+### Delete User by id
+DELETE http://localhost:8080/api/v1/users/a3e7e6f6-4d7b-48fc-9229-5ddeee5d4402
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{}

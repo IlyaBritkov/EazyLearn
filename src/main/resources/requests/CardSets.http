@@ -1,0 +1,140 @@
+### JWT Authorization. Retrieve and save token.
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/x-www-form-urlencoded
+
+email=ilya500514@gmail.com&password=ilya500514
+
+> {% client.global.set("auth_token", response.body.access_token); %}
+
+
+### Find all CardSets
+GET http://localhost:8080/api/v1/cardSets
+Accept: application/json
+Authorization: Bearer {{auth_token}}
+
+
+### Find all favourite CardSets
+GET http://localhost:8080/api/v1/cardSets/favourite
+Accept: application/json
+Authorization: Bearer {{auth_token}}
+
+
+### Find CardSets by id
+GET http://localhost:8080/api/v1/cardSets/0ec31b21-5b6b-4963-b583-a83f256621c9
+Accept: application/json
+Authorization: Bearer {{auth_token}}
+
+
+### Create only CardSet without linkedCardsIds and linkedNewCards
+POST http://localhost:8080/api/v1/cardSets
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "name": "Test2",
+  "proficiencyLevel": "LOW",
+  "linkedCardsIds": [],
+  "linkedNewCards": []
+}
+
+
+### Create CardSet with linkedCardsIds
+POST http://localhost:8080/api/v1/cardSets
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "name": "Chemistry",
+  "proficiencyLevel": "LOW",
+  "linkedCardsIds": [
+    "95732082-b5d4-4db5-aa94-fc8e47ff8a47"
+  ],
+  "linkedNewCards": []
+}
+
+
+### Create CardSet with linkedNewCards
+POST http://localhost:8080/api/v1/cardSets
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "name": "Техника",
+  "proficiencyLevel": "LOW",
+  "linkedCardsIds": [],
+  "linkedNewCards": [
+    {
+      "term": "Ноутбук",
+      "definition": "Macbook",
+      "proficiencyLevel": "LOW"
+    }
+  ]
+}
+
+###
+POST http://localhost:8080/api/v1/cardSets
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "name": "Chemistry",
+  "proficiencyLevel": "LOW",
+  "isFavourite": true,
+  "linkedCardsIds": [
+    "95732082-b5d4-4db5-aa94-fc8e47ff8a47"
+  ],
+  "linkedNewCards": [
+    {
+      "term": "Кислород",
+      "definition": "Oxygen",
+      "isFavourite": true,
+      "proficiencyLevel": "LOW"
+    }
+  ]
+}
+
+
+### Update CardSet without linkedCardsIds and linkedNewCards
+PATCH http://localhost:8080/api/v1/cardSets/02c0273f-b2a3-4e39-992d-8e70604c9fc0
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "isFavourite": true
+}
+
+
+### Update CardSet with linkedCardsIds
+PATCH http://localhost:8080/api/v1/cardSets/8aa985d9-cdc7-43eb-bb03-2c6f16c0ae69
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "isFavourite": true,
+  "linkedCardsIds": [
+    "cee5f4c7-bd44-48fa-9141-dde496c53992",
+    "786a31eb-3bb5-4e3b-8f2d-1eec46edccda"
+  ]
+}
+
+### Update CardSet with linkedNewCards
+PATCH http://localhost:8080/api/v1/cardSets/02c0273f-b2a3-4e39-992d-8e70604c9fc0
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "isFavourite": false,
+  "linkedNewCards": [
+    {
+      "term": "Keyboard",
+      "definition": "Клавиатура",
+      "proficiencyLevel": "AVERAGE"
+    }
+  ]
+}
+
+
+### Delete only CardSet by id
+DELETE http://localhost:8080/api/v1/cardSets/95cc7b0e-f1b3-4915-bc30-e1fd6c9f08e8
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
